@@ -88,23 +88,7 @@ public class NavMeshQuery {
 		m_tinyNodePool = new NodePool();
 		m_openList = new NodeQueue();
 	}
-}
-
-import java.util.ArrayList;
-import java.util.List;
-import staticorg.recast4j.detour.DetourCommon.vSub
-import java.util.LinkedList;
-import java.util.Random;
-
-
-	public class FRand {
-		var r:Random= new Random();
-
-		public function frand():Number {
-			return r.nextFloat();
-		}
-	}
-
+	
 	/**
 	 * Returns random location on navmesh.
 	 * Polygons are chosen weighted by area. The search runs in linear related to number of polygon.
@@ -686,7 +670,7 @@ import java.util.Random;
 		var maxxy:Array= m_nav.calcTileLoc(bmax);
 		var maxx:int= maxxy[0];
 		var maxy:int= maxxy[1];
-		List<Long> polys = new ArrayList<>();
+		var polys:Array = [];
 		for (var y:int= miny; y <= maxy; ++y) {
 			for (var x:int= minx; x <= maxx; ++x) {
 				List<MeshTile> neis = m_nav.getTilesAt(x, y);
@@ -728,7 +712,7 @@ import java.util.Random;
 		if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef))
 			throw new IllegalArgumentException("Invalid start or end ref");
 
-		List<Long> path = new ArrayList<>(64);
+		var path:Array = [];
 		if (startRef == endRef) {
 			path.add(startRef);
 			return new FindPathResult(Status.SUCCSESS, path);
@@ -800,7 +784,7 @@ import java.util.Random;
 
 				// deal explicitly with crossing tile boundaries
 				var crossSide:int= 0;
-				if (bestTile.links.get(i).side != 0x)
+				if (bestTile.links.get(i).side != 0)
 					crossSide = bestTile.links.get(i).side >> 1;
 
 				// get the node
@@ -822,7 +806,7 @@ import java.util.Random;
 					var curCost:Number= filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
 							bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
 					var endCost:Number= filter.getCost(neighbourNode.pos, endPos, bestRef, bestTile, bestPoly, neighbourRef,
-							neighbourTile, neighbourPoly, 0L, null, null);
+							neighbourTile, neighbourPoly, 0, null, null);
 
 					cost = bestNode.cost + curCost + endCost;
 					heuristic = 0;
@@ -1167,7 +1151,7 @@ import java.util.Random;
 	/// @returns The status flags for the query.
 	public function finalizeSlicedFindPath():FindPathResult {
 
-		List<Long> path = new ArrayList<>(64);
+		var path:Array = [];
 		if (m_query.status.isFailed()) {
 			// Reset query.
 			m_query = new QueryData();
@@ -1229,9 +1213,9 @@ import java.util.Random;
 	///  @param[out]	pathCount		The number of polygons returned in the @p path array.
 	///  @param[in]		maxPath			The max number of polygons the @p path array can hold. [Limit: >= 1]
 	/// @returns The status flags for the query.
-	public function finalizeSlicedFindPathPartial(List<Long> existing):FindPathResult {
+	public function finalizeSlicedFindPathPartial(existing:Array):FindPathResult {
 
-		List<Long> path = new ArrayList<>(64);
+		var path:Array = [];
 		if (existing.size() == 0) {
 			return new FindPathResult(Status.FAILURE, path);
 		}
@@ -1296,7 +1280,7 @@ import java.util.Random;
 		return new FindPathResult(status, path);
 	}	
 	
-	protected function appendVertex(pos:Array, flags:int, ref:Number, List<StraightPathItem> straightPath):Status {
+	protected function appendVertex(pos:Array, flags:int, ref:Number, straightPath:Array):Status {
 		if (straightPath.size() > 0&& vEqual(straightPath.get(straightPath.size() - 1).pos, pos)) {
 			// The vertices are equal, update flags and poly.
 			straightPath.get(straightPath.size() - 1).flags = flags;
@@ -1312,7 +1296,7 @@ import java.util.Random;
 		return Status.IN_PROGRESS;
 	}
 
-	protected function appendPortals(startIdx:int, endIdx:int, endPos:Array, List<Long> path, List<StraightPathItem> straightPath,
+	protected function appendPortals(startIdx:int, endIdx:int, endPos:Array, path:Array, straightPath:Array,
 			options:int):Status {
 		var startPos:Array= straightPath.get(straightPath.size() - 1).pos;
 		// Append or update last vertex
@@ -1381,7 +1365,7 @@ import java.util.Random;
 	///  @param[in]		maxStraightPath		The maximum number of points the straight path arrays can hold.  [Limit: > 0]
 	///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
 	/// @returns The status flags for the query.
-	public List<StraightPathItem> findStraightPath(var startPos:Array, var endPos:Array, List<Long> path, var options:int) {
+	public function findStraightPath(startPos:Array, endPos:Array, path:Array, options:int):Array {
 		if (path.isEmpty()) {
 			throw new IllegalArgumentException("Empty path");
 		}
@@ -1389,7 +1373,7 @@ import java.util.Random;
 		// TODO: Should this be callers responsibility?
 		var closestStartPos:Array= closestPointOnPolyBoundary(path.get(0), startPos);
 		var closestEndPos:Array= closestPointOnPolyBoundary(path.get(path.size() - 1), endPos);
-		List<StraightPathItem> straightPath = new ArrayList<>();
+		var straightPath:Array = [];
 		// Add start point.
 		var stat:Status= appendVertex(closestStartPos, DT_STRAIGHTPATH_START, path.get(0), straightPath);
 		if (stat != Status.IN_PROGRESS)
@@ -1587,7 +1571,7 @@ import java.util.Random;
 		startNode.total = 0;
 		startNode.id = startRef;
 		startNode.flags = Node.DT_NODE_CLOSED;
-		LinkedList<Node> stack = new LinkedList<>();
+		var stack:Array = [];
 		stack.add(startNode);
 
 		var bestPos:Array= new float[3];
@@ -1697,7 +1681,7 @@ import java.util.Random;
 			}
 		}
 
-		List<Long> visited = new ArrayList<>();
+		var visited:Array = [];
 		if (bestNode != null) {
 			// Reverse the path.
 			var prev:Node= null;
@@ -1717,29 +1701,6 @@ import java.util.Random;
 			} while (node != null);
 		}
 		return new MoveAlongSurfaceResult(bestPos, visited);
-	}
-
-import java.util.ArrayList;
-import java.util.List;
-import staticorg.recast4j.detour.DetourCommon.vSub
-import java.util.LinkedList;
-import org.recast4j.detour.DetourCommon.IntersectResult;
-
-	
-	static 
-internal class PortalResult {
-		var left:Array;
-		var right:Array;
-		var fromType:int;
-		var toType:int;
-
-		public function PortalResult(left:Array, right:Array, fromType:int, toType:int) {
-			this.left = left;
-			this.right = right;
-			this.fromType = fromType;
-			this.toType = toType;
-		}
-
 	}
 
 	protected function getPortalPoints(from:Number, to:Number):PortalResult {
@@ -1806,7 +1767,7 @@ internal class PortalResult {
 
 		// If the link is at tile boundary, dtClamp the vertices to
 		// the link width.
-		if (link.side != 0x) {
+		if (link.side != 0) {
 			// Unpack portal limits.
 			if (link.bmin != 0|| link.bmax != 255) {
 				var s:Number= 1.0/ 255.0;
@@ -1821,7 +1782,7 @@ internal class PortalResult {
 	}
 
 	// Returns edge mid point between two polygons.
-	protected float[] getEdgeMidPoint(var from:Number, var to:Number) {
+	protected function getEdgeMidPoint(from:Number, to:Number):Array {
 		var ppoints:PortalResult= getPortalPoints(from, to);
 		var left:Array= ppoints.left;
 		var right:Array= ppoints.right;
@@ -1832,8 +1793,8 @@ internal class PortalResult {
 		return mid;
 	}
 
-	protected float[] getEdgeMidPoint(var from:Number, var fromPoly:Poly, var fromTile:MeshTile, var to:Number, var toPoly:Poly,
-			var toTile:MeshTile) {
+	protected function getEdgeMidPoint(from:Number,fromPoly:Poly,fromTile:MeshTile, to:Number, toPoly:Poly,
+			toTile:MeshTile):Array {
 		var ppoints:PortalResult= getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
 		var left:Array= ppoints.left;
 		var right:Array= ppoints.right;
@@ -1986,7 +1947,7 @@ internal class PortalResult {
 					continue;
 
 				// If the link is internal, just return the ref.
-				if (link.side == 0x) {
+				if (link.side == 0) {
 					nextRef = link.ref;
 					break;
 				}
@@ -2141,9 +2102,9 @@ internal class PortalResult {
 		if (startRef == 0|| !m_nav.isValidPolyRef(startRef))
 			throw new IllegalArgumentException("Invalid start ref");
 
-		List<Long> resultRef = new ArrayList<>();
-		List<Long> resultParent = new ArrayList<>();
-		List<Float> resultCost = new ArrayList<>();
+		var resultRef:Array = [];
+		var resultParent:Array = [];
+		var resultCost:Array = [];
 
 		m_nodePool.clear();
 		m_openList.clear();
@@ -2158,7 +2119,7 @@ internal class PortalResult {
 		m_openList.push(startNode);
 
 		resultRef.add(startNode.id);
-		resultParent.add(0L);
+		resultParent.add(0);
 		resultCost.add(0);
 
 		var radiusSqr:Number= sqr(radius);
@@ -2291,14 +2252,14 @@ internal class PortalResult {
 		if (startRef == 0|| !m_nav.isValidPolyRef(startRef))
 			throw new IllegalArgumentException("Invalid start ref");
 
-		List<Long> resultRef = new ArrayList<>();
-		List<Long> resultParent = new ArrayList<>();
-		List<Float> resultCost = new ArrayList<>();
+		var resultRef:Array = [];
+		var resultParent:Array = [];
+		var resultCost:Array = [];
 
 		m_nodePool.clear();
 		m_openList.clear();
 
-		var centerPos:Array= new float[] { 0, 0, 0};
+		var centerPos:Array= [ 0, 0, 0];
 		for (var i:int= 0; i < nverts; ++i) {
 			centerPos[0] += verts[i * 3];
 			centerPos[1] += verts[i * 3+ 1];
@@ -2319,7 +2280,7 @@ internal class PortalResult {
 		m_openList.push(startNode);
 
 		resultRef.add(startNode.id);
-		resultParent.add(0L);
+		resultParent.add(0);
 		resultCost.add(0);
 
 		while (!m_openList.isEmpty()) {
@@ -2451,8 +2412,8 @@ internal class PortalResult {
 		if (startRef == 0|| !m_nav.isValidPolyRef(startRef))
 			throw new IllegalArgumentException("Invalid start ref");
 
-		List<Long> resultRef = new ArrayList<>();
-		List<Long> resultParent = new ArrayList<>();
+		var resultRef:Array = [];
+		var resultParent:Array = [];
 
 		m_tinyNodePool.clear();
 
@@ -2460,11 +2421,11 @@ internal class PortalResult {
 		startNode.pidx = 0;
 		startNode.id = startRef;
 		startNode.flags = Node.DT_NODE_CLOSED;
-		LinkedList<Node> stack = new LinkedList<>();
+		var stack:Array = [];
 		stack.add(startNode);
 
 		resultRef.add(startNode.id);
-		resultParent.add(0L);
+		resultParent.add(0);
 
 		var radiusSqr:Number= sqr(radius);
 
@@ -2576,25 +2537,9 @@ internal class PortalResult {
 		return new FindLocalNeighbourhoodResult(resultRef, resultParent);
 	}
 
-import java.util.ArrayList;
-import java.util.List;
-import staticorg.recast4j.detour.DetourCommon.vSub
 
 
-	private static 
-internal class SegInterval {
-		var ref:Number;
-		var tmin:int, tmax;
-
-		public function SegInterval(ref:Number, tmin:int, tmax:int) {
-			this.ref = ref;
-			this.tmin = tmin;
-			this.tmax = tmax;
-		}
-
-	};
-
-	protected function insertInterval(List<SegInterval> ints, tmin:int, tmax:int, ref:Number):void {
+	protected function insertInterval(ints:Array, tmin:int, tmax:int, ref:Number):void {
 		// Find insertion point.
 		var idx:int= 0;
 		while (idx < ints.size()) {
@@ -2631,9 +2576,9 @@ internal class SegInterval {
 		var tile:MeshTile= tileAndPoly.first;
 		var poly:Poly= tileAndPoly.second;
 
-		List<Long> segmentRefs = new ArrayList<>();
-		List<float[]> segmentVerts = new ArrayList<>();
-		List<SegInterval> ints = new ArrayList<>(16);
+		var segmentRefs:Array = [];
+		var segmentVerts:Array = [];
+		var ints:Array = [];
 
 		for (var i:int= 0, j = poly.vertCount - 1; i < poly.vertCount; j = i++) {
 			// Skip non-solid edges.
@@ -2702,7 +2647,7 @@ internal class SegInterval {
 					System.arraycopy(vLerp(tile.data.verts, vj, vi, tmin), 0, seg, 0, 3);
 					System.arraycopy(vLerp(tile.data.verts, vj, vi, tmax), 0, seg, 3, 3);
 					segmentVerts.add(seg);
-					segmentRefs.add(0L);
+					segmentRefs.add(0);
 				}
 			}
 		}
@@ -2937,5 +2882,58 @@ internal class SegInterval {
 	
 	
 	*/
+}
+
+import java.util.ArrayList;
+import java.util.List;
+import staticorg.recast4j.detour.DetourCommon.vSub
+import java.util.LinkedList;
+import java.util.Random;
+	import staticorg.recast4j.detour.DetourCommon.vSub
+	
+	import java.util.ArrayList;
+import java.util.List;
+import staticorg.recast4j.detour.DetourCommon.vSub
+import org.recast4j.detour.DetourCommon.IntersectResult;
+
+
+	public class FRand {
+		var r:Random= new Random();
+
+		public function frand():Number {
+			return r.nextFloat();
+		}
+	}
+
+	
+ class PortalResult {
+		var left:Array;
+		var right:Array;
+		var fromType:int;
+		var toType:int;
+
+		public function PortalResult(left:Array, right:Array, fromType:int, toType:int) {
+			this.left = left;
+			this.right = right;
+			this.fromType = fromType;
+			this.toType = toType;
+		}
+
+	}
+
+
+	 class SegInterval {
+		var ref:Number;
+		var tmin:int, tmax;
+
+		public function SegInterval(ref:Number, tmin:int, tmax:int) {
+			this.ref = ref;
+			this.tmin = tmin;
+			this.tmax = tmax;
+		}
+
+	}
+
+	
 
 }

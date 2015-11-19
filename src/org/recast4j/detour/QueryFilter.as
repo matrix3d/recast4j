@@ -17,7 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import static org.recast4j.detour.DetourCommon.vDist;
 
 /**
  * <b>The Default Implementation</b>
@@ -51,7 +50,7 @@ public class QueryFilter {
 	var m_areaCost:Array= new float[NavMesh.DT_MAX_AREAS];
 
 	public function QueryFilter() {
-		this.m_includeFlags = 0x;
+		this.m_includeFlags = 0;
 		this.m_excludeFlags = 0;
 		for (var i:int= 0; i < NavMesh.DT_MAX_AREAS; ++i)
 			m_areaCost[i] = 1.0;

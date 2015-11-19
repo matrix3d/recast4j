@@ -17,47 +17,46 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.List;
 
 public class InputGeom {
 
-	var vertices:Array;
-	var faces:Array;
-	var bmin:Array;
-	var bmax:Array;
+	public var vertices:Array;
+	public var faces:Array;
+	public var bmin:Array;
+	public var bmax:Array;
 
-	public function InputGeom(List<Float> vertexPositions, List<Integer> meshFaces) {
-		vertices = new float[vertexPositions.size()];
+	public function InputGeom(vertexPositions:Array, meshFaces:Array) {
+		vertices = []
 		for (var i:int= 0; i < vertices.length; i++) {
 			vertices[i] = vertexPositions.get(i);
 		}
 		faces = new int[meshFaces.size()];
-		for (var i:int= 0; i < faces.length; i++) {
+		for (i= 0; i < faces.length; i++) {
 			faces[i] = meshFaces.get(i);
 		}
-		bmin = new float[3];
-		bmax = new float[3];
+		bmin = []
+		bmax = [];
 		RecastVectors.copy(bmin, vertices, 0);
 		RecastVectors.copy(bmax, vertices, 0);
-		for (var i:int= 1; i < vertices.length / 3; i++) {
+		for (i= 1; i < vertices.length / 3; i++) {
 			RecastVectors.min(bmin, vertices, i * 3);
 			RecastVectors.max(bmax, vertices, i * 3);
 		}
 	}
 
-	public float[] getMeshBoundsMin() {
+	public function getMeshBoundsMin():Array {
 		return bmin;
 	}
 
-	public float[] getMeshBoundsMax() {
+	public function getMeshBoundsMax():Array {
 		return bmax;
 	}
 
-	public float[] getVerts() {
+	public function getVerts():Array {
 		return vertices;
 	}
 
-	public int[] getTris() {
+	public function getTris():Array {
 		return faces;
 	}
 

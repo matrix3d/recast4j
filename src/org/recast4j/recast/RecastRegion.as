@@ -17,21 +17,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class RecastRegion {
 
-	static const RC_NULL_NEI:int= 0x;
+	static const RC_NULL_NEI:int= 0;
 
-	private static 
-internal class SweepSpan {
-		var rid:int; // row id
-		var id:int; // region id
-		var ns:int; // number samples
-		var nei:int; // neighbour id
-	}
+	
 
 	public static function calculateDistanceField(chf:CompactHeightfield, src:Array):int {
 		var maxDist:int;
@@ -40,7 +31,7 @@ internal class SweepSpan {
 
 		// Init distance and points.
 		for (var i:int= 0; i < chf.spanCount; ++i)
-			src[i] = 0x;
+			src[i] = 0;
 
 		// Mark boundary cells.
 		for (var y:int= 0; y < h; ++y) {
@@ -78,15 +69,15 @@ internal class SweepSpan {
 						var ax:int= x + RecastCommon.GetDirOffsetX(0);
 						var ay:int= y + RecastCommon.GetDirOffsetY(0);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 0);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (-1,-1)
-						if (RecastCommon.GetCon(as, 3) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 3) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(3);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(3);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 3);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 3);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -96,15 +87,15 @@ internal class SweepSpan {
 						var ax:int= x + RecastCommon.GetDirOffsetX(3);
 						var ay:int= y + RecastCommon.GetDirOffsetY(3);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (1,-1)
-						if (RecastCommon.GetCon(as, 2) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 2) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(2);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(2);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 2);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -125,15 +116,15 @@ internal class SweepSpan {
 						var ax:int= x + RecastCommon.GetDirOffsetX(2);
 						var ay:int= y + RecastCommon.GetDirOffsetY(2);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (1,1)
-						if (RecastCommon.GetCon(as, 1) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 1) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(1);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(1);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 1);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -143,15 +134,15 @@ internal class SweepSpan {
 						var ax:int= x + RecastCommon.GetDirOffsetX(1);
 						var ay:int= y + RecastCommon.GetDirOffsetY(1);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (-1,1)
-						if (RecastCommon.GetCon(as, 0) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 0) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(0);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(0);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 0);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -167,7 +158,7 @@ internal class SweepSpan {
 		return maxDist;
 	}
 
-	private static int[] boxBlur(var chf:CompactHeightfield, var thr:int, var src:Array) {
+	private static function boxBlur(chf:CompactHeightfield, thr:int, src:Array):Array {
 		var w:int= chf.width;
 		var h:int= chf.height;
 		var dst:Array= new int[chf.spanCount];
@@ -193,12 +184,12 @@ internal class SweepSpan {
 							var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, dir);
 							d += src[ai];
 
-							var as:CompactSpan= chf.spans[ai];
+							var as_:CompactSpan= chf.spans[ai];
 							var dir2:int= (dir + 1) & 0x3;
-							if (RecastCommon.GetCon(as, dir2) != RecastConstants.RC_NOT_CONNECTED) {
+							if (RecastCommon.GetCon(as_, dir2) != RecastConstants.RC_NOT_CONNECTED) {
 								var ax2:int= ax + RecastCommon.GetDirOffsetX(dir2);
 								var ay2:int= ay + RecastCommon.GetDirOffsetY(dir2);
-								var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as, dir2);
+								var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as_, dir2);
 								d += src[ai2];
 							} else {
 								d += cd;
@@ -215,7 +206,7 @@ internal class SweepSpan {
 	}
 
 	private static function floodRegion(x:int, y:int, i:int, level:int, r:int, chf:CompactHeightfield, srcReg:Array,
-			srcDist:Array, List<Integer> stack):Boolean {
+			srcDist:Array, stack:Array):Boolean {
 		var w:int= chf.width;
 
 		var area:int= chf.areas[i];
@@ -256,13 +247,13 @@ internal class SweepSpan {
 						break;
 					}
 
-					var as:CompactSpan= chf.spans[ai];
+					var as_:CompactSpan= chf.spans[ai];
 
 					var dir2:int= (dir + 1) & 0x3;
-					if (RecastCommon.GetCon(as, dir2) != RecastConstants.RC_NOT_CONNECTED) {
+					if (RecastCommon.GetCon(as_, dir2) != RecastConstants.RC_NOT_CONNECTED) {
 						var ax2:int= ax + RecastCommon.GetDirOffsetX(dir2);
 						var ay2:int= ay + RecastCommon.GetDirOffsetY(dir2);
-						var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as, dir2);
+						var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as_, dir2);
 						if (chf.areas[ai2] != area)
 							continue;
 						var nr2:int= srcReg[ai2];
@@ -302,8 +293,8 @@ internal class SweepSpan {
 		return count > 0;
 	}
 
-	private static int[] expandRegions(var maxIter:int, var level:int, var chf:CompactHeightfield, var srcReg:Array, var srcDist:Array,
-			var dstReg:Array, var dstDist:Array, List<Integer> stack, var fillStack:Boolean) {
+	private static function expandRegions(maxIter:int, level:int, chf:CompactHeightfield, srcReg:Array, srcDist:Array,
+			dstReg:Array, dstDist:Array, stack:Array, fillStack:Boolean):Array {
 		var w:int= chf.width;
 		var h:int= chf.height;
 
@@ -348,7 +339,7 @@ internal class SweepSpan {
 				}
 
 				var r:int= srcReg[i];
-				var d2:int= 0x;
+				var d2:int= 0;
 				var area:int= chf.areas[i];
 				var s:CompactSpan= chf.spans[i];
 				for (var dir:int= 0; dir < 4; ++dir) {
@@ -397,7 +388,7 @@ internal class SweepSpan {
 	}
 
 	private static function sortCellsByLevel(startLevel:int, chf:CompactHeightfield, srcReg:Array, nbStacks:int,
-			List<List<Integer>> stacks, loglevelsPerStack:int):void // the levels per stack (2 in our case) as a bit shift
+			stacks:Array, loglevelsPerStack:int):void // the levels per stack (2 in our case) as a bit shift
 	{
 		var w:int= chf.width;
 		var h:int= chf.height;
@@ -430,7 +421,7 @@ internal class SweepSpan {
 		}
 	}
 
-	private static function appendStacks(List<Integer> srcStack, List<Integer> dstStack, srcReg:Array):void {
+	private static function appendStacks(srcStack:Array, dstStack:Array, srcReg:Array):void {
 		for (var j:int= 0; j < srcStack.size(); j += 3) {
 			var i:int= srcStack.get(j + 2);
 			if ((i < 0) || (srcReg[i] != 0))
@@ -441,27 +432,7 @@ internal class SweepSpan {
 		}
 	}
 
-	private static 
-internal class Region {
-		var spanCount:int; // Number of spans belonging to this region
-		var id:int; // ID of the region
-		var areaType:int; // Are type.
-		var remap:Boolean;
-		var visited:Boolean;
-		var overlap:Boolean;
-		var connectsToBorder:Boolean;
-		var ymin:int, ymax;
-		List<Integer> connections;
-		List<Integer> floors;
-
-		Region(var i:int) {
-			this.id = i;
-			this.ymin = 0xFFFF;
-			connections = new ArrayList<>();
-			floors = new ArrayList<>();
-		}
-
-	};
+	 
 
 	private static function removeAdjacentNeighbours(reg:Region):void {
 		// Remove adjacent duplicates.
@@ -518,8 +489,9 @@ internal class Region {
 		var bid:int= regb.id;
 
 		// Duplicate current neighbourhood.
-		List<Integer> acon = new ArrayList<>rega.connections();
-		List<Integer> bcon = regb.connections;
+		var acon:Array = [];
+		//rega.connections();
+		var bcon:Array = regb.connections;
 
 		// Find insertion point on A.
 		var insa:int= -1;
@@ -583,7 +555,7 @@ internal class Region {
 	}
 
 	private static function walkContour(x:int, y:int, i:int, dir:int, chf:CompactHeightfield, srcReg:Array,
-			List<Integer> cont):void {
+			cont:Array):void {
 		var startDir:int= dir;
 		var starti:int= i;
 
@@ -652,7 +624,7 @@ internal class Region {
 	}
 
 	private static function mergeAndFilterRegions(ctx:Context, minRegionArea:int, mergeRegionSize:int, maxRegionId:int,
-			chf:CompactHeightfield, srcReg:Array, List<Integer> overlaps):int {
+			chf:CompactHeightfield, srcReg:Array, overlaps:Array):int {
 		var w:int= chf.width;
 		var h:int= chf.height;
 
@@ -712,8 +684,8 @@ internal class Region {
 		}
 
 		// Remove too small regions.
-		List<Integer> stack = new ArrayList<>(32);
-		List<Integer> trace = new ArrayList<>(32);
+		var stack:Array = [];
+		var trace:Array = [];
 		for (var i:int= 0; i < nreg; ++i) {
 			var reg:Region= regions[i];
 			if (reg.id == 0|| (reg.id & RecastConstants.RC_BORDER_REG) != 0)
@@ -791,7 +763,7 @@ internal class Region {
 				// Small region with more than 1 connection.
 				// Or region which is not connected to a border at all.
 				// Find smallest neighbour region that connects to this one.
-				var smallest:int= 0x;
+				var smallest:int= 0;
 				var mergeId:int= reg.id;
 				for (var j:int= 0; j < reg.connections.size(); ++j) {
 					if ((reg.connections.get(j) & RecastConstants.RC_BORDER_REG) != 0)
@@ -875,7 +847,7 @@ internal class Region {
 	}
 
 	private static function mergeAndFilterLayerRegions(ctx:Context, minRegionArea:int, maxRegionId:int,
-			chf:CompactHeightfield, srcReg:Array, List<Integer> overlaps):int {
+			chf:CompactHeightfield, srcReg:Array, overlaps:Array):int {
 		var w:int= chf.width;
 		var h:int= chf.height;
 
@@ -887,7 +859,7 @@ internal class Region {
 			regions[i] = new Region(i);
 
 		// Find region neighbours and overlapping regions.
-		List<Integer> lregs = new ArrayList<>(32);
+		var lregs:Array = [];
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
@@ -928,9 +900,9 @@ internal class Region {
 				for (var i:int= 0; i < lregs.size() - 1; ++i) {
 					for (var j:int= i + 1; j < lregs.size(); ++j) {
 						if (lregs.get(i) != lregs.get(j)) {
-							var ri:Region= regions[lregs.get(i)];
+							var ri2:Region= regions[lregs.get(i)];
 							var rj:Region= regions[lregs.get(j)];
-							addUniqueFloorRegion(ri, lregs.get(j));
+							addUniqueFloorRegion(ri2, lregs.get(j));
 							addUniqueFloorRegion(rj, lregs.get(i));
 						}
 					}
@@ -946,7 +918,7 @@ internal class Region {
 			regions[i].id = 0;
 
 		// Merge montone regions to create non-overlapping areas.
-		List<Integer> stack = new ArrayList<>(32);
+		var stack:Array = [];
 		for (var i:int= 1; i < nreg; ++i) {
 			var root:Region= regions[i];
 			// Skip already visited.
@@ -1003,9 +975,9 @@ internal class Region {
 		// Remove small regions
 		for (var i:int= 0; i < nreg; ++i) {
 			if (regions[i].spanCount > 0&& regions[i].spanCount < minRegionArea && !regions[i].connectsToBorder) {
-				var reg:int= regions[i].id;
+				var reg2:int= regions[i].id;
 				for (var j:int= 0; j < nreg; ++j)
-					if (regions[j].id == reg)
+					if (regions[j].id == reg2)
 						regions[j].id = 0;
 			}
 		}
@@ -1223,7 +1195,7 @@ internal class Region {
 		ctx.startTimer("BUILD_REGIONS_FILTER");
 
 		// Merge regions and filter out small regions.
-		List<Integer> overlaps = new ArrayList<>();
+		var overlaps:Array = [];
 		chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, id, chf, srcReg, overlaps);
 
 		// Monotone partitioning does not generate overlapping regions.
@@ -1268,11 +1240,11 @@ internal class Region {
 
 		var LOG_NB_STACKS:int= 3;
 		var NB_STACKS:int= 1<< LOG_NB_STACKS;
-		List<List<Integer>> lvlStacks = new ArrayList<>();
+		var lvlStacks:Array = [];
 		for (var i:int= 0; i < NB_STACKS; ++i)
-			lvlStacks.add(new ArrayList<>(1024));
+			lvlStacks.add([]);
 
-		List<Integer> stack = new ArrayList<>(1024);
+		var stack:Array = [];
 
 		var srcReg:Array= new int[chf.spanCount];
 		var srcDist:Array= new int[chf.spanCount];
@@ -1365,12 +1337,12 @@ internal class Region {
 		ctx.startTimer("BUILD_REGIONS_FILTER");
 
 		// Merge regions and filter out smalle regions.
-		List<Integer> overlaps = new ArrayList<>();
+		var overlaps:Array = [];
 		chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 
 		// If overlapping regions were found during merging, split those regions.
 		if (overlaps.size() > 0) {
-			throw new RuntimeException("rcBuildRegions: " + overlaps.size() + " overlapping regions.");
+			("rcBuildRegions: " + overlaps.size() + " overlapping regions.");
 		}
 
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
@@ -1493,7 +1465,7 @@ internal class Region {
 		ctx.startTimer("BUILD_REGIONS_FILTER");
 
 		// Merge monotone regions to layers and remove small regions.
-		List<Integer> overlaps = new ArrayList<>();
+		var overlaps:Array = [];
 		chf.maxRegions = mergeAndFilterLayerRegions(ctx, minRegionArea, id, chf, srcReg, overlaps);
 
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
@@ -1506,3 +1478,31 @@ internal class Region {
 
 	}
 }
+}
+
+class SweepSpan {
+		var rid:int; // row id
+		var id:int; // region id
+		var ns:int; // number samples
+		var nei:int; // neighbour id
+	}
+	class Region {
+		var spanCount:int; // Number of spans belonging to this region
+		var id:int; // ID of the region
+		var areaType:int; // Are type.
+		var remap:Boolean;
+		var visited:Boolean;
+		var overlap:Boolean;
+		var connectsToBorder:Boolean;
+		var ymin:int, ymax;
+		var connections:Array;
+		var floors:Array;
+
+		public function Region(i:int) {
+			this.id = i;
+			this.ymin = 0xFFFF;
+			connections = [];
+			floors = [];
+		}
+
+	}

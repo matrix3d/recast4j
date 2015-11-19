@@ -17,19 +17,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.Arrays;
 
 public class RecastMesh {
 
 	static var VERTEX_BUCKET_COUNT:int= (1<< 12);
 
-	private static 
-internal class Edge {
-		int vert[] = new int[2];
-		int polyEdge[] = new int[2];
-		int poly[] = new int[2];
-
-	}
+	
 
 	private static function buildMeshAdjacency(polys:Array, npolys:int, nverts:int, vertsPerPoly:int):void {
 		// Based on code by Eric Lengyel from:
@@ -93,12 +86,12 @@ internal class Edge {
 
 		// Store adjacency
 		for (var i:int= 0; i < edgeCount; ++i) {
-			var e:Edge= edges[i];
-			if (e.poly[0] != e.poly[1]) {
-				var p0:int= e.poly[0] * vertsPerPoly * 2;
-				var p1:int= e.poly[1] * vertsPerPoly * 2;
-				polys[p0 + vertsPerPoly + e.polyEdge[0]] = e.poly[1];
-				polys[p1 + vertsPerPoly + e.polyEdge[1]] = e.poly[0];
+			var e2:Edge= edges[i];
+			if (e2.poly[0] != e2.poly[1]) {
+				var p0:int= e2.poly[0] * vertsPerPoly * 2;
+				var p1:int= e2.poly[1] * vertsPerPoly * 2;
+				polys[p0 + vertsPerPoly + e2.polyEdge[0]] = e2.poly[1];
+				polys[p1 + vertsPerPoly + e2.polyEdge[1]] = e2.poly[0];
 			}
 		}
 
@@ -112,14 +105,14 @@ internal class Edge {
 		return n & (VERTEX_BUCKET_COUNT - 1);
 	}
 
-	private static int[] addVertex(var x:int, var y:int, var z:int, var verts:Array, var firstVert:Array, var nextVert:Array, var nv:int) {
+	private static function addVertex( x:int,  y:int,  z:int,  verts:Array,  firstVert:Array,  nextVert:Array,  nv:int):Array {
 		var bucket:int= computeVertexHash(x, 0, z);
 		var i:int= firstVert[bucket];
 
 		while (i != -1) {
 			var v:int= i * 3;
 			if (verts[v + 0] == x && (Math.abs(verts[v + 1] - y) <= 2) && verts[v + 2] == z)
-				return new int[] { i, nv };
+				return [ i, nv ];
 			i = nextVert[i]; // next
 		}
 
@@ -133,7 +126,7 @@ internal class Edge {
 		nextVert[i] = firstVert[bucket];
 		firstVert[bucket] = i;
 
-		return new int[] { i, nv };
+		return [ i, nv ];
 	}
 
 	static function prev(i:int, n:int):int {
@@ -172,7 +165,7 @@ internal class Edge {
 				|| collinear(verts, c, d, b))
 			return false;
 
-		return (left(verts, a, b, c) ^ left(verts, a, b, d)) && (left(verts, c, d, a) ^ left(verts, c, d, b));
+		return Boolean((int(left(verts, a, b, c)) ^ int(left(verts, a, b, d))) && (int(left(verts, c, d, a)) ^ int(left(verts, c, d, b))));
 	}
 
 	// Returns T iff (a,b,c) are collinear and point c lies
@@ -406,7 +399,7 @@ internal class Edge {
 				- (verts[c + 0] - verts[a + 0]) * (verts[b + 2] - verts[a + 2]) < 0;
 	}
 
-	private static int[] getPolyMergeValue(var polys:Array, var pa:int, var pb:int, var verts:Array, var nvp:int) {
+	private static function getPolyMergeValue( polys:Array,  pa:int,  pb:int,  verts:Array,  nvp:int):Array {
 		var ea:int= -1;
 		var eb:int= -1;
 		var na:int= countPolyVerts(polys, pa, nvp);
@@ -414,7 +407,7 @@ internal class Edge {
 
 		// If the merged polygon would be too big, do not merge.
 		if (na + nb - 2> nvp)
-			return new int[] { -1, ea, eb };
+			return new [ -1, ea, eb ];
 
 		// Check if the polygons share an edge.
 
@@ -444,7 +437,7 @@ internal class Edge {
 
 		// No common edge, cannot merge.
 		if (ea == -1|| eb == -1)
-			return new int[] { -1, ea, eb };
+			return [ -1, ea, eb ];
 
 		// Check to see if the merged polygon would be convex.
 		var va:int, vb, vc;
@@ -453,13 +446,13 @@ internal class Edge {
 		vb = polys[pa + ea];
 		vc = polys[pb + (eb + 2) % nb];
 		if (!uleft(verts, va * 3, vb * 3, vc * 3))
-			return new int[] { -1, ea, eb };
+			return [ -1, ea, eb ];
 
 		va = polys[pb + (eb + nb - 1) % nb];
 		vb = polys[pb + eb];
 		vc = polys[pa + (ea + 2) % na];
 		if (!uleft(verts, va * 3, vb * 3, vc * 3))
-			return new int[] { -1, ea, eb };
+			return [ -1, ea, eb ];
 
 		va = polys[pa + ea];
 		vb = polys[pa + (ea + 1) % na];
@@ -467,7 +460,7 @@ internal class Edge {
 		var dx:int= verts[va * 3+ 0] - verts[vb * 3+ 0];
 		var dy:int= verts[va * 3+ 2] - verts[vb * 3+ 2];
 
-		return new int[] { dx * dx + dy * dy, ea, eb };
+		return [ dx * dx + dy * dy, ea, eb ];
 	}
 
 	private static function mergePolys(polys:Array, pa:int, pb:int, ea:int, eb:int, tmp:int, nvp:int):void {
@@ -819,7 +812,7 @@ internal class Edge {
 			mesh.areas[mesh.npolys] = pareas[i];
 			mesh.npolys++;
 			if (mesh.npolys > maxTris) {
-				throw new RuntimeException("removeVertex: Too many polygons " + mesh.npolys + " (max:" + maxTris + ".");
+				throw ("removeVertex: Too many polygons " + mesh.npolys + " (max:" + maxTris + ".");
 			}
 		}
 
@@ -852,7 +845,7 @@ internal class Edge {
 			maxVertsPerCont = Math.max(maxVertsPerCont, cset.conts.get(i).nverts);
 		}
 		if (maxVertices >= 0xe) {
-			throw new RuntimeException("rcBuildPolyMesh: Too many vertices " + maxVertices);
+			throw ("rcBuildPolyMesh: Too many vertices " + maxVertices);
 		}
 		var vflags:Array= new int[maxVertices];
 
@@ -976,7 +969,7 @@ internal class Edge {
 				mesh.areas[mesh.npolys] = cont.area;
 				mesh.npolys++;
 				if (mesh.npolys > maxTris) {
-					throw new RuntimeException(
+					throw (
 							"rcBuildPolyMesh: Too many polygons " + mesh.npolys + " (max:" + maxTris + ").");
 				}
 			}
@@ -1033,13 +1026,13 @@ internal class Edge {
 		// Just allocate the mesh flags array. The user is resposible to fill it.
 		mesh.flags = new int[mesh.npolys];
 
-		if (mesh.nverts > 0x) {
-			throw new RuntimeException("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
-					+ " (max " + 0x+ "). Data can be corrupted.");
+		if (mesh.nverts > 0) {
+			throw ("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
+					+ " (max " + 0+ "). Data can be corrupted.");
 		}
-		if (mesh.npolys > 0x) {
-			throw new RuntimeException("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
-					+ " (max " + 0x+ "). Data can be corrupted.");
+		if (mesh.npolys > 0) {
+			throw ("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
+					+ " (max " + 0+ "). Data can be corrupted.");
 		}
 
 		ctx.stopTimer("BUILD_POLYMESH");
@@ -1093,8 +1086,8 @@ internal class Edge {
 		for (var i:int= 0; i < nmeshes; ++i) {
 			var pmesh:PolyMesh= meshes[i];
 
-			var ox:int= int(Math.floor((pmesh.bmin[0] - mesh.bmin[0]) / mesh.cs + 0.5f));
-			var oz:int= int(Math.floor((pmesh.bmin[2] - mesh.bmin[2]) / mesh.cs + 0.5f));
+			var ox:int= int(Math.floor((pmesh.bmin[0] - mesh.bmin[0]) / mesh.cs + 0.5));
+			var oz:int= int(Math.floor((pmesh.bmin[2] - mesh.bmin[2]) / mesh.cs + 0.5));
 
 			var isMinX:Boolean= (ox == 0);
 			var isMinZ:Boolean= (oz == 0);
@@ -1126,8 +1119,8 @@ internal class Edge {
 
 				if (isOnBorder) {
 					for (var k:int= mesh.nvp; k < mesh.nvp * 2; ++k) {
-						if ((pmesh.polys[src + k] & 0x8000) != 0&& pmesh.polys[src + k] != 0x) {
-							var dir:int= pmesh.polys[src + k] & 0x;
+						if ((pmesh.polys[src + k] & 0x8000) != 0&& pmesh.polys[src + k] != 0) {
+							var dir:int= pmesh.polys[src + k] & 0;
 							switch (dir) {
 							case 0: // Portal x-
 								if (isMinX)
@@ -1154,13 +1147,13 @@ internal class Edge {
 
 		// Calculate adjacency.
 		buildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, mesh.nvp);
-		if (mesh.nverts > 0x) {
-			throw new RuntimeException("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
-					+ " (max " + 0x+ "). Data can be corrupted.");
+		if (mesh.nverts > 0) {
+			throw ("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
+					+ " (max " + 0+ "). Data can be corrupted.");
 		}
-		if (mesh.npolys > 0x) {
-			throw new RuntimeException("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
-					+ " (max " + 0x+ "). Data can be corrupted.");
+		if (mesh.npolys > 0) {
+			throw ("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
+					+ " (max " + 0+ "). Data can be corrupted.");
 		}
 
 		ctx.stopTimer("MERGE_POLYMESH");
@@ -1194,3 +1187,11 @@ internal class Edge {
 		return dst;
 	}
 }
+}
+
+ class Edge {
+	 public var vert:Array = [];
+	 public var polyEdge:Array = [];
+	 public var poly:Array = [];
+
+	}

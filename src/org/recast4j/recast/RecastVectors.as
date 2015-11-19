@@ -31,14 +31,14 @@ public class RecastVectors {
 		a[2] = Math.max(a[2], b[i + 2]);
 	}
 
-	public static function copy(out:Array, in:Array, i:int):void {
-		copy(out, 0, in, i);
+	public static function copy(out:Array, in_:Array, i:int):void {
+		copy2(out, 0, in_, i);
 	}
 
-	public static function copy(out:Array, n:int, in:Array, m:int):void {
-		out[n] = in[m];
-		out[n + 1] = in[m + 1];
-		out[n + 2] = in[m + 2];
+	public static function copy2(out:Array, n:int, in_:Array, m:int):void {
+		out[n] = in_[m];
+		out[n + 1] = in_[m + 1];
+		out[n + 2] = in_[m + 2];
 	}
 
 	public static function add(e0:Array, a:Array, verts:Array, i:int):void {
@@ -53,7 +53,7 @@ public class RecastVectors {
 		e0[2] = verts[i + 2] - verts[j + 2];
 	}
 
-	public static function sub(e0:Array, i:Array, verts:Array, j:int):void {
+	public static function sub2(e0:Array, i:Array, verts:Array, j:int):void {
 		e0[0] = i[0] - verts[j];
 		e0[1] = i[1] - verts[j + 1];
 		e0[2] = i[2] - verts[j + 2];
@@ -66,7 +66,7 @@ public class RecastVectors {
 	}
 
 	public static function normalize(v:Array):void {
-		var d:Number= float((1.0f / Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])));
+		var d:Number= ((1.0 / Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])));
 		v[0] *= d;
 		v[1] *= d;
 		v[2] *= d;

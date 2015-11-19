@@ -17,18 +17,16 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.ArrayList;
-import java.util.List;
 
 /** Represents a group of related contours. */
 public class ContourSet {
 
 	/** A list of the contours in the set. */
-	public List<Contour> conts = new ArrayList<>();
+	public var conts:Array = [];
 	/** The minimum bounds in world space. [(x, y, z)] */
-	var bmin:Array= new float[3];
+	public var bmin:Array = [];
 	/** The maximum bounds in world space. [(x, y, z)] */
-	var bmax:Array= new float[3];
+	public var bmax:Array = [];
 	/** The size of each cell. (On the xz-plane.) */
 	public var cs:Number;
 	/** The height of each cell. (The minimum increment along the y-axis.) */

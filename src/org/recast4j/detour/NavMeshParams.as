@@ -22,10 +22,10 @@ package org.recast4j.detour {
 /// @see dtNavMesh::init()
 /// @ingroup detour
 public class NavMeshParams {
-	var orig:Array= new float[3]; /// < The world space origin of the navigation mesh's tile space. [(x, y, z)]
-	var tileWidth:Number; /// < The width of each tile. (Along the x-axis.)
-	var tileHeight:Number; /// < The height of each tile. (Along the z-axis.)
-	var maxTiles:int; /// < The maximum number of tiles the navigation mesh can contain.
-	var maxPolys:int; /// < The maximum number of polygons each tile can contain.
+	public var orig:Array= []; /// < The world space origin of the navigation mesh's tile space. [(x, y, z)]
+	public var tileWidth:Number; /// < The width of each tile. (Along the x-axis.)
+	public var tileHeight:Number; /// < The height of each tile. (Along the z-axis.)
+	public var maxTiles:int; /// < The maximum number of tiles the navigation mesh can contain.
+	public var maxPolys:int; /// < The maximum number of polygons each tile can contain.
 }
 }

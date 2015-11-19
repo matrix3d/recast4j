@@ -28,7 +28,8 @@ public class Context {
 	}
 
 	public function warn(string:String):void {
-		System.err.println(string);
+		trace("warn", string);
+		//System.err.println(string);
 	}
 
 }

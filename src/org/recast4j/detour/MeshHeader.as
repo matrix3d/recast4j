@@ -20,13 +20,13 @@ package org.recast4j.detour {
 public class MeshHeader {
 
 	/// A magic number used to detect compatibility of navigation tile data.
-	public static var DT_NAVMESH_MAGIC:int= 'D' << 24| 'N' << 16| 'A' << 8| 'V';
+	public static var DT_NAVMESH_MAGIC:int= 'D'.charCodeAt(0) << 24| 'N'.charCodeAt(0) << 16| 'A'.charCodeAt(0) << 8| 'V'.charCodeAt(0);
 
 	/// A version number used to detect compatibility of navigation tile data.
 	public static var DT_NAVMESH_VERSION:int= 7;
 
 	/// A magic number used to detect the compatibility of navigation tile states.
-	public static var DT_NAVMESH_STATE_MAGIC:int= 'D' << 24| 'N' << 16| 'M' << 8| 'S';
+	public static var DT_NAVMESH_STATE_MAGIC:int= 'D'.charCodeAt(0) << 24| 'N'.charCodeAt(0) << 16| 'M'.charCodeAt(0) << 8| 'S'.charCodeAt(0);
 
 	/// A version number used to detect compatibility of navigation tile states.
 	public static var DT_NAVMESH_STATE_VERSION:int= 1;
@@ -54,8 +54,8 @@ public class MeshHeader {
 	public var walkableHeight:Number; /// < The height of the agents using the tile.
 	public var walkableRadius:Number; /// < The radius of the agents using the tile.
 	public var walkableClimb:Number; /// < The maximum climb height of the agents using the tile.
-	public var bmin:Array= new float[3]; /// < The minimum bounds of the tile's AABB. [(x, y, z)]
-	public var bmax:Array= new float[3]; /// < The maximum bounds of the tile's AABB. [(x, y, z)]
+	public var bmin:Array= []; /// < The minimum bounds of the tile's AABB. [(x, y, z)]
+	public var bmax:Array= []; /// < The maximum bounds of the tile's AABB. [(x, y, z)]
 
 	/// The bounding volume quantization factor.
 	public var bvQuantFactor:Number;

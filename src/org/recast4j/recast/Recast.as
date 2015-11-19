@@ -45,10 +45,10 @@ public class Recast {
 	/// See the #rcConfig documentation for more information on the configuration parameters.
 	/// 
 	/// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-	static int[] markWalkableTriangles(var ctx:Context, var walkableSlopeAngle:Number, var verts:Array, var nv:int, var tris:Array, var nt:int) {
+	static public function markWalkableTriangles( ctx:Context,  walkableSlopeAngle:Number,  verts:Array,  nv:int,  tris:Array,  nt:int):Array {
 		var areas:Array= new int[nt];
-		var walkableThr:Number= float(Math.cos(walkableSlopeAngle / 180.0f * Math.PI));
-		float norm[] = new float[3];
+		var walkableThr:Number= (Math.cos(walkableSlopeAngle / 180.0 * Math.PI));
+		var norm:Array = [];
 		for (var i:int= 0; i < nt; ++i) {
 			var tri:int= i * 3;
 			calcTriNormal(verts, tris[tri], tris[tri + 1], tris[tri + 2], norm);
@@ -60,7 +60,7 @@ public class Recast {
 	}
 
 	static function calcTriNormal(verts:Array, v0:int, v1:int, v2:int, norm:Array):void {
-		float e0[] = new float[3], e1[] = new float[3];
+		var e0:Array = [], e1:Array = [];
 		RecastVectors.sub(e0, verts, v1 * 3, v0 * 3);
 		RecastVectors.sub(e1, verts, v2 * 3, v0 * 3);
 		RecastVectors.cross(norm, e0, e1);
@@ -77,9 +77,9 @@ public class Recast {
 	/// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
 	function clearUnwalkableTriangles(ctx:Context, walkableSlopeAngle:Number, verts:Array, nv:int, tris:Array, nt:int,
 			areas:Array):void {
-		var walkableThr:Number= float(Math.cos(walkableSlopeAngle / 180.0f * Math.PI));
+		var walkableThr:Number= (Math.cos(walkableSlopeAngle / 180.0 * Math.PI));
 
-		float norm[] = new float[3];
+		var norm:Array = [];
 
 		for (var i:int= 0; i < nt; ++i) {
 			var tri:int= i * 3;
@@ -139,7 +139,7 @@ public class Recast {
 		chf.cells = new CompactCell[w * h];
 		chf.spans = new CompactSpan[spanCount];
 		chf.areas = new int[spanCount];
-		var MAX_HEIGHT:int= 0x;
+		var MAX_HEIGHT:int= 0;
 		for (var i:int= 0; i < chf.cells.length; i++) {
 			chf.cells[i] = new CompactCell();
 		}
@@ -161,8 +161,8 @@ public class Recast {
 					if (s.area != RecastConstants.RC_NULL_AREA) {
 						var bot:int= s.smax;
 						var top:int= s.next != null ? int(s.next.smin ): MAX_HEIGHT;
-						chf.spans[idx].y = RecastCommon.clamp(bot, 0, 0x);
-						chf.spans[idx].h = RecastCommon.clamp(top - bot, 0, 0x);
+						chf.spans[idx].y = RecastCommon.clamp(bot, 0, 0);
+						chf.spans[idx].h = RecastCommon.clamp(top - bot, 0, 0);
 						chf.areas[idx] = s.area;
 						idx++;
 						c.count++;
@@ -179,7 +179,7 @@ public class Recast {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
 				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					var s:CompactSpan= chf.spans[i];
+					var s2:CompactSpan= chf.spans[i];
 
 					for (var dir:int= 0; dir < 4; ++dir) {
 						RecastCommon.SetCon(s, dir, RecastConstants.RC_NOT_CONNECTED);
@@ -194,19 +194,19 @@ public class Recast {
 						var nc:CompactCell= chf.cells[nx + ny * w];
 						for (var k:int= nc.index, nk = nc.index + nc.count; k < nk; ++k) {
 							var ns:CompactSpan= chf.spans[k];
-							var bot:int= Math.max(s.y, ns.y);
-							var top:int= Math.min(s.y + s.h, ns.y + ns.h);
+							var bot:int= Math.max(s2.y, ns.y);
+							var top:int= Math.min(s2.y + s2.h, ns.y + ns.h);
 
 							// Check that the gap between the spans is walkable,
 							// and that the climb height between the gaps is not too high.
-							if ((top - bot) >= walkableHeight && Math.abs(ns.y - s.y) <= walkableClimb) {
+							if ((top - bot) >= walkableHeight && Math.abs(ns.y - s2.y) <= walkableClimb) {
 								// Mark direction as walkable.
 								var lidx:int= k - nc.index;
 								if (lidx < 0|| lidx > MAX_LAYERS) {
 									tooHighNeighbour = Math.max(tooHighNeighbour, lidx);
 									continue;
 								}
-								RecastCommon.SetCon(s, dir, lidx);
+								RecastCommon.SetCon(s2, dir, lidx);
 								break;
 							}
 						}
@@ -217,7 +217,7 @@ public class Recast {
 		}
 
 		if (tooHighNeighbour > MAX_LAYERS) {
-			throw new RuntimeException("rcBuildCompactHeightfield: Heightfield has too many layers " + tooHighNeighbour
+			throw ("rcBuildCompactHeightfield: Heightfield has too many layers " + tooHighNeighbour
 					+ " (max: " + MAX_LAYERS + ")");
 		}
 		ctx.stopTimer("BUILD_COMPACTHEIGHTFIELD");

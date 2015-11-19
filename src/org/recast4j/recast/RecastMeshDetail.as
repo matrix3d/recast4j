@@ -17,10 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class RecastMeshDetail {
 
@@ -28,18 +24,11 @@ public class RecastMeshDetail {
 	static var MAX_TRIS:int= 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
 	static var MAX_VERTS_PER_EDGE:int= 32;
 
-	static var RC_UNSET_HEIGHT:int= 0x;
+	static var RC_UNSET_HEIGHT:int= 0;
 	static var EV_UNDEF:int= -1;
 	static var EV_HULL:int= -2;
 
-	private static 
-internal class HeightPatch {
-		var xmin:int;
-		var ymin:int;
-		var width:int;
-		var height:int;
-		var data:Array;
-	}
+	
 
 	private static function vdot2(a:Array, b:Array):Number {
 		return a[0] * b[0] + a[2] * b[2];
@@ -52,27 +41,27 @@ internal class HeightPatch {
 	}
 
 	private static function vdist2(verts:Array, p:int, q:int):Number {
-		return float(Math.sqrt(vdistSq2(verts, p, q)));
+		return (Math.sqrt(vdistSq2(verts, p, q)));
 	}
 
-	private static function vdistSq2(p:Array, q:Array):Number {
+	private static function vdistSq22(p:Array, q:Array):Number {
 		var dx:Number= q[0] - p[0];
 		var dy:Number= q[2] - p[2];
 		return dx * dx + dy * dy;
 	}
 
-	private static function vdist2(p:Array, q:Array):Number {
-		return float(Math.sqrt(vdistSq2(p, q)));
+	private static function vdist22(p:Array, q:Array):Number {
+		return (Math.sqrt(vdistSq22(p, q)));
 	}
 
-	private static function vdistSq2(p:Array, verts:Array, q:int):Number {
+	private static function vdistSq23(p:Array, verts:Array, q:int):Number {
 		var dx:Number= verts[q + 0] - p[0];
 		var dy:Number= verts[q + 2] - p[2];
 		return dx * dx + dy * dy;
 	}
 
-	private static function vdist2(p:Array, verts:Array, q:int):Number {
-		return float(Math.sqrt(vdistSq2(p, verts, q)));
+	private static function vdist23(p:Array, verts:Array, q:int):Number {
+		return (Math.sqrt(vdistSq23(p, verts, q)));
 	}
 
 	private static function vcross2(verts:Array, p1:int, p2:int, p3:int):Number {
@@ -83,7 +72,7 @@ internal class HeightPatch {
 		return u1 * v2 - v1 * u2;
 	}
 
-	private static function vcross2(p1:Array, p2:Array, p3:Array):Number {
+	private static function vcross22(p1:Array, p2:Array, p3:Array):Number {
 		var u1:Number= p2[0] - p1[0];
 		var v1:Number= p2[2] - p1[2];
 		var u2:Number= p3[0] - p1[0];
@@ -91,16 +80,16 @@ internal class HeightPatch {
 		return u1 * v2 - v1 * u2;
 	}
 
-	private static function circumCircle(verts:Array, p1:int, p2:int, p3:int, c:Array, AtomicReference<Float> r):Boolean {
+	private static function circumCircle(verts:Array, p1:int, p2:int, p3:int, c:Array,  r:Array):Boolean {
 		var EPS:Number= 1e-6;
 		// Calculate the circle relative to p1, to avoid some precision issues.
-		float v1[] = new float[3];
-		float v2[] = new float[3];
-		float v3[] = new float[3];
+		var v1:Array = [];
+		var v2:Array = [];
+		var v3:Array = [];
 		RecastVectors.sub(v2, verts, p2, p1);
 		RecastVectors.sub(v3, verts, p3, p1);
 
-		var cp:Number= vcross2(v1, v2, v3);
+		var cp:Number= vcross22(v1, v2, v3);
 		if (Math.abs(cp) > EPS) {
 			var v1Sq:Number= vdot2(v1, v1);
 			var v2Sq:Number= vdot2(v2, v2);
@@ -108,7 +97,7 @@ internal class HeightPatch {
 			c[0] = (v1Sq * (v2[2] - v3[2]) + v2Sq * (v3[2] - v1[2]) + v3Sq * (v1[2] - v2[2])) / (2* cp);
 			c[1] = 0;
 			c[2] = (v1Sq * (v3[0] - v2[0]) + v2Sq * (v1[0] - v3[0]) + v3Sq * (v2[0] - v1[0])) / (2* cp);
-			r.set(vdist2(c, v1));
+			r.set(vdist22(c, v1));
 			RecastVectors.add(c, c, verts, p1);
 			return true;
 		}
@@ -118,12 +107,12 @@ internal class HeightPatch {
 	}
 
 	private static function distPtTri(p:Array, verts:Array, a:int, b:int, c:int):Number {
-		var v0:Array= new float[3];
-		var v1:Array= new float[3];
-		var v2:Array= new float[3];
+		var v0:Array= [];
+		var v1:Array= [];
+		var v2:Array= [];
 		RecastVectors.sub(v0, verts, c, a);
 		RecastVectors.sub(v1, verts, b, a);
-		RecastVectors.sub(v2, p, verts, a);
+		RecastVectors.sub2(v2, p, verts, a);
 
 		var dot00:Number= vdot2(v0, v0);
 		var dot01:Number= vdot2(v0, v1);
@@ -142,7 +131,7 @@ internal class HeightPatch {
 			var y:Number= verts[a + 1] + v0[1] * u + v1[1] * v;
 			return Math.abs(y - p[1]);
 		}
-		return Float.MAX_VALUE;
+		return Number.MAX_VALUE;
 	}
 
 	private static function distancePtSeg(verts:Array, pt:int, p:int, q:int):Number {
@@ -188,8 +177,8 @@ internal class HeightPatch {
 		return dx * dx + dz * dz;
 	}
 
-	private static function distToTriMesh(p:Array, verts:Array, nverts:int, List<Integer> tris, ntris:int):Number {
-		var dmin:Number= Float.MAX_VALUE;
+	private static function distToTriMesh(p:Array, verts:Array, nverts:int,  tris:Array, ntris:int):Number {
+		var dmin:Number= Number.MAX_VALUE;
 		for (var i:int= 0; i < ntris; ++i) {
 			var va:int= tris.get(i * 4+ 0) * 3;
 			var vb:int= tris.get(i * 4+ 1) * 3;
@@ -198,14 +187,14 @@ internal class HeightPatch {
 			if (d < dmin)
 				dmin = d;
 		}
-		if (dmin == Float.MAX_VALUE)
+		if (dmin == Number.MAX_VALUE)
 			return -1;
 		return dmin;
 	}
 
 	private static function distToPoly(nvert:int, verts:Array, p:Array):Number {
 
-		var dmin:Number= Float.MAX_VALUE;
+		var dmin:Number= Number.MAX_VALUE;
 		var i:int, j;
 		var c:Boolean= false;
 		for (i = 0, j = nvert - 1; i < nvert; j = i++) {
@@ -220,16 +209,16 @@ internal class HeightPatch {
 	}
 
 	private static function getHeight(fx:Number, fy:Number, fz:Number, cs:Number, ics:Number, ch:Number, hp:HeightPatch):int {
-		var ix:int= int(Math.floor(fx * ics + 0.01f));
-		var iz:int= int(Math.floor(fz * ics + 0.01f));
+		var ix:int= int(Math.floor(fx * ics + 0.01));
+		var iz:int= int(Math.floor(fz * ics + 0.01));
 		ix = RecastCommon.clamp(ix - hp.xmin, 0, hp.width - 1);
 		iz = RecastCommon.clamp(iz - hp.ymin, 0, hp.height - 1);
 		var h:int= hp.data[ix + iz * hp.width];
 		if (h == RC_UNSET_HEIGHT) {
 			// Special case when data might be bad.
 			// Find nearest neighbour pixel which has valid height.
-			int off[] = { -1, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1};
-			var dmin:Number= Float.MAX_VALUE;
+			var off:Array = [ -1, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1];
+			var dmin:Number= Number.MAX_VALUE;
 			for (var i:int= 0; i < 8; ++i) {
 				var nx:int= ix + off[i * 2+ 0];
 				var nz:int= iz + off[i * 2+ 1];
@@ -249,7 +238,7 @@ internal class HeightPatch {
 		return h;
 	}
 
-	private static function findEdge(List<Integer> edges, s:int, t:int):int {
+	private static function findEdge( edges:Array, s:int, t:int):int {
 		for (var i:int= 0; i < edges.size() / 4; i++) {
 			var e:int= i * 4;
 			if ((edges.get(e + 0) == s && edges.get(e + 1) == t) || (edges.get(e + 0) == t && edges.get(e + 1) == s))
@@ -258,9 +247,9 @@ internal class HeightPatch {
 		return EV_UNDEF;
 	}
 
-	private static function addEdge(ctx:Context, List<Integer> edges, maxEdges:int, s:int, t:int, l:int, r:int):void {
+	private static function addEdge(ctx:Context,  edges:Array, maxEdges:int, s:int, t:int, l:int, r:int):void {
 		if (edges.size() / 4>= maxEdges) {
-			throw new RuntimeException("addEdge: Too many edges (" + edges.size() / 4+ "/" + maxEdges + ").");
+			throw ("addEdge: Too many edges (" + edges.size() / 4+ "/" + maxEdges + ").");
 		}
 
 		// Add edge if not already in the triangulation.
@@ -273,7 +262,7 @@ internal class HeightPatch {
 		}
 	}
 
-	private static function updateLeftFace(List<Integer> edges, e:int, s:int, t:int, f:int):void {
+	private static function updateLeftFace(edges:Array, e:int, s:int, t:int, f:int):void {
 		if (edges.get(e + 0) == s && edges.get(e + 1) == t && edges.get(e + 2) == EV_UNDEF)
 			edges.set(e + 2, f);
 		else if (edges.get(e + 1) == s && edges.get(e + 0) == t && edges.get(e + 3) == EV_UNDEF)
@@ -292,7 +281,7 @@ internal class HeightPatch {
 		return false;
 	}
 
-	private static function overlapEdges(pts:Array, List<Integer> edges,  s1:int, t1:int):Boolean {
+	private static function overlapEdges(pts:Array, edges:Array,  s1:int, t1:int):Boolean {
 		for (var i:int= 0; i < edges.size() / 4; ++i) {
 			var s0:int= edges.get(i * 4+ 0);
 			var t0:int= edges.get(i * 4+ 1);
@@ -305,7 +294,7 @@ internal class HeightPatch {
 		return false;
 	}
 
-	static function completeFacet(ctx:Context, pts:Array, npts:int, List<Integer> edges, maxEdges:int,
+	static function completeFacet(ctx:Context, pts:Array, npts:int, edges:Array, maxEdges:int,
 			nfaces:int, e:int):int {
 		var EPS:Number= 1e-5;
 
@@ -326,8 +315,8 @@ internal class HeightPatch {
 
 		// Find best point on left of edge.
 		var pt:int= npts;
-		var c:Array= new float[3];
-		AtomicReference<Float> r = new AtomicReference<Float>(-1);
+		var c:Array = [];
+		var r:Array = [];
 		for (var u:int= 0; u < npts; ++u) {
 			if (u == s || u == t)
 				continue;
@@ -338,7 +327,7 @@ internal class HeightPatch {
 					circumCircle(pts, s * 3, t * 3, u * 3, c, r);
 					continue;
 				}
-				var d:Number= vdist2(c, pts, u * 3);
+				var d:Number= vdist23(c, pts, u * 3);
 				var tol:Number= 0.001;
 				if (d > r.get() * (1+ tol)) {
 					// Outside current circumcircle, skip.
@@ -387,10 +376,10 @@ internal class HeightPatch {
 		return nfaces;
 	}
 
-	private static function delaunayHull(ctx:Context, npts:int, pts:Array, nhull:int, hull:Array, List<Integer> tris):void {
+	private static function delaunayHull(ctx:Context, npts:int, pts:Array, nhull:int, hull:Array,  tris:Array):void {
 		var nfaces:int= 0;
 		var maxEdges:int= npts * 10;
-		List<Integer> edges = new ArrayList<>(64);
+		var edges:Array = [];
 		for (var i:int= 0, j = nhull - 1; i < nhull; j = i++)
 			addEdge(ctx, edges, maxEdges, hull[j], hull[i], EV_HULL, EV_UNDEF);
 		var currentEdge:int= 0;
@@ -437,7 +426,7 @@ internal class HeightPatch {
 		for (var i:int= 0; i < tris.size() / 4; ++i) {
 			var t:int= i * 4;
 			if (tris.get(t + 0) == -1|| tris.get(t + 1) == -1|| tris.get(t + 2) == -1) {
-				System.err.println("Dangling! " + tris.get(t) + " " + tris.get(t + 1) + "  " + tris.get(t + 2));
+				trace("Dangling! " + tris.get(t) + " " + tris.get(t + 1) + "  " + tris.get(t + 2));
 				//ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t[0],t[1],t[2]);
 				tris.set(t + 0, tris.get(tris.size() - 4));
 				tris.set(t + 1, tris.get(tris.size() - 3));
@@ -454,7 +443,7 @@ internal class HeightPatch {
 
 	// Calculate minimum extend of the polygon.
 	private static function polyMinExtent(verts:Array, nverts:int):Number {
-		var minDist:Number= Float.MAX_VALUE;
+		var minDist:Number= Number.MAX_VALUE;
 		for (var i:int= 0; i < nverts; i++) {
 			var ni:int= (i + 1) % nverts;
 			var p1:int= i * 3;
@@ -468,10 +457,10 @@ internal class HeightPatch {
 			}
 			minDist = Math.min(minDist, maxEdgeDist);
 		}
-		return float(Math.sqrt(minDist));
+		return (Math.sqrt(minDist));
 	}
 
-	private static function triangulateHull(nverts:int, verts:Array, nhull:int, hull:Array, List<Integer> tris):void {
+	private static function triangulateHull(nverts:int, verts:Array, nhull:int, hull:Array,  tris:Array):void {
 		var start:int= 0, left = 1, right = nhull - 1;
 
 		// Start from an ear with shortest perimeter.
@@ -531,27 +520,27 @@ internal class HeightPatch {
 	}
 
 	private static function getJitterX(i:int):Number {
-		return (((i * 0x8da6b343) & 0x) / 65535.0* 2.0) - 1.0;
+		return (((i * 0x8da6b343) & 0) / 65535.0* 2.0) - 1.0;
 	}
 
 	private static function getJitterY(i:int):Number {
-		return (((i * 0xd8163841) & 0x) / 65535.0* 2.0) - 1.0;
+		return (((i * 0xd8163841) & 0) / 65535.0* 2.0) - 1.0;
 	}
 
-	static function buildPolyDetail(ctx:Context, in:Array, nin:int, sampleDist:Number, sampleMaxError:Number,
-			chf:CompactHeightfield, hp:HeightPatch, verts:Array, List<Integer> tris):int {
+	static function buildPolyDetail(ctx:Context, in_:Array, nin:int, sampleDist:Number, sampleMaxError:Number,
+			chf:CompactHeightfield, hp:HeightPatch, verts:Array,  tris:Array):int {
 
-		List<Integer> samples = new ArrayList<>(512);
+		var samples:Array = [];
 
 		var nverts:int= 0;
-		var edge:Array= new float[(MAX_VERTS_PER_EDGE + 1) * 3];
-		var hull:Array= new int[MAX_VERTS];
+		var edge:Array= []//new [(MAX_VERTS_PER_EDGE + 1) * 3];
+		var hull:Array= []//new int[MAX_VERTS];
 		var nhull:int= 0;
 
 		nverts = 0;
 
 		for (var i:int= 0; i < nin; ++i)
-			RecastVectors.copy(verts, i * 3, in, i * 3);
+			RecastVectors.copy2(verts, i * 3, in_, i * 3);
 		nverts = nin;
 		tris.clear();
 
@@ -571,15 +560,15 @@ internal class HeightPatch {
 				var swapped:Boolean= false;
 				// Make sure the segments are always handled in same order
 				// using lexological sort or else there will be seams.
-				if (Math.abs(in[vj + 0] - in[vi + 0]) < 1e-6) {
-					if (in[vj + 2] > in[vi + 2]) {
+				if (Math.abs(in_[vj + 0] - in_[vi + 0]) < 1e-6) {
+					if (in_[vj + 2] > in_[vi + 2]) {
 						var temp:int= vi;
 						vi = vj;
 						vj = temp;
 						swapped = true;
 					}
 				} else {
-					if (in[vj + 0] > in[vi + 0]) {
+					if (in_[vj + 0] > in_[vi + 0]) {
 						var temp:int= vi;
 						vi = vj;
 						vj = temp;
@@ -587,10 +576,10 @@ internal class HeightPatch {
 					}
 				}
 				// Create samples along the edge.
-				var dx:Number= in[vi + 0] - in[vj + 0];
-				var dy:Number= in[vi + 1] - in[vj + 1];
-				var dz:Number= in[vi + 2] - in[vj + 2];
-				var d:Number= float(Math.sqrt(dx * dx + dz * dz));
+				var dx:Number= in_[vi + 0] - in_[vj + 0];
+				var dy:Number= in_[vi + 1] - in_[vj + 1];
+				var dz:Number= in_[vi + 2] - in_[vj + 2];
+				var d:Number= (Math.sqrt(dx * dx + dz * dz));
 				var nn:int= 1+ int(Math.floor(d / sampleDist));
 				if (nn >= MAX_VERTS_PER_EDGE)
 					nn = MAX_VERTS_PER_EDGE - 1;
@@ -598,16 +587,16 @@ internal class HeightPatch {
 					nn = MAX_VERTS - 1- nverts;
 
 				for (var k:int= 0; k <= nn; ++k) {
-					var u:Number= float(k )/ float(nn);
+					var u:Number= (k )/ (nn);
 					var pos:int= k * 3;
-					edge[pos + 0] = in[vj + 0] + dx * u;
-					edge[pos + 1] = in[vj + 1] + dy * u;
-					edge[pos + 2] = in[vj + 2] + dz * u;
+					edge[pos + 0] = in_[vj + 0] + dx * u;
+					edge[pos + 1] = in_[vj + 1] + dy * u;
+					edge[pos + 2] = in_[vj + 2] + dz * u;
 					edge[pos + 1] = getHeight(edge[pos + 0], edge[pos + 1], edge[pos + 2], cs, ics, chf.ch, hp)
 							* chf.ch;
 				}
 				// Simplify samples.
-				var idx:Array= new int[MAX_VERTS_PER_EDGE];
+				var idx:Array= []//new int[MAX_VERTS_PER_EDGE];
 				idx[0] = 0;
 				idx[1] = nn;
 				var nidx:int= 2;
@@ -642,13 +631,13 @@ internal class HeightPatch {
 				// Add new vertices.
 				if (swapped) {
 					for (var k:int= nidx - 2; k > 0; --k) {
-						RecastVectors.copy(verts, nverts * 3, edge, idx[k] * 3);
+						RecastVectors.copy2(verts, nverts * 3, edge, idx[k] * 3);
 						hull[nhull++] = nverts;
 						nverts++;
 					}
 				} else {
 					for (var k:int= 1; k < nidx - 1; ++k) {
-						RecastVectors.copy(verts, nverts * 3, edge, idx[k] * 3);
+						RecastVectors.copy2(verts, nverts * 3, edge, idx[k] * 3);
 						hull[nhull++] = nverts;
 						nverts++;
 					}
@@ -670,18 +659,18 @@ internal class HeightPatch {
 
 		if (tris.size() == 0) {
 			// Could not triangulate the poly, make sure there is some valid data there.
-			throw new RuntimeException("buildPolyDetail: Could not triangulate polygon (" + nverts + ") verts).");
+			throw ("buildPolyDetail: Could not triangulate polygon (" + nverts + ") verts).");
 		}
 
 		if (sampleDist > 0) {
 			// Create sample locations in a grid.
-			var bmin:Array= new float[3];
-			var bmax:Array= new float[3];
-			RecastVectors.copy(bmin, in, 0);
-			RecastVectors.copy(bmax, in, 0);
+			var bmin:Array= []//new float[3];
+			var bmax:Array= []//new float[3];
+			RecastVectors.copy(bmin, in_, 0);
+			RecastVectors.copy(bmax, in_, 0);
 			for (var i:int= 1; i < nin; ++i) {
-				RecastVectors.min(bmin, in, i * 3);
-				RecastVectors.max(bmax, in, i * 3);
+				RecastVectors.min(bmin, in_, i * 3);
+				RecastVectors.max(bmax, in_, i * 3);
 			}
 			var x0:int= int(Math.floor(bmin[0] / sampleDist));
 			var x1:int= int(Math.ceil(bmax[0] / sampleDist));
@@ -690,12 +679,12 @@ internal class HeightPatch {
 			samples.clear();
 			for (var z:int= z0; z < z1; ++z) {
 				for (var x:int= x0; x < x1; ++x) {
-					var pt:Array= new float[3];
+					var pt:Array= []//new float[3];
 					pt[0] = x * sampleDist;
 					pt[1] = (bmax[1] + bmin[1]) * 0.5;
 					pt[2] = z * sampleDist;
 					// Make sure the samples are not too close to the edges.
-					if (distToPoly(nin, in, pt) > -sampleDist / 2)
+					if (distToPoly(nin, in_, pt) > -sampleDist / 2)
 						continue;
 					samples.add(x);
 					samples.add(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.ch, hp));
@@ -713,14 +702,14 @@ internal class HeightPatch {
 					break;
 
 				// Find sample with most error.
-				var bestpt:Array= new float[3];
+				var bestpt:Array= []//new float[3];
 				var bestd:Number= 0;
 				var besti:int= -1;
 				for (var i:int= 0; i < nsamples; ++i) {
 					var s:int= i * 4;
 					if (samples.get(s + 3) != 0)
 						continue; // skip added.
-					var pt:Array= new float[3];
+					var pt:Array= []//new float[3];
 					// The sample location is jittered to get rid of some bad triangulations
 					// which are cause by symmetrical data from the grid structure.
 					pt[0] = samples.get(s + 0) * sampleDist + getJitterX(i) * cs * 0.1;
@@ -741,7 +730,7 @@ internal class HeightPatch {
 				// Mark sample as added.
 				samples.set(besti * 4+ 3, 1);
 				// Add the new sample point.
-				RecastVectors.copy(verts, nverts * 3, bestpt, 0);
+				RecastVectors.copy2(verts, nverts * 3, bestpt, 0);
 				nverts++;
 
 				// Create new triangulation.
@@ -752,17 +741,17 @@ internal class HeightPatch {
 
 		var ntris:int= tris.size() / 4;
 		if (ntris > MAX_TRIS) {
-			List<Integer> subList = tris.subList(0, MAX_TRIS * 4);
+			var subList:Array =tris.slice(0, MAX_TRIS * 4);
 			tris.clear();
 			tris.addAll(subList);
-			throw new RuntimeException(
+			throw (
 					"rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
 		}
 		return nverts;
 	}
 
 	static function getHeightDataSeedsFromVertices(chf:CompactHeightfield, meshpoly:Array, poly:int, npoly:int, verts:Array,
-			bs:int, hp:HeightPatch, List<Integer> stack):void {
+			bs:int, hp:HeightPatch,  stack:Array):void {
 		// Floodfill the heightfield to get 2D height data,
 		// starting at vertex locations as seeds.
 
@@ -772,7 +761,7 @@ internal class HeightPatch {
 		Arrays.fill(hp.data, 0, hp.width * hp.height, 0);
 		stack.clear();
 
-		int offset[] = { 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0, };
+		var offset:Array = [ 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0];
 
 		// Use poly vertices as seed points for the flood fill.
 		for (var j:int= 0; j < npoly; ++j) {
@@ -885,7 +874,7 @@ internal class HeightPatch {
 		// Note: Reads to the compact heightfield are offset by border size (bs)
 		// since border size offset is already removed from the polymesh vertices.
 
-		List<Integer> stack = new ArrayList<>(512);
+		var stack:Array = [];
 		Arrays.fill(hp.data, 0, hp.width * hp.height, RC_UNSET_HEIGHT);
 
 		var empty:Boolean= true;
@@ -912,8 +901,8 @@ internal class HeightPatch {
 								var ax:int= x + RecastCommon.GetDirOffsetX(dir);
 								var ay:int= y + RecastCommon.GetDirOffsetY(dir);
 								var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
-								var as:CompactSpan= chf.spans[ai];
-								if (as.reg != region) {
+								var as_:CompactSpan= chf.spans[ai];
+								if (as_.reg != region) {
 									border = true;
 									break;
 								}
@@ -964,9 +953,9 @@ internal class HeightPatch {
 					continue;
 
 				var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(cs, dir);
-				var as:CompactSpan= chf.spans[ai];
+				var as_:CompactSpan= chf.spans[ai];
 
-				hp.data[hx + hy * hp.width] = as.y;
+				hp.data[hx + hy * hp.width] = as_.y;
 
 				stack.add(ax);
 				stack.add(ay);
@@ -1013,14 +1002,14 @@ internal class HeightPatch {
 		var orig:Array= mesh.bmin;
 		var borderSize:int= mesh.borderSize;
 
-		List<Integer> tris = new ArrayList<>(512);
-		float verts[] = new float[256* 3];
+		var tris:Array = [];
+		var vert:Array = [];
 		var hp:HeightPatch= new HeightPatch();
 		var nPolyVerts:int= 0;
 		var maxhw:int= 0, maxhh = 0;
 
 		var bounds:Array= new int[mesh.npolys * 4];
-		var poly:Array= new float[nvp * 3];
+		var poly:Array= []//new float[nvp * 3];
 
 		// Find max size for a polygon area.
 		for (var i:int= 0; i < mesh.npolys; ++i) {
@@ -1059,7 +1048,7 @@ internal class HeightPatch {
 		var tcap:int= vcap * 2;
 
 		dmesh.nverts = 0;
-		dmesh.verts = new float[vcap * 3];
+		dmesh.verts = []//new float[vcap * 3];
 		dmesh.ntris = 0;
 		dmesh.tris = new int[tcap * 4];
 
@@ -1114,7 +1103,7 @@ internal class HeightPatch {
 				while (dmesh.nverts + nverts > vcap)
 					vcap += 256;
 
-				var newv:Array= new float[vcap * 3];
+				var newv:Array= []//new float[vcap * 3];
 				if (dmesh.nverts != 0)
 					System.arraycopy(dmesh.verts, 0, newv, 0, 3* dmesh.nverts);
 				dmesh.verts = newv;
@@ -1174,7 +1163,7 @@ internal class HeightPatch {
 		mesh.ntris = 0;
 		mesh.tris = new int[maxTris * 4];
 		mesh.nverts = 0;
-		mesh.verts = new float[maxVerts * 3];
+		mesh.verts = []//new float[maxVerts * 3];
 
 		// Merge datas.
 		for (var i:int= 0; i < nmeshes; ++i) {
@@ -1192,7 +1181,7 @@ internal class HeightPatch {
 			}
 
 			for (var k:int= 0; k < dm.nverts; ++k) {
-				RecastVectors.copy(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
+				RecastVectors.copy2(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
 				mesh.nverts++;
 			}
 			for (var k:int= 0; k < dm.ntris; ++k) {
@@ -1208,3 +1197,12 @@ internal class HeightPatch {
 	}
 
 }
+}
+
+ class HeightPatch {
+		var xmin:int;
+		var ymin:int;
+		var width:int;
+		var height:int;
+		var data:Array;
+	}

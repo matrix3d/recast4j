@@ -24,7 +24,7 @@ public class RecastCommon {
 	///  @param[in]		dir		The direction to check. [Limits: 0 <= value < 4]
 	///  @return The neighbor connection data for the specified direction,
 	///  	or #RC_NOT_CONNECTED if there is no connection.	
-	static function GetCon(s:CompactSpan, dir:int):int {
+	public static function GetCon(s:CompactSpan, dir:int):int {
 		var shift:int= dir * 6;
 		return (s.con >> shift) & 0x3;
 	}
@@ -33,8 +33,8 @@ public class RecastCommon {
 	///  @param[in]		dir		The direction. [Limits: 0 <= value < 4]
 	///  @return The width offset to apply to the current cell position to move
 	///  	in the direction.
-	static function GetDirOffsetX(dir:int):int {
-		int offset[] = { -1, 0, 1, 0, };
+	public static function GetDirOffsetX(dir:int):int {
+		var offset:Array = [ -1, 0, 1, 0 ];
 		return offset[dir & 0x03];
 	}
 
@@ -42,8 +42,8 @@ public class RecastCommon {
 	///  @param[in]		dir		The direction. [Limits: 0 <= value < 4]
 	///  @return The height offset to apply to the current cell position to move
 	///  	in the direction.
-	static function GetDirOffsetY(dir:int):int {
-		int offset[] = { 0, 1, 0, -1};
+	public static function GetDirOffsetY(dir:int):int {
+		var offset:Array = [ 0, 1, 0, -1];
 		return offset[dir & 0x03];
 	}
 

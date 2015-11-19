@@ -26,8 +26,8 @@ public class DetourCommon {
 	/// @param[in] v1 The base vector. [(x, y, z)]
 	/// @param[in] v2 The vector to scale and add to @p v1. [(x, y, z)]
 	/// @param[in] s The amount to scale @p v2 by before adding to @p v1.
-	public static float[] vMad(var v1:Array, var v2:Array, var s:Number) {
-		var dest:Array= new float[3];
+	public static function vMad(v1:Array, v2:Array, s:Number):Array {
+		var dest:Array= [];
 		dest[0] = v1[0] + v2[0] * s;
 		dest[1] = v1[1] + v2[1] * s;
 		dest[2] = v1[2] + v2[2] * s;
@@ -40,67 +40,67 @@ public class DetourCommon {
 	/// @param[in] v1 The starting vector.
 	/// @param[in] v2 The destination vector.
 	/// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
-	public static float[] vLerp(var v1:VectorPtr, var v2:VectorPtr, var t:Number) {
-		var dest:Array= new float[3];
+	public static function vLerp(v1:VectorPtr, v2:VectorPtr, t:Number):Array {
+		var dest:Array= []
 		dest[0] = v1.get(0) + (v2.get(0) - v1.get(0)) * t;
 		dest[1] = v1.get(1) + (v2.get(1) - v1.get(1)) * t;
 		dest[2] = v1.get(2) + (v2.get(2) - v1.get(2)) * t;
 		return dest;
 	}
 
-	public static float[] vLerp(var verts:Array, var v1:int, var v2:int, var t:Number) {
-		var dest:Array= new float[3];
+	public static function vLerp(verts:Array, v1:int, v2:int, t:Number):Array {
+		var dest:Array= []
 		dest[0] = verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t;
 		dest[1] = verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t;
 		dest[2] = verts[v1 + 2] + (verts[v2 + 2] - verts[v1 + 2]) * t;
 		return dest;
 	}
 
-	public static float[] vLerp(var v1:Array, var v2:Array, var t:Number) {
-		var dest:Array= new float[3];
+	public static function vLerp(v1:Array,v2:Array, t:Number):Array {
+		var dest:Array= []
 		dest[0] = v1[0] + (v2[0] - v1[0]) * t;
 		dest[1] = v1[1] + (v2[1] - v1[1]) * t;
 		dest[2] = v1[2] + (v2[2] - v1[2]) * t;
 		return dest;
 	}
 
-	public static float[] vSub(var v1:VectorPtr, var v2:VectorPtr) {
-		var dest:Array= new float[3];
+	public static function vSub(v1:VectorPtr, v2:VectorPtr):Array {
+		var dest:Array= []
 		dest[0] = v1.get(0) - v2.get(0);
 		dest[1] = v1.get(1) - v2.get(1);
 		dest[2] = v1.get(2) - v2.get(2);
 		return dest;
 	}
 
-	public static float[] vSub(var v1:Array, var v2:Array) {
-		var dest:Array= new float[3];
+	public static function vSub(v1:Array, v2:Array):Array {
+		var dest:Array= []
 		dest[0] = v1[0] - v2[0];
 		dest[1] = v1[1] - v2[1];
 		dest[2] = v1[2] - v2[2];
 		return dest;
 	}
 
-	static float[] vAdd(var v1:VectorPtr, var v2:VectorPtr) {
-		var dest:Array= new float[3];
+	static function vAdd(v1:VectorPtr, v2:VectorPtr):Array {
+		var dest:Array= []
 		dest[0] = v1.get(0) + v2.get(0);
 		dest[1] = v1.get(1) + v2.get(1);
 		dest[2] = v1.get(2) + v2.get(2);
 		return dest;
 	}
 
-	public static float[] vAdd(var v1:Array, var v2:Array) {
-		var dest:Array= new float[3];
+	public static function vAdd(v1:Array,v2:Array):Array {
+		var dest:Array= [];
 		dest[0] = v1[0] + v2[0];
 		dest[1] = v1[1] + v2[1];
 		dest[2] = v1[2] + v2[2];
 		return dest;
 	}
 
-	public static float[] vCopy(var in:Array) {
-		var out:Array= new float[3];
-		out[0] = in[0];
-		out[1] = in[1];
-		out[2] = in[2];
+	public static function vCopy(in_:Array):Array {
+		var out:Array= []
+		out[0] = in_[0];
+		out[1] = in_[1];
+		out[2] = in_[2];
 		return out;
 	}
 
@@ -110,28 +110,28 @@ public class DetourCommon {
 		out[2] = c;
 	}
 
-	public static function vCopy(out:Array, in:Array):void {
-		out[0] = in[0];
-		out[1] = in[1];
-		out[2] = in[2];
+	public static function vCopy(out:Array, in_:Array):void {
+		out[0] = in_[0];
+		out[1] = in_[1];
+		out[2] = in_[2];
 	}
 
-	public static function vCopy(out:Array, in:Array, i:int):void {
-		out[0] = in[i];
-		out[1] = in[i + 1];
-		out[2] = in[i + 2];
+	public static function vCopy(out:Array, in_:Array, i:int):void {
+		out[0] = in_[i];
+		out[1] = in_[i + 1];
+		out[2] = in_[i + 2];
 	}
 
-	static function vMin(out:Array, in:Array, i:int):void {
-		out[0] = Math.min(out[0], in[i]);
-		out[1] = Math.min(out[1], in[i + 1]);
-		out[2] = Math.min(out[2], in[i + 2]);
+	static function vMin(out:Array, in_:Array, i:int):void {
+		out[0] = Math.min(out[0], in_[i]);
+		out[1] = Math.min(out[1], in_[i + 1]);
+		out[2] = Math.min(out[2], in_[i + 2]);
 	}
 
-	static function vMax(out:Array, in:Array, i:int):void {
-		out[0] = Math.max(out[0], in[i]);
-		out[1] = Math.max(out[1], in[i + 1]);
-		out[2] = Math.max(out[2], in[i + 2]);
+	static function vMax(out:Array, in_:Array, i:int):void {
+		out[0] = Math.max(out[0], in_[i]);
+		out[1] = Math.max(out[1], in_[i + 1]);
+		out[2] = Math.max(out[2], in_[i + 2]);
 	}
 
 	/// Returns the distance between two points.
@@ -220,7 +220,7 @@ public class DetourCommon {
 	/// Normalizes the vector.
 	/// @param[in,out] v The vector to normalize. [(x, y, z)]
 	public static function vNormalize(v:Array):void {
-		var d:Number= float((1.0f / Math.sqrt(sqr(v[0]) + sqr(v[1]) + sqr(v[2]))));
+		var d:Number= ((1.0 / Math.sqrt(sqr(v[0]) + sqr(v[1]) + sqr(v[2]))));
 		v[0] *= d;
 		v[1] *= d;
 		v[2] *= d;
@@ -299,7 +299,7 @@ public class DetourCommon {
 	/// @param[in] bmax Maximum bounds of box B. [(x, y, z)]
 	/// @return True if the two AABB's overlap.
 	/// @see dtOverlapBounds
-	static function overlapQuantBounds(int amin[], int amax[], int bmin[], int bmax[]):Boolean {
+	static function overlapQuantBounds( amin:Array, amax:Array, bmin:Array, bmax:Array):Boolean {
 		var overlap:Boolean= true;
 		overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
 		overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
@@ -322,7 +322,7 @@ public class DetourCommon {
 		return overlap;
 	}
 
-	public static Tupple2<Float, Float> distancePtSegSqr2D(var pt:Array, var p:Array, var q:Array) {
+	public static function distancePtSegSqr2D( pt:Array,  p:Array, q:Array):Tupple2 {
 		var pqx:Number= q[0] - p[0];
 		var pqz:Number= q[2] - p[2];
 		var dx:Number= pt[0] - p[0];
@@ -337,10 +337,10 @@ public class DetourCommon {
 			t = 1;
 		dx = p[0] + t * pqx - pt[0];
 		dz = p[2] + t * pqz - pt[2];
-		return new Tupple2<>(dx * dx + dz * dz, t);
+		return new Tupple2(dx * dx + dz * dz, t);
 	}
 
-	static Tupple2<Boolean, Float> closestHeightPointTriangle(var p:VectorPtr, var a:VectorPtr, var b:VectorPtr, var c:VectorPtr) {
+	static function closestHeightPointTriangle( p:VectorPtr,  a:VectorPtr,  b:VectorPtr,  c:VectorPtr):Tupple2 {
 		var v0:Array= vSub(c, a);
 		var v1:Array= vSub(b, a);
 		var v2:Array= vSub(p, a);
@@ -365,7 +365,7 @@ public class DetourCommon {
 			return new Tupple2<>(true, h);
 		}
 
-		return new Tupple2<>(false, null);
+		return new Tupple2(false, null);
 	}
 
 	/// @par

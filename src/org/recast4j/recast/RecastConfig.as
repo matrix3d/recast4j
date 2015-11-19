@@ -19,81 +19,81 @@ freely, subject to the following restrictions:
 package org.recast4j.recast {
 public class RecastConfig {
 	/** The width of the field along the x-axis. [Limit: >= 0] [Units: vx] **/
-	var width:int;
+	public var width:int;
 
 	/** The height of the field along the z-axis. [Limit: >= 0] [Units: vx] **/
-	var height:int;
+	public var height:int;
 
 	/** The width/height size of tile's on the xz-plane. [Limit: >= 0] [Units: vx] **/
-	var tileSize:int;
+	public var tileSize:int;
 
 	/** The size of the non-navigable border around the heightfield. [Limit: >=0] [Units: vx] **/
-	var borderSize:int;
+	public var borderSize:int;
 
 	/** The xz-plane cell size to use for fields. [Limit: > 0] [Units: wu] **/
-	var cs:Number;
+	public var cs:Number;
 
 	/** The y-axis cell size to use for fields. [Limit: > 0] [Units: wu] **/
-	var ch:Number;
+	public var ch:Number;
 
 	/** The minimum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-	float bmin[];
+	public var bmin:Array;
 
 	/** The maximum bounds of the field's AABB. [(x, y, z)] [Units: wu] **/
-	float bmax[];
+	public var bmax:Array;
 
 	/** The maximum slope that is considered walkable. [Limits: 0 <= value < 90] [Units: Degrees] **/
-	var walkableSlopeAngle:Number;
+	public var walkableSlopeAngle:Number;
 
 	/**
 	 * Minimum floor to 'ceiling' height that will still allow the floor area to be considered walkable. [Limit: >= 3]
 	 * [Units: vx]
 	 **/
-	var walkableHeight:int;
+	public var walkableHeight:int;
 
 	/** Maximum ledge height that is considered to still be traversable. [Limit: >=0] [Units: vx] **/
-	var walkableClimb:int;
+	public var walkableClimb:int;
 
 	/**
 	 * The distance to erode/shrink the walkable area of the heightfield away from obstructions. [Limit: >=0] [Units:
 	 * vx]
 	 **/
-	var walkableRadius:int;
+	public var walkableRadius:int;
 
 	/** The maximum allowed length for contour edges along the border of the mesh. [Limit: >=0] [Units: vx] **/
-	var maxEdgeLen:int;
+	public var maxEdgeLen:int;
 
 	/**
 	 * The maximum distance a simplfied contour's border edges should deviate the original raw contour. [Limit: >=0]
 	 * [Units: vx]
 	 **/
-	var maxSimplificationError:Number;
+	public var maxSimplificationError:Number;
 
 	/** The minimum number of cells allowed to form isolated island areas. [Limit: >=0] [Units: vx] **/
-	var minRegionArea:int;
+	public var minRegionArea:int;
 
 	/**
 	 * Any regions with a span count smaller than this value will, if possible, be merged with larger regions. [Limit:
 	 * >=0] [Units: vx]
 	 **/
-	var mergeRegionArea:int;
+	public var mergeRegionArea:int;
 
 	/**
 	 * The maximum number of vertices allowed for polygons generated during the contour to polygon conversion process.
 	 * [Limit: >= 3]
 	 **/
-	var maxVertsPerPoly:int;
+	public var maxVertsPerPoly:int;
 
 	/**
 	 * Sets the sampling distance to use when generating the detail mesh. (For height detail only.) [Limits: 0 or >=
 	 * 0.9] [Units: wu]
 	 **/
-	var detailSampleDist:Number;
+	public var detailSampleDist:Number;
 
 	/**
 	 * The maximum distance the detail mesh surface should deviate from heightfield data. (For height detail only.)
 	 * [Limit: >=0] [Units: wu]
 	 **/
-	var detailSampleMaxError:Number;
+	public var detailSampleMaxError:Number;
 };
 }

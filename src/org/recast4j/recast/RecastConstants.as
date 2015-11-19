@@ -39,29 +39,26 @@ public class RecastConstants {
 	/// at tile boundaries.
 	/// (Used during the build process.)
 	/// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
-	static var RC_BORDER_VERTEX:int= 0x10000;
+	public static var RC_BORDER_VERTEX:int= 0x10000;
 	/// Area border flag.
 	/// If a region ID has this bit set, then the associated element lies on
 	/// the border of an area.
 	/// (Used during the region and contour build process.)
 	/// @see rcCompactSpan::reg, #rcContour::verts, #rcContour::rverts
-	static var RC_AREA_BORDER:int= 0x20000;
+	public static var RC_AREA_BORDER:int= 0x20000;
 	/// Applied to the region id field of contour vertices in order to extract the region id.
 	/// The region id field of a vertex may have several flags applied to it.  So the
 	/// fields value can't be used directly.
 	/// @see rcContour::verts, rcContour::rverts
-	static var RC_CONTOUR_REG_MASK:int= 0x;
+	public static var RC_CONTOUR_REG_MASK:int= 0;
 	/// An value which indicates an invalid index within a mesh.
 	/// @note This does not necessarily indicate an error.
 	/// @see rcPolyMesh::polys
-	static var RC_MESH_NULL_IDX:int= 0x;
+	public static var RC_MESH_NULL_IDX:int= 0;
 	
-	static var RC_CONTOUR_TESS_WALL_EDGES:int= 0x01;	///< Tessellate solid (impassable) edges during contour simplification.
-	static var RC_CONTOUR_TESS_AREA_EDGES:int= 0x02;	///< Tessellate edges between areas during contour simplification.
+	public static var RC_CONTOUR_TESS_WALL_EDGES:int= 0x01;	///< Tessellate solid (impassable) edges during contour simplification.
+	public static var RC_CONTOUR_TESS_AREA_EDGES:int= 0x02;	///< Tessellate edges between areas during contour simplification.
 	
-	public enum PartitionType {
-		WATERSHED, MONOTONE, LAYERS
-	}
 
 	
 	public static const RC_LOG_WARNING:int= 1;

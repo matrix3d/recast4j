@@ -33,11 +33,11 @@ public class FindDistanceToWallResult {
 		return distance;
 	}
 
-	public float[] getPosition() {
+	public function getPosition():Array {
 		return position;
 	}
 
-	public float[] getNormal() {
+	public function getNormal():Array {
 		return normal;
 	}
 

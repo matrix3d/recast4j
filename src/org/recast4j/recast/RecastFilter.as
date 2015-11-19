@@ -77,7 +77,7 @@ public class RecastFilter {
 
 		var w:int= solid.width;
 		var h:int= solid.height;
-		var MAX_HEIGHT:int= 0x;
+		var MAX_HEIGHT:int= 0;
 
 		// Mark border spans.
 		for (var y:int= 0; y < h; ++y) {
@@ -87,7 +87,7 @@ public class RecastFilter {
 					if (s.area == RecastConstants.RC_NULL_AREA)
 						continue;
 
-					var bot:int= s.smax();
+					var bot:int= s.smax;
 					var top:int= s.next != null ? s.next.smin : MAX_HEIGHT;
 
 					// Find neighbours minimum height.
@@ -162,14 +162,14 @@ public class RecastFilter {
 
 		var w:int= solid.width;
 		var h:int= solid.height;
-		var MAX_HEIGHT:int= 0x;
+		var MAX_HEIGHT:int= 0;
 
 		// Remove walkable flag from spans which do not have enough
 		// space above them for the agent to stand there.
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				for (var s:Span= solid.spans[x + y * w]; s != null; s = s.next) {
-					var bot:int= s.smax();
+					var bot:int= s.smax;
 					var top:int= s.next != null ? s.next.smin : MAX_HEIGHT;
 					if ((top - bot) <= walkableHeight)
 						s.area = RecastConstants.RC_NULL_AREA;

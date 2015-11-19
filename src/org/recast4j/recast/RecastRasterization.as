@@ -92,53 +92,55 @@ public class RecastRasterization {
 	}
 
 	//divides a convex polygons into two convex polygons on both sides of a line
-	private static int[] dividePoly(var buf:Array, var in:int, var nin:int, var out1:int, var out2:int, var x:Number, var axis:int) {
-		float d[] = new float[12];
+	private static function dividePoly(buf:Array, in_:int, nin:int, out1:int, out2:int, x:Number, axis:int):Array {
+		var d:Array = [];
 		for (var i:int= 0; i < nin; ++i)
-			d[i] = x - buf[in + i * 3+ axis];
+			d[i] = x - buf[in_ + i * 3+ axis];
 
-		var m:int= 0, n = 0;
-		for (var i:int= 0, j = nin - 1; i < nin; j = i, ++i) {
+		var m:int= 0, n:int = 0;
+		var j:int;
+		for (i= 0, j = nin - 1; i < nin; j = i, ++i) {
 			var ina:Boolean= d[j] >= 0;
 			var inb:Boolean= d[i] >= 0;
 			if (ina != inb) {
 				var s:Number= d[j] / (d[j] - d[i]);
-				buf[out1 + m * 3+ 0] = buf[in + j * 3+ 0] + (buf[in + i * 3+ 0] - buf[in + j * 3+ 0]) * s;
-				buf[out1 + m * 3+ 1] = buf[in + j * 3+ 1] + (buf[in + i * 3+ 1] - buf[in + j * 3+ 1]) * s;
-				buf[out1 + m * 3+ 2] = buf[in + j * 3+ 2] + (buf[in + i * 3+ 2] - buf[in + j * 3+ 2]) * s;
-				RecastVectors.copy(buf, out2 + n * 3, buf, out1 + m * 3);
+				buf[out1 + m * 3+ 0] = buf[in_ + j * 3+ 0] + (buf[in_ + i * 3+ 0] - buf[in_ + j * 3+ 0]) * s;
+				buf[out1 + m * 3+ 1] = buf[in_ + j * 3+ 1] + (buf[in_ + i * 3+ 1] - buf[in_ + j * 3+ 1]) * s;
+				buf[out1 + m * 3+ 2] = buf[in_ + j * 3+ 2] + (buf[in_ + i * 3+ 2] - buf[in_ + j * 3+ 2]) * s;
+				RecastVectors.copy2(buf, out2 + n * 3, buf, out1 + m * 3);
 				m++;
 				n++;
 				// add the i'th point to the right polygon. Do NOT add points that are on the dividing line
 				// since these were already added above
 				if (d[i] > 0) {
-					RecastVectors.copy(buf, out1 + m * 3, buf, in + i * 3);
+					RecastVectors.copy2(buf, out1 + m * 3, buf, in_ + i * 3);
 					m++;
 				} else if (d[i] < 0) {
-					RecastVectors.copy(buf, out2 + n * 3, buf, in + i * 3);
+					RecastVectors.copy2(buf, out2 + n * 3, buf, in_ + i * 3);
 					n++;
 				}
 			} else // same side
 			{
 				// add the i'th point to the right polygon. Addition is done even for points on the dividing line
 				if (d[i] >= 0) {
-					RecastVectors.copy(buf, out1 + m * 3, buf, in + i * 3);
+					RecastVectors.copy2(buf, out1 + m * 3, buf, in_ + i * 3);
 					m++;
 					if (d[i] != 0)
 						continue;
 				}
-				RecastVectors.copy(buf, out2 + n * 3, buf, in + i * 3);
+				RecastVectors.copy2(buf, out2 + n * 3, buf, in_ + i * 3);
 				n++;
 			}
 		}
-		return new int[] { m, n };
+		return [ m, n ];
 	}
 
 	private static function rasterizeTri(verts:Array, v0:int, v1:int, v2:int, area:int, hf:Heightfield, bmin:Array,
 			bmax:Array, cs:Number, ics:Number, ich:Number, flagMergeThr:int):void {
 		var w:int= hf.width;
 		var h:int= hf.height;
-		float tmin[] = new float[3], tmax[] = new float[3];
+		var tmin:Array = [];
+		var tmax:Array = [];
 		var by:Number= bmax[1] - bmin[1];
 
 		// Calculate the bounding box of the triangle.
@@ -160,33 +162,33 @@ public class RecastRasterization {
 		y1 = RecastCommon.clamp(y1, 0, h - 1);
 
 		// Clip the triangle into all grid cells it touches.
-		float buf[] = new float[7* 3* 4];
-		var in:int= 0;
+		var buf:Array = [];
+		var in_:int= 0;
 		var inrow:int= 7* 3;
 		var p1:int= inrow + 7* 3;
 		var p2:int= p1 + 7* 3;
 
-		RecastVectors.copy(buf, 0, verts, v0 * 3);
-		RecastVectors.copy(buf, 3, verts, v1 * 3);
-		RecastVectors.copy(buf, 6, verts, v2 * 3);
-		var nvrow:int, nvIn = 3;
+		RecastVectors.copy2(buf, 0, verts, v0 * 3);
+		RecastVectors.copy2(buf, 3, verts, v1 * 3);
+		RecastVectors.copy2(buf, 6, verts, v2 * 3);
+		var nvrow:int, nvIn:int = 3;
 
 		for (var y:int= y0; y <= y1; ++y) {
 			// Clip polygon to row. Store the remaining polygon as well
 			var cz:Number= bmin[2] + y * cs;
-			var nvrowin:Array= dividePoly(buf, in, nvIn, inrow, p1, cz + cs, 2);
+			var nvrowin:Array= dividePoly(buf, in_, nvIn, inrow, p1, cz + cs, 2);
 			nvrow = nvrowin[0];
 			nvIn = nvrowin[1];
 			{
-				var temp:int= in;
-				in = p1;
+				var temp:int= in_;
+				in_ = p1;
 				p1 = temp;
 			}
 			if (nvrow < 3)
 				continue;
 
 			// find the horizontal bounds in the row
-			var minX:Number= buf[inrow], maxX = buf[inrow];
+			var minX:Number= buf[inrow], maxX:Number = buf[inrow];
 			for (var i:int= 1; i < nvrow; ++i) {
 				if (minX > buf[inrow + i * 3])
 					minX = buf[inrow + i * 3];
@@ -198,7 +200,7 @@ public class RecastRasterization {
 			x0 = RecastCommon.clamp(x0, 0, w - 1);
 			x1 = RecastCommon.clamp(x1, 0, w - 1);
 
-			var nv:int, nv2 = nvrow;
+			var nv:int, nv2:int = nvrow;
 			for (var x:int= x0; x <= x1; ++x) {
 				// Clip polygon to column. store the remaining polygon as well
 				var cx:Number= bmin[0] + x * cs;
@@ -206,7 +208,7 @@ public class RecastRasterization {
 				nv = nvnv2[0];
 				nv2 = nvnv2[1];
 				{
-					var temp:int= inrow;
+					temp= inrow;
 					inrow = p2;
 					p2 = temp;
 				}
@@ -214,8 +216,8 @@ public class RecastRasterization {
 					continue;
 
 				// Calculate min and max of the span.
-				var smin:Number= buf[p1 + 1], smax = buf[p1 + 1];
-				for (var i:int= 1; i < nv; ++i) {
+				var smin:Number= buf[p1 + 1], smax:Number = buf[p1 + 1];
+				for (i= 1; i < nv; ++i) {
 					smin = Math.min(smin, buf[p1 + i * 3+ 1]);
 					smax = Math.max(smax, buf[p1 + i * 3+ 1]);
 				}
@@ -288,7 +290,7 @@ public class RecastRasterization {
 	 * 
 	 * @see Heightfield
 	 */
-	public static function rasterizeTriangles(ctx:Context, verts:Array, areas:Array, nt:int, solid:Heightfield,
+	public static function rasterizeTriangles2(ctx:Context, verts:Array, areas:Array, nt:int, solid:Heightfield,
 			flagMergeThr:int):void {
 		ctx.startTimer("RASTERIZE_TRIANGLES");
 

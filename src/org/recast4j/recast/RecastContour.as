@@ -17,40 +17,14 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 public class RecastContour {
-
-	private static 
-internal class ContourRegion {
-		public var outline:Contour;
-		public var holes:Array;
-		public var nholes:int;
-	}
-
-	private static 
-internal class ContourHole {
-		public var leftmost:int;
-		public var minx:int;
-		public var minz:int;
-		public var contour:Contour;
-	}
-
-	private static 
-internal class PotentialDiagonal {
-		public var dist:int;
-		public var vert:int;
-	}
-
 	private static function getCornerHeight(x:int, y:int, i:int, dir:int, chf:CompactHeightfield, isBorderVertex:Boolean):int {
 		var s:CompactSpan= chf.spans[i];
 		var ch:int= s.y;
 		var dirp:int= (dir + 1) & 0x3;
 
-		int regs[] = { 0, 0, 0, 0};
+		var regs:Array = [ 0, 0, 0, 0];
 
 		// Combine region and area codes in order to prevent
 		// border vertices which are in between two areas to be removed.
@@ -60,30 +34,30 @@ internal class PotentialDiagonal {
 			var ax:int= x + RecastCommon.GetDirOffsetX(dir);
 			var ay:int= y + RecastCommon.GetDirOffsetY(dir);
 			var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
-			var as:CompactSpan= chf.spans[ai];
-			ch = Math.max(ch, as.y);
+			var as_:CompactSpan= chf.spans[ai];
+			ch = Math.max(ch, as_.y);
 			regs[1] = chf.spans[ai].reg | (chf.areas[ai] << 16);
-			if (RecastCommon.GetCon(as, dirp) != RecastConstants.RC_NOT_CONNECTED) {
+			if (RecastCommon.GetCon(as_, dirp) != RecastConstants.RC_NOT_CONNECTED) {
 				var ax2:int= ax + RecastCommon.GetDirOffsetX(dirp);
 				var ay2:int= ay + RecastCommon.GetDirOffsetY(dirp);
-				var ai2:int= chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(as, dirp);
+				var ai2:int= chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(as_, dirp);
 				var as2:CompactSpan= chf.spans[ai2];
 				ch = Math.max(ch, as2.y);
 				regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
 			}
 		}
 		if (RecastCommon.GetCon(s, dirp) != RecastConstants.RC_NOT_CONNECTED) {
-			var ax:int= x + RecastCommon.GetDirOffsetX(dirp);
-			var ay:int= y + RecastCommon.GetDirOffsetY(dirp);
-			var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dirp);
-			var as:CompactSpan= chf.spans[ai];
-			ch = Math.max(ch, as.y);
+			ax= x + RecastCommon.GetDirOffsetX(dirp);
+			ay= y + RecastCommon.GetDirOffsetY(dirp);
+			ai= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dirp);
+			as_= chf.spans[ai];
+			ch = Math.max(ch, as_.y);
 			regs[3] = chf.spans[ai].reg | (chf.areas[ai] << 16);
-			if (RecastCommon.GetCon(as, dir) != RecastConstants.RC_NOT_CONNECTED) {
-				var ax2:int= ax + RecastCommon.GetDirOffsetX(dir);
-				var ay2:int= ay + RecastCommon.GetDirOffsetY(dir);
-				var ai2:int= chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(as, dir);
-				var as2:CompactSpan= chf.spans[ai2];
+			if (RecastCommon.GetCon(as_, dir) != RecastConstants.RC_NOT_CONNECTED) {
+				ax2= ax + RecastCommon.GetDirOffsetX(dir);
+				ay2= ay + RecastCommon.GetDirOffsetY(dir);
+				ai2= chf.cells[ax2 + ay2 * chf.width].index + RecastCommon.GetCon(as_, dir);
+				as2= chf.spans[ai2];
 				ch = Math.max(ch, as2.y);
 				regs[2] = chf.spans[ai2].reg | (chf.areas[ai2] << 16);
 			}
@@ -111,7 +85,7 @@ internal class PotentialDiagonal {
 		return ch;
 	}
 
-	private static function walkContour(x:int, y:int, i:int, chf:CompactHeightfield, flags:Array, List<Integer> points):void {
+	private static function walkContour(x:int, y:int, i:int, chf:CompactHeightfield, flags:Array, points:Array):void {
 		// Choose the first non-connected edge
 		var dir:int= 0;
 		while ((flags[i] & (1<< dir)) == 0)
@@ -168,7 +142,7 @@ internal class PotentialDiagonal {
 				var ni:int= -1;
 				var nx:int= x + RecastCommon.GetDirOffsetX(dir);
 				var ny:int= y + RecastCommon.GetDirOffsetY(dir);
-				var s:CompactSpan= chf.spans[i];
+				s= chf.spans[i];
 				if (RecastCommon.GetCon(s, dir) != RecastConstants.RC_NOT_CONNECTED) {
 					var nc:CompactCell= chf.cells[nx + ny * chf.width];
 					ni = nc.index + RecastCommon.GetCon(s, dir);
@@ -209,7 +183,7 @@ internal class PotentialDiagonal {
 		return dx * dx + dz * dz;
 	}
 
-	private static function simplifyContour(List<Integer> points, List<Integer> simplified, maxError:Number, maxEdgeLen:int,
+	private static function simplifyContour(points:Array,simplified:Array, maxError:Number, maxEdgeLen:int,
 			buildFlags:int):void {
 		// Add initial points.
 		var hasConnections:Boolean= false;
@@ -223,7 +197,8 @@ internal class PotentialDiagonal {
 		if (hasConnections) {
 			// The contour has some portals to other regions.
 			// Add a new point to every location where the region changes.
-			for (var i:int= 0, ni = points.size() / 4; i < ni; ++i) {
+			var ni:int;
+			for (i= 0, ni = points.size() / 4; i < ni; ++i) {
 				var ii:int= (i + 1) % ni;
 				var differentRegs:Boolean= (points.get(i * 4+ 3)
 						& RecastConstants.RC_CONTOUR_REG_MASK) != (points.get(ii * 4+ 3)
@@ -251,7 +226,7 @@ internal class PotentialDiagonal {
 			var ury:int= points.get(1);
 			var urz:int= points.get(2);
 			var uri:int= 0;
-			for (var i:int= 0; i < points.size(); i += 4) {
+			for (i= 0; i < points.size(); i += 4) {
 				var x:int= points.get(i + 0);
 				var y:int= points.get(i + 1);
 				var z:int= points.get(i + 2);
@@ -281,8 +256,8 @@ internal class PotentialDiagonal {
 		// Add points until all raw points are within
 		// error tolerance to the simplified shape.
 		var pn:int= points.size() / 4;
-		for (var i:int= 0; i < simplified.size() / 4;) {
-			var ii:int= (i + 1) % (simplified.size() / 4);
+		for (i= 0; i < simplified.size() / 4;) {
+			ii= (i + 1) % (simplified.size() / 4);
 
 			var ax:int= simplified.get(i * 4+ 0);
 			var az:int= simplified.get(i * 4+ 2);
@@ -295,7 +270,7 @@ internal class PotentialDiagonal {
 			// Find maximum deviation from the segment.
 			var maxd:Number= 0;
 			var maxi:int= -1;
-			var ci:int, cinc, endi;
+			var ci:int, cinc:int, endi:int;
 
 			// Traverse the segment in lexilogical order so that the
 			// max deviation is calculated similarly when traversing
@@ -341,20 +316,20 @@ internal class PotentialDiagonal {
 		// Split too long edges.
 		if (maxEdgeLen > 0&& (buildFlags
 				& (RecastConstants.RC_CONTOUR_TESS_WALL_EDGES | RecastConstants.RC_CONTOUR_TESS_AREA_EDGES)) != 0) {
-			for (var i:int= 0; i < simplified.size() / 4;) {
-				var ii:int= (i + 1) % (simplified.size() / 4);
+			for (i= 0; i < simplified.size() / 4;) {
+				ii= (i + 1) % (simplified.size() / 4);
 
-				var ax:int= simplified.get(i * 4+ 0);
-				var az:int= simplified.get(i * 4+ 2);
-				var ai:int= simplified.get(i * 4+ 3);
+				ax= simplified.get(i * 4+ 0);
+				az= simplified.get(i * 4+ 2);
+				ai= simplified.get(i * 4+ 3);
 
-				var bx:int= simplified.get(ii * 4+ 0);
-				var bz:int= simplified.get(ii * 4+ 2);
-				var bi:int= simplified.get(ii * 4+ 3);
+				bx= simplified.get(ii * 4+ 0);
+				bz= simplified.get(ii * 4+ 2);
+				bi= simplified.get(ii * 4+ 3);
 
 				// Find maximum deviation from the segment.
-				var maxi:int= -1;
-				var ci:int= (ai + 1) % pn;
+				maxi= -1;
+				ci= (ai + 1) % pn;
 
 				// Tessellate only outer edges or edges between areas.
 				var tess:Boolean= false;
@@ -395,11 +370,11 @@ internal class PotentialDiagonal {
 				}
 			}
 		}
-		for (var i:int= 0; i < simplified.size() / 4; ++i) {
+		for (i= 0; i < simplified.size() / 4; ++i) {
 			// The edge vertex flag is take from the current raw point,
 			// and the neighbour region is take from the next raw point.
-			var ai:int= (simplified.get(i * 4+ 3) + 1) % pn;
-			var bi:int= simplified.get(i * 4+ 3);
+			ai= (simplified.get(i * 4+ 3) + 1) % pn;
+			bi= simplified.get(i * 4+ 3);
 			simplified
 					.set(i * 4+ 3,
 							(points.get(ai * 4+ 3)
@@ -411,7 +386,7 @@ internal class PotentialDiagonal {
 
 	private static function calcAreaOfPolygon2D(verts:Array, nverts:int):int {
 		var area:int= 0;
-		for (var i:int= 0, j = nverts - 1; i < nverts; j = i++) {
+		for (var i:int= 0, j:int = nverts - 1; i < nverts; j = i++) {
 			var vi:int= i * 4;
 			var vj:int= j * 4;
 			area += verts[vi + 0] * verts[vj + 2] - verts[vj + 0] * verts[vi + 2];
@@ -436,7 +411,7 @@ internal class PotentialDiagonal {
 				continue;
 			var p0:int= k * 4;
 			var p1:int= k1 * 4;
-			for (var g:int= 0; g < 4; g++) {
+			for (g= 0; g < 4; g++) {
 				pverts[8+ g] = verts[p0 + g];
 				pverts[12+ g] = verts[p1 + g];
 			}
@@ -475,7 +450,7 @@ internal class PotentialDiagonal {
 		return !(RecastMesh.leftOn(pverts, pi, pj, pi1) && RecastMesh.leftOn(pverts, pj, pi, pin1));
 	}
 
-	private static function removeDegenerateSegments(List<Integer> simplified):void {
+	private static function removeDegenerateSegments(simplified:Array):void {
 		// Remove adjacent vertices which are equal on xz-plane,
 		// or else the triangulator will get confused.
 		var npts:int= simplified.size() / 4;
@@ -513,9 +488,9 @@ internal class PotentialDiagonal {
 		}
 
 		// Copy contour B
-		for (var i:int= 0; i <= cb.nverts; ++i) {
-			var dst:int= nv * 4;
-			var src:int= ((ib + i) % cb.nverts) * 4;
+		for (i= 0; i <= cb.nverts; ++i) {
+			dst= nv * 4;
+			src= ((ib + i) % cb.nverts) * 4;
 			verts[dst + 0] = cb.verts[src + 0];
 			verts[dst + 1] = cb.verts[src + 1];
 			verts[dst + 2] = cb.verts[src + 2];
@@ -532,7 +507,7 @@ internal class PotentialDiagonal {
 	}
 
 	// Finds the lowest leftmost vertex of a contour.
-	private static int[] findLeftMostVertex(var contour:Contour) {
+	private static function findLeftMostVertex(contour:Contour):Array {
 		var minx:int= contour.verts[0];
 		var minz:int= contour.verts[2];
 		var leftmost:int= 0;
@@ -545,44 +520,10 @@ internal class PotentialDiagonal {
 				leftmost = i;
 			}
 		}
-		return new int[] { minx, minz, leftmost };
+		return [ minx, minz, leftmost ];
 	}
 
-	private static 
-internal class CompareHoles implements Comparator<ContourHole> {
-
-		
-override public function compare(a:ContourHole, b:ContourHole):int {
-			if (a.minx == b.minx) {
-				if (a.minz < b.minz)
-					return -1;
-				if (a.minz > b.minz)
-					return 1;
-			} else {
-				if (a.minx < b.minx)
-					return -1;
-				if (a.minx > b.minx)
-					return 1;
-			}
-			return 0;
-		}
-
-	}
-
-	private static 
-internal class CompareDiagDist implements Comparator<PotentialDiagonal> {
-
-		
-override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int {
-			var a:PotentialDiagonal= va;
-			var b:PotentialDiagonal= vb;
-			if (a.dist < b.dist)
-				return -1;
-			if (a.dist > b.dist)
-				return 1;
-			return 0;
-		}
-	}
+	
 
 	private static function mergeRegionHoles(ctx:Context, region:ContourRegion):void {
 		// Sort holes from left to right.
@@ -592,10 +533,11 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 			region.holes[i].minz = minleft[1];
 			region.holes[i].leftmost = minleft[2];
 		}
-		Arrays.sort(region.holes, new CompareHoles());
+		region.holes.sort(CompareHoles.compare);
+		//Arrays.sort(region.holes, new CompareHoles());
 
 		var maxVerts:int= region.outline.nverts;
-		for (var i:int= 0; i < region.nholes; i++)
+		for (i= 0; i < region.nholes; i++)
 			maxVerts += region.holes[i].contour.nverts;
 
 		var diags:Array= new PotentialDiagonal[maxVerts];
@@ -605,7 +547,7 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 		var outline:Contour= region.outline;
 
 		// Merge holes into the outline one by one.
-		for (var i:int= 0; i < region.nholes; i++) {
+		for (i= 0; i < region.nholes; i++) {
 			var hole:Contour= region.holes[i].contour;
 
 			var index:int= -1;
@@ -631,17 +573,23 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 					}
 				}
 				// Sort potential diagonals by distance, we want to make the connection as short as possible.
-				Arrays.sort(diags, 0, ndiags, new CompareDiagDist());
-
+				//Arrays.sort(diags, 0, ndiags, new CompareDiagDist());
+				var temp:Array = diags.slice(0,ndiags);
+				temp.sort(CompareDiagDist.compare);
+				temp.unshift(ndiags);
+				temp.unshift(0);
+				diags.splice.apply(null, temp);
+				
+				
 				// Find a diagonal that is not intersecting the outline not the remaining holes.
 				index = -1;
-				for (var j:int= 0; j < ndiags; j++) {
+				for (j= 0; j < ndiags; j++) {
 					var pt:int= diags[j].vert * 4;
 					var intersect:Boolean= intersectSegCountour(pt, corner, diags[i].vert, outline.nverts, outline.verts,
 							outline.verts, hole.verts);
 					for (var k:int= i; k < region.nholes && !intersect; k++)
-						intersect |= intersectSegCountour(pt, corner, -1, region.holes[k].contour.nverts,
-								region.holes[k].contour.verts, outline.verts, hole.verts);
+						intersect =Boolean(int(intersect)| int(intersectSegCountour(pt, corner, -1, region.holes[k].contour.nverts,
+								region.holes[k].contour.verts, outline.verts, hole.verts)));
 					if (!intersect) {
 						index = diags[j].vert;
 						break;
@@ -708,7 +656,7 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var res:int= 0;
 					var s:CompactSpan= chf.spans[i];
 					if (chf.spans[i].reg == 0|| (chf.spans[i].reg & RecastConstants.RC_BORDER_REG) != 0) {
@@ -726,21 +674,21 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 						if (r == chf.spans[i].reg)
 							res |= (1<< dir);
 					}
-					flags[i] = res ^ 0x; // Inverse, mark non connected edges.
+					flags[i] = res ^ 0; // Inverse, mark non connected edges.
 				}
 			}
 		}
 
 		ctx.stopTimer("BUILD_CONTOURS_TRACE");
 
-		List<Integer> verts = new ArrayList<>(256);
-		List<Integer> simplified = new ArrayList<>(64);
+		var verts:Array = [];
+		var simplified:Array = [];
 
-		for (var y:int= 0; y < h; ++y) {
-			for (var x:int= 0; x < w; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					if (flags[i] == 0|| flags[i] == 0x) {
+		for (y= 0; y < h; ++y) {
+			for (x= 0; x < w; ++x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
+					if (flags[i] == 0|| flags[i] == 0) {
 						flags[i] = 0;
 						continue;
 					}
@@ -784,12 +732,12 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 
 						cont.nrverts = verts.size() / 4;
 						cont.rverts = new int[verts.size()];
-						for (var l:int= 0; l < cont.rverts.length; l++) {
+						for (l= 0; l < cont.rverts.length; l++) {
 							cont.rverts[l] = verts.get(l);
 						}
 						if (borderSize > 0) {
 							// If the heightfield was build with bordersize, remove the offset.
-							for (var j:int= 0; j < cont.nrverts; ++j) {
+							for (j= 0; j < cont.nrverts; ++j) {
 								cont.rverts[j * 4] -= borderSize;
 								cont.rverts[j * 4+ 2] -= borderSize;
 							}
@@ -807,8 +755,8 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 			// Calculate winding of all polygons.
 			var winding:Array= new int[cset.conts.size()];
 			var nholes:int= 0;
-			for (var i:int= 0; i < cset.conts.size(); ++i) {
-				var cont:Contour= cset.conts.get(i);
+			for (i= 0; i < cset.conts.size(); ++i) {
+				cont= cset.conts.get(i);
 				// If the contour is wound backwards, it is a hole.
 				winding[i] = calcAreaOfPolygon2D(cont.verts, cont.nverts) < 0? -1: 1;
 				if (winding[i] < 0)
@@ -820,16 +768,16 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 				// We assume that there is one outline and multiple holes.
 				var nregions:int= chf.maxRegions + 1;
 				var regions:Array= new ContourRegion[nregions];
-				for (var i:int= 0; i < nregions; i++) {
+				for (i= 0; i < nregions; i++) {
 					regions[i] = new ContourRegion();
 				}
 
-				for (var i:int= 0; i < cset.conts.size(); ++i) {
-					var cont:Contour= cset.conts.get(i);
+				for (i= 0; i < cset.conts.size(); ++i) {
+					cont= cset.conts.get(i);
 					// Positively would contours are outlines, negative holes.
 					if (winding[i] > 0) {
 						if (regions[cont.reg].outline != null) {
-							throw new RuntimeException(
+							throw (
 									"rcBuildContours: Multiple outlines for region " + cont.reg + ".");
 						}
 						regions[cont.reg].outline = cont;
@@ -837,7 +785,7 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 						regions[cont.reg].nholes++;
 					}
 				}
-				for (var i:int= 0; i < nregions; i++) {
+				for (i= 0; i < nregions; i++) {
 					if (regions[i].nholes > 0) {
 						regions[i].holes = new ContourHole[regions[i].nholes];
 						for (var nh:int= 0; nh < regions[i].nholes; nh++) {
@@ -846,26 +794,26 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 						regions[i].nholes = 0;
 					}
 				}
-				for (var i:int= 0; i < cset.conts.size(); ++i) {
-					var cont:Contour= cset.conts.get(i);
-					var reg:ContourRegion= regions[cont.reg];
+				for (i= 0; i < cset.conts.size(); ++i) {
+					cont= cset.conts.get(i);
+					var reg2:ContourRegion= regions[cont.reg];
 					if (winding[i] < 0)
-						reg.holes[reg.nholes++].contour = cont;
+						reg2.holes[reg2.nholes++].contour = cont;
 				}
 
 				// Finally merge each regions holes into the outline.
-				for (var i:int= 0; i < nregions; i++) {
-					var reg:ContourRegion= regions[i];
-					if (reg.nholes == 0)
+				for (i= 0; i < nregions; i++) {
+					reg2= regions[i];
+					if (reg2.nholes == 0)
 						continue;
 
-					if (reg.outline != null) {
-						mergeRegionHoles(ctx, reg);
+					if (reg2.outline != null) {
+						mergeRegionHoles(ctx, reg2);
 					} else {
 						// The region does not have an outline.
 						// This can happen if the contour becaomes selfoverlapping because of
 						// too aggressive simplification settings.
-						throw new RuntimeException("rcBuildContours: Bad outline for region " + i
+						throw ("rcBuildContours: Bad outline for region " + i
 								+ ", contour simplification is likely too aggressive.");
 					}
 				}
@@ -875,3 +823,56 @@ override public function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int
 		return cset;
 	}
 }
+}
+import org.recast4j.recast.Contour;
+
+ class ContourRegion {
+		public var outline:Contour;
+		public var holes:Array;
+		public var nholes:int;
+	}
+
+	 class ContourHole {
+		public var leftmost:int;
+		public var minx:int;
+		public var minz:int;
+		public var contour:Contour;
+	}
+
+	 class PotentialDiagonal {
+		public var dist:int;
+		public var vert:int;
+	}
+	class CompareHoles {
+
+		
+		public static function compare(a:ContourHole, b:ContourHole):int {
+			if (a.minx == b.minx) {
+				if (a.minz < b.minz)
+					return -1;
+				if (a.minz > b.minz)
+					return 1;
+			} else {
+				if (a.minx < b.minx)
+					return -1;
+				if (a.minx > b.minx)
+					return 1;
+			}
+			return 0;
+		}
+
+	}
+
+	 class CompareDiagDist {
+
+		
+		 public static function compare(va:PotentialDiagonal, vb:PotentialDiagonal):int {
+			var a:PotentialDiagonal= va;
+			var b:PotentialDiagonal= vb;
+			if (a.dist < b.dist)
+				return -1;
+			if (a.dist > b.dist)
+				return 1;
+			return 0;
+		}
+	}

@@ -20,62 +20,14 @@ package org.recast4j.detour {
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.recast4j.detour.DetourCommon.vCopy;
 
 public class NavMeshBuilder {
 
-	static const MESH_NULL_IDX:int= 0x;
+	static const MESH_NULL_IDX:int= 0;
 
-	private static 
-internal class BVItem {
-		int bmin[] = new int[3];
-		int bmax[] = new int[3];
-		var i:int;
-	};
+ 
 
-	private static 
-internal class CompareItemX implements Comparator<BVItem> {
-
-		
-override public function compare(a:BVItem, b:BVItem):int {
-			if (a.bmin[0] < b.bmin[0])
-				return -1;
-			if (a.bmin[0] > b.bmin[0])
-				return 1;
-			return 0;
-		}
-
-	}
-
-	private static 
-internal class CompareItemY implements Comparator<BVItem> {
-
-		
-override public function compare(a:BVItem, b:BVItem):int {
-			if (a.bmin[1] < b.bmin[1])
-				return -1;
-			if (a.bmin[1] > b.bmin[1])
-				return 1;
-			return 0;
-		}
-
-	}
-
-	private static 
-internal class CompareItemZ implements Comparator<BVItem> {
-
-		
-override public function compare(a:BVItem, b:BVItem):int {
-			if (a.bmin[2] < b.bmin[2])
-				return -1;
-			if (a.bmin[2] > b.bmin[2])
-				return 1;
-			return 0;
-		}
-
-	}
-
-	private static int[][] calcExtends(var items:Array, var nitems:int, var imin:int, var imax:int) {
+	private static function calcExtends( items:Array, nitems:int, imin:int, imax:int):Array {
 		var bmin:Array= new int[3];
 		var bmax:Array= new int[3];
 		bmin[0] = items[imin].bmin[0];
@@ -102,7 +54,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 			if (it.bmax[2] > bmax[2])
 				bmax[2] = it.bmax[2];
 		}
-		return new int[][] { bmin, bmax };
+		return new [ bmin, bmax ];
 	}
 
 	private static function longestAxis(x:int, y:int, z:int):int {
@@ -139,7 +91,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 			node.i = items[imin].i;
 		} else {
 			// Split
-			int[][] minmax = calcExtends(items, nitems, imin, imax);
+			var minmax:Array = calcExtends(items, nitems, imin, imax);
 			node.bmin = minmax[0];
 			node.bmax = minmax[1];
 
@@ -207,8 +159,8 @@ override public function compare(a:BVItem, b:BVItem):int {
 					it.bmax[2] = z;
 			}
 			// Remap y
-			it.bmin[1] = int(Math.floor((float) it.bmin[1] * ch / cs));
-			it.bmax[1] = int(Math.floor((float) it.bmax[1] * ch / cs));
+			it.bmin[1] = int(Math.floor( it.bmin[1] * ch / cs));
+			it.bmax[1] = int(Math.floor( it.bmax[1] * ch / cs));
 		}
 
 		var curNode:int= subdivide(items, npolys, 0, npolys, 0, nodes);
@@ -248,7 +200,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 			return 7;
 		}
 
-		return 0x;
+		return 0;
 	}
 
 	private static const DT_VERTS_PER_POLYGON:int= 6;
@@ -262,7 +214,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 	public static function createNavMeshData(params:NavMeshCreateParams):MeshData {// , unsigned char** outData, int* outDataSize)
 		if (params.nvp > DT_VERTS_PER_POLYGON)
 			return null;
-		if (params.vertCount >= 0x)
+		if (params.vertCount >= 0)
 			return null;
 		if (params.vertCount == 0|| params.verts == null)
 			return null;
@@ -315,18 +267,18 @@ override public function compare(a:BVItem, b:BVItem):int {
 				offMeshConClass[i * 2+ 1] = classifyOffMeshPoint(p1, bmin, bmax);
 
 				// Zero out off-mesh start positions which are not even potentially touching the mesh.
-				if (offMeshConClass[i * 2+ 0] == 0x) {
+				if (offMeshConClass[i * 2+ 0] == 0) {
 					if (p0.get(1) < bmin[1] || p0.get(1) > bmax[1])
 						offMeshConClass[i * 2+ 0] = 0;
 				}
 
 				// Count how many links should be allocated for off-mesh connections.
-				if (offMeshConClass[i * 2+ 0] == 0x)
+				if (offMeshConClass[i * 2+ 0] == 0)
 					offMeshConLinkCount++;
-				if (offMeshConClass[i * 2+ 1] == 0x)
+				if (offMeshConClass[i * 2+ 1] == 0)
 					offMeshConLinkCount++;
 
-				if (offMeshConClass[i * 2+ 0] == 0x)
+				if (offMeshConClass[i * 2+ 0] == 0)
 					storedOffMeshConCount++;
 			}
 		}
@@ -339,15 +291,15 @@ override public function compare(a:BVItem, b:BVItem):int {
 		var edgeCount:int= 0;
 		var portalCount:int= 0;
 		for (var i:int= 0; i < params.polyCount; ++i) {
-			var p:int= i * 2* nvp;
+			var pi:int= i * 2* nvp;
 			for (var j:int= 0; j < nvp; ++j) {
-				if (params.polys[p + j] == MESH_NULL_IDX)
+				if (params.polys[pi + j] == MESH_NULL_IDX)
 					break;
 				edgeCount++;
 
-				if ((params.polys[p + nvp + j] & 0x8000) != 0) {
-					var dir:int= params.polys[p + nvp + j] & 0x;
-					if (dir != 0x)
+				if ((params.polys[pi + nvp + j] & 0x8000) != 0) {
+					var dir:int= params.polys[pi + nvp + j] & 0;
+					if (dir != 0)
 						portalCount++;
 				}
 			}
@@ -362,11 +314,11 @@ override public function compare(a:BVItem, b:BVItem):int {
 			// Has detail mesh, count unique detail vertex count and use input detail tri count.
 			detailTriCount = params.detailTriCount;
 			for (var i:int= 0; i < params.polyCount; ++i) {
-				var p:int= i * nvp * 2;
+				pi= i * nvp * 2;
 				var ndv:int= params.detailMeshes[i * 4+ 1];
 				var nv:int= 0;
 				for (var j:int= 0; j < nvp; ++j) {
-					if (params.polys[p + j] == MESH_NULL_IDX)
+					if (params.polys[pi + j] == MESH_NULL_IDX)
 						break;
 					nv++;
 				}
@@ -378,10 +330,10 @@ override public function compare(a:BVItem, b:BVItem):int {
 			uniqueDetailVertCount = 0; // No extra detail verts.
 			detailTriCount = 0;
 			for (var i:int= 0; i < params.polyCount; ++i) {
-				var p:int= i * nvp * 2;
+				pi= i * nvp * 2;
 				var nv:int= 0;
 				for (var j:int= 0; j < nvp; ++j) {
-					if (params.polys[p + j] == MESH_NULL_IDX)
+					if (params.polys[pi + j] == MESH_NULL_IDX)
 						break;
 					nv++;
 				}
@@ -438,7 +390,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 		var n:int= 0;
 		for (var i:int= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0x) {
+			if (offMeshConClass[i * 2+ 0] == 0) {
 				var linkv:int= i * 2* 3;
 				var v:int= (offMeshVertsBase + n * 2) * 3;
 				System.arraycopy(params.offMeshConVerts, linkv, navVerts, v, 6);
@@ -462,8 +414,8 @@ override public function compare(a:BVItem, b:BVItem):int {
 				p.verts[j] = params.polys[src + j];
 				if ((params.polys[src + nvp + j] & 0x8000) != 0) {
 					// Border or portal edge.
-					var dir:int= params.polys[src + nvp + j] & 0x;
-					if (dir == 0x) // Border
+					var dir:int= params.polys[src + nvp + j] & 0;
+					if (dir == 0) // Border
 						p.neis[j] = 0;
 					else if (dir == 0) // Portal x-
 						p.neis[j] = NavMesh.DT_EXT_LINK | 4;
@@ -486,8 +438,8 @@ override public function compare(a:BVItem, b:BVItem):int {
 		n = 0;
 		for (var i:int= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0x) {
-				var p:Poly= new Poly(offMeshPolyBase + n);
+			if (offMeshConClass[i * 2+ 0] == 0) {
+				p= new Poly(offMeshPolyBase + n);
 				navPolys[offMeshPolyBase + n] = p;
 				p.vertCount = 2;
 				p.verts[0] = offMeshVertsBase + n * 2;
@@ -561,7 +513,7 @@ override public function compare(a:BVItem, b:BVItem):int {
 		n = 0;
 		for (var i:int= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0x) {
+			if (offMeshConClass[i * 2+ 0] == 0) {
 				var con:OffMeshConnection= new OffMeshConnection();
 				offMeshCons[n] = con;
 				con.poly = (offMeshPolyBase + n);
@@ -590,3 +542,49 @@ override public function compare(a:BVItem, b:BVItem):int {
 	}
 
 }
+}
+
+class BVItem {
+	public var bmin:Array = [];
+	public var bmax:Array = [];
+		var i:int;
+	}
+
+	class CompareItemX {
+
+		
+ public function compare(a:BVItem, b:BVItem):int {
+			if (a.bmin[0] < b.bmin[0])
+				return -1;
+			if (a.bmin[0] > b.bmin[0])
+				return 1;
+			return 0;
+		}
+
+	}
+
+ class CompareItemY  {
+
+		
+ public function compare(a:BVItem, b:BVItem):int {
+			if (a.bmin[1] < b.bmin[1])
+				return -1;
+			if (a.bmin[1] > b.bmin[1])
+				return 1;
+			return 0;
+		}
+
+	}
+
+	 class CompareItemZ  {
+
+		
+ public function compare(a:BVItem, b:BVItem):int {
+			if (a.bmin[2] < b.bmin[2])
+				return -1;
+			if (a.bmin[2] > b.bmin[2])
+				return 1;
+			return 0;
+		}
+
+	}

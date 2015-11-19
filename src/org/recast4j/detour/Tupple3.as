@@ -16,13 +16,13 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-public class Tupple3<T, S, U> {
+public class Tupple3 {
 
-	public var first:T;
-	public var second:S;
-	public var third:U;
+	public var first:Object;
+	public var second:Object;
+	public var third:Object;
 
-	public function Tupple3(first:T, second:S, third:U) {
+	public function Tupple3(first:Object, second:Object, third:Object) {
 		this.first = first;
 		this.second = second;
 		this.third = third;

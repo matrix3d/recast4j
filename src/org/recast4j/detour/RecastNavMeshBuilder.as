@@ -1,25 +1,21 @@
 package org.recast4j.detour {
 import org.recast4j.recast.InputGeom;
 import org.recast4j.recast.ObjImporter;
+import org.recast4j.recast.PartitionType;
 import org.recast4j.recast.PolyMesh;
 import org.recast4j.recast.PolyMeshDetail;
 import org.recast4j.recast.RecastBuilder;
-import org.recast4j.recast.RecastConstants.PartitionType;
+import org.recast4j.recast.PartitionType;
 
 public class RecastNavMeshBuilder {
 
 	private var meshData:MeshData;
-
-	public static function main(args:Array):void {
-		//new RecastNavMeshBuilder();
-		System.out.print(1);
-	}
 	/*public function RecastNavMeshBuilder() {
 		this(new ObjImporter().load("dungeon.obj"), PartitionType.WATERSHED,
 				0.3, 0.2, 2.0, 0.6, 0.9, 45.0, 8, 20, 12.0, 1.3, 6, 6.0, 1.0);
 	}*/
 
-	public function RecastNavMeshBuilder(m_geom:InputGeom, m_partitionType:PartitionType, m_cellSize:Number, m_cellHeight:Number,
+	public function RecastNavMeshBuilder(m_geom:InputGeom, m_partitionType:int, m_cellSize:Number, m_cellHeight:Number,
 			m_agentHeight:Number, m_agentRadius:Number, m_agentMaxClimb:Number, m_agentMaxSlope:Number, m_regionMinSize:int,
 			m_regionMergeSize:int, m_edgeMaxLen:Number, m_edgeMaxError:Number, m_vertsPerPoly:int,
 			m_detailSampleDist:Number, m_detailSampleMaxError:Number) {
@@ -52,14 +48,14 @@ public class RecastNavMeshBuilder {
 		params.ch = m_cellHeight;
 		params.buildBvTree = true;
 		
-		params.offMeshConVerts = new float[6];
+		params.offMeshConVerts = [];
 		params.offMeshConVerts[0] = 0.1;
 		params.offMeshConVerts[1] = 0.2;
 		params.offMeshConVerts[2] = 0.3;
 		params.offMeshConVerts[3] = 0.4;
 		params.offMeshConVerts[4] = 0.5;
 		params.offMeshConVerts[5] = 0.6;
-		params.offMeshConRad = new float[1];
+		params.offMeshConRad = [];
 		params.offMeshConRad[0] = 0.1;
 		params.offMeshConDir = new int[1];
 		params.offMeshConDir[0] = 1;

@@ -17,23 +17,22 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 /**
  * Defines a navigation mesh tile.
  */
 public class MeshTile {
-	var index:int;
+	public var index:int;
 	/** Counter describing modifications to the tile. */
-	var salt:int;
+	public var salt:int;
 	/** The tile data. */
-	var data:MeshData;
+	public var data:MeshData;
 	/** The tile links. [Size: MeshHeader::maxLinkCount] */
-	List<Link> links;
+	public var links:Array;
 	/** Tile flags. (See: #dtTileFlags) */
-	var flags:int;
+	public var flags:int;
 	/** The next free tile, or the next tile in the spatial grid. */
-	var next:MeshTile;
+	public var next:MeshTile;
 
 	public function MeshTile(index:int) {
 		this.index = index;

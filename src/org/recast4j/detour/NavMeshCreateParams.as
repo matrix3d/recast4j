@@ -38,11 +38,11 @@ public class NavMeshCreateParams {
 	/// See #rcPolyMeshDetail for details related to these attributes.
 	/// @{
 
-	var detailMeshes:Array;			///< The height detail sub-mesh data. [Size: 4 * #polyCount]
-	var detailVerts:Array;		///< The detail mesh vertices. [Size: 3 * #detailVertsCount] [Unit: wu]
-	var detailVertsCount:int;		///< The number of vertices in the detail mesh.
-	var detailTris:Array;			///< The detail mesh triangles. [Size: 4 * #detailTriCount]
-	var detailTriCount:int;			///< The number of triangles in the detail mesh.
+	public var detailMeshes:Array;			///< The height detail sub-mesh data. [Size: 4 * #polyCount]
+	public var detailVerts:Array;		///< The detail mesh vertices. [Size: 3 * #detailVertsCount] [Unit: wu]
+	public var detailVertsCount:int;		///< The number of vertices in the detail mesh.
+	public var detailTris:Array;			///< The detail mesh triangles. [Size: 4 * #detailTriCount]
+	public var detailTriCount:int;			///< The number of triangles in the detail mesh.
 
 	/// @}
 	/// @name Off-Mesh Connections Attributes (Optional)
@@ -52,48 +52,48 @@ public class NavMeshCreateParams {
 	/// @{
 
 	/// Off-mesh connection vertices. [(ax, ay, az, bx, by, bz) * #offMeshConCount] [Unit: wu]
-	var offMeshConVerts:Array;
+	public var offMeshConVerts:Array;
 	/// Off-mesh connection radii. [Size: #offMeshConCount] [Unit: wu]
-	var offMeshConRad:Array;
+	public var offMeshConRad:Array;
 	/// User defined flags assigned to the off-mesh connections. [Size: #offMeshConCount]
-	var offMeshConFlags:Array;
+	public var offMeshConFlags:Array;
 	/// User defined area ids assigned to the off-mesh connections. [Size: #offMeshConCount]
-	var offMeshConAreas:Array;
+	public var offMeshConAreas:Array;
 	/// The permitted travel direction of the off-mesh connections. [Size: #offMeshConCount]
 	///
 	/// 0 = Travel only from endpoint A to endpoint B.<br/>
 	/// #DT_OFFMESH_CON_BIDIR = Bidirectional travel.
-	var offMeshConDir:Array;	
+	public var offMeshConDir:Array;	
 	/// The user defined ids of the off-mesh connection. [Size: #offMeshConCount]
-	var offMeshConUserID:Array;
+	public var offMeshConUserID:Array;
 	/// The number of off-mesh connections. [Limit: >= 0]
-	var offMeshConCount:int;
+	public var offMeshConCount:int;
 
 	/// @}
 	/// @name Tile Attributes
 	/// @note The tile grid/layer data can be left at zero if the destination is a single tile mesh.
 	/// @{
 
-	var userId:int;	///< The user defined id of the tile.
-	var tileX:int;				///< The tile's x-grid location within the multi-tile destination mesh. (Along the x-axis.)
-	var tileY:int;				///< The tile's y-grid location within the multi-tile desitation mesh. (Along the z-axis.)
-	var tileLayer:int;			///< The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
-	var bmin:Array;			///< The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
-	var bmax:Array;			///< The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
+	public var userId:int;	///< The user defined id of the tile.
+	public var tileX:int;				///< The tile's x-grid location within the multi-tile destination mesh. (Along the x-axis.)
+	public var tileY:int;				///< The tile's y-grid location within the multi-tile desitation mesh. (Along the z-axis.)
+	public var tileLayer:int;			///< The tile's layer within the layered destination mesh. [Limit: >= 0] (Along the y-axis.)
+	public var bmin:Array;			///< The minimum bounds of the tile. [(x, y, z)] [Unit: wu]
+	public var bmax:Array;			///< The maximum bounds of the tile. [(x, y, z)] [Unit: wu]
 
 	/// @}
 	/// @name General Configuration Attributes
 	/// @{
 
-	var walkableHeight:Number;	///< The agent height. [Unit: wu]
-	var walkableRadius:Number;	///< The agent radius. [Unit: wu]
-	var walkableClimb:Number;	///< The agent maximum traversable ledge. (Up/Down) [Unit: wu]
-	var cs:Number;				///< The xz-plane cell size of the polygon mesh. [Limit: > 0] [Unit: wu]
-	var ch:Number;				///< The y-axis cell height of the polygon mesh. [Limit: > 0] [Unit: wu]
+	public var walkableHeight:Number;	///< The agent height. [Unit: wu]
+	public var walkableRadius:Number;	///< The agent radius. [Unit: wu]
+	public var walkableClimb:Number;	///< The agent maximum traversable ledge. (Up/Down) [Unit: wu]
+	public var cs:Number;				///< The xz-plane cell size of the polygon mesh. [Limit: > 0] [Unit: wu]
+	public var ch:Number;				///< The y-axis cell height of the polygon mesh. [Limit: > 0] [Unit: wu]
 
 	/// True if a bounding volume tree should be built for the tile.
 	/// @note The BVTree is not normally needed for layered navigation meshes.
-	var buildBvTree:Boolean;
+	public var buildBvTree:Boolean;
 
 	/// @}
 

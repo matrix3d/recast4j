@@ -17,7 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
-import java.util.Arrays;
 
 public class RecastArea {
 
@@ -78,16 +77,16 @@ public class RecastArea {
 						var ax:int= x + RecastCommon.GetDirOffsetX(0);
 						var ay:int= y + RecastCommon.GetDirOffsetY(0);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 0);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (-1,-1)
-						if (RecastCommon.GetCon(as, 3) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 3) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(3);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(3);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 3);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 3);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -98,16 +97,16 @@ public class RecastArea {
 						var ax:int= x + RecastCommon.GetDirOffsetX(3);
 						var ay:int= y + RecastCommon.GetDirOffsetY(3);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (1,-1)
-						if (RecastCommon.GetCon(as, 2) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 2) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(2);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(2);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 2);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -129,16 +128,16 @@ public class RecastArea {
 						var ax:int= x + RecastCommon.GetDirOffsetX(2);
 						var ay:int= y + RecastCommon.GetDirOffsetY(2);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (1,1)
-						if (RecastCommon.GetCon(as, 1) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 1) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(1);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(1);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 1);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -149,16 +148,16 @@ public class RecastArea {
 						var ax:int= x + RecastCommon.GetDirOffsetX(1);
 						var ay:int= y + RecastCommon.GetDirOffsetY(1);
 						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
-						var as:CompactSpan= chf.spans[ai];
+						var as_:CompactSpan= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (-1,1)
-						if (RecastCommon.GetCon(as, 0) != RecastConstants.RC_NOT_CONNECTED) {
+						if (RecastCommon.GetCon(as_, 0) != RecastConstants.RC_NOT_CONNECTED) {
 							var aax:int= ax + RecastCommon.GetDirOffsetX(0);
 							var aay:int= ay + RecastCommon.GetDirOffsetY(0);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as, 0);
+							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -201,7 +200,7 @@ public class RecastArea {
 						continue;
 					}
 
-					int nei[] = new int[9];
+					var nei:Array = [];
 					for (var j:int= 0; j < 9; ++j)
 						nei[j] = chf.areas[i];
 
@@ -213,18 +212,19 @@ public class RecastArea {
 							if (chf.areas[ai] != RecastConstants.RC_NULL_AREA)
 								nei[dir * 2+ 0] = chf.areas[ai];
 
-							var as:CompactSpan= chf.spans[ai];
+							var as_:CompactSpan= chf.spans[ai];
 							var dir2:int= (dir + 1) & 0x3;
-							if (RecastCommon.GetCon(as, dir2) != RecastConstants.RC_NOT_CONNECTED) {
+							if (RecastCommon.GetCon(as_, dir2) != RecastConstants.RC_NOT_CONNECTED) {
 								var ax2:int= ax + RecastCommon.GetDirOffsetX(dir2);
 								var ay2:int= ay + RecastCommon.GetDirOffsetY(dir2);
-								var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as, dir2);
+								var ai2:int= chf.cells[ax2 + ay2 * w].index + RecastCommon.GetCon(as_, dir2);
 								if (chf.areas[ai2] != RecastConstants.RC_NULL_AREA)
 									nei[dir * 2+ 1] = chf.areas[ai2];
 							}
 						}
 					}
-					Arrays.sort(nei);
+					nei.sort(Array.NUMERIC);
+					//Arrays.sort(nei);
 					areas[i] = nei[4];
 				}
 			}
@@ -312,7 +312,7 @@ public class RecastArea {
 			chf:CompactHeightfield):void {
 		ctx.startTimer("MARK_CONVEXPOLY_AREA");
 
-		float bmin[] = new float[3], bmax[] = new float[3];
+		var bmin:Array = [], bmax:Array = [];
 		RecastVectors.copy(bmin, verts, 0);
 		RecastVectors.copy(bmax, verts, 0);
 		for (var i:int= 1; i < nverts; ++i) {
@@ -356,7 +356,7 @@ public class RecastArea {
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA)
 						continue;
 					if (s.y >= miny && s.y <= maxy) {
-						float p[] = new float[3];
+						var p:Array = [];
 						p[0] = chf.bmin[0] + (x + 0.5) * chf.cs;
 						p[1] = 0;
 						p[2] = chf.bmin[2] + (z + 0.5) * chf.cs;
@@ -388,7 +388,7 @@ public class RecastArea {
 			var dy0:Number= verts[vb + 2] - verts[va + 2];
 			var d0:Number= dx0 * dx0 + dy0 * dy0;
 			if (d0 > 1e-6) {
-				d0 = float((1.0f / Math.sqrt(d0)));
+				d0 = ((1.0 / Math.sqrt(d0)));
 				dx0 *= d0;
 				dy0 *= d0;
 			}
@@ -396,7 +396,7 @@ public class RecastArea {
 			var dy1:Number= verts[vc + 2] - verts[vb + 2];
 			var d1:Number= dx1 * dx1 + dy1 * dy1;
 			if (d1 > 1e-6) {
-				d1 = float((1.0f / Math.sqrt(d1)));
+				d1 = ((1.0 / Math.sqrt(d1)));
 				dx1 *= d1;
 				dy1 *= d1;
 			}
@@ -449,7 +449,7 @@ public class RecastArea {
 
 		ctx.startTimer("MARK_CYLINDER_AREA");
 
-		float bmin[] = new float[3], bmax[] = new float[3];
+		var bmin:Array = [], bmax:Array = [];
 		bmin[0] = pos[0] - r;
 		bmin[1] = pos[1];
 		bmin[2] = pos[2] - r;

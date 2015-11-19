@@ -1,10 +1,10 @@
 package org.recast4j.recast {
-import org.recast4j.recast.RecastConstants.PartitionType;
+import org.recast4j.recast.PartitionType;
 
 public class RecastBuilder {
 
 	private var m_geom:InputGeom;
-	private var m_partitionType:PartitionType;
+	private var m_partitionType:int;// PartitionType;
 	private var m_cellSize:Number;
 	private var m_cellHeight:Number;
 	private var m_agentHeight:Number;
@@ -21,7 +21,7 @@ public class RecastBuilder {
 	private var m_pmesh:PolyMesh;
 	private var m_dmesh:PolyMeshDetail;
 
-	public function RecastBuilder(m_geom:InputGeom, m_partitionType:PartitionType, m_cellSize:Number, m_cellHeight:Number,
+	public function RecastBuilder(m_geom:InputGeom, m_partitionType:int, m_cellSize:Number, m_cellHeight:Number,
 			m_agentHeight:Number, m_agentRadius:Number, m_agentMaxClimb:Number, m_agentMaxSlope:Number, m_regionMinSize:int,
 			m_regionMergeSize:int, m_edgeMaxLen:Number, m_edgeMaxError:Number, m_vertsPerPoly:int,
 			m_detailSampleDist:Number, m_detailSampleMaxError:Number) {
