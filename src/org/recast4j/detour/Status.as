@@ -17,23 +17,23 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-public enum Status {
+public class Status {
 	
-	FAILURE,
-	SUCCSESS,
-	IN_PROGRESS, 
-	PARTIAL_RESULT;
+	public static const FAILURE:int = 0;
+	public static const SUCCSESS:int = 1;
+	public static const IN_PROGRESS:int = 2;
+	public static const PARTIAL_RESULT:int=3;
 	
-	public function isFailed():Boolean {
-		return this == FAILURE;
+	public static function isFailed(status:int):Boolean {
+		return status == FAILURE;
 	}
 
-	public function isInProgress():Boolean {
-		return this == IN_PROGRESS;
+	public static function isInProgress(status:int):Boolean {
+		return status == IN_PROGRESS;
 	}
 
-	public function isSuccess():Boolean {
-		return this == Status.SUCCSESS;
+	public static function isSuccess(status:int):Boolean {
+		return status == Status.SUCCSESS;
 	}
 }
 }

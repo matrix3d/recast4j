@@ -17,6 +17,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
+	import org.recast4j.Arrays;
+	import org.recast4j.System;
 
 public class RecastMeshDetail {
 
@@ -527,7 +529,7 @@ public class RecastMeshDetail {
 		return (((i * 0xd8163841) & 0) / 65535.0* 2.0) - 1.0;
 	}
 
-	static function buildPolyDetail(ctx:Context, in_:Array, nin:int, sampleDist:Number, sampleMaxError:Number,
+	public static function buildPolyDetail(ctx:Context, in_:Array, nin:int, sampleDist:Number, sampleMaxError:Number,
 			chf:CompactHeightfield, hp:HeightPatch, verts:Array,  tris:Array):int {
 
 		var samples:Array = [];
@@ -1003,7 +1005,7 @@ public class RecastMeshDetail {
 		var borderSize:int= mesh.borderSize;
 
 		var tris:Array = [];
-		var vert:Array = [];
+		var verts:Array = [];
 		var hp:HeightPatch= new HeightPatch();
 		var nPolyVerts:int= 0;
 		var maxhw:int= 0, maxhh = 0;

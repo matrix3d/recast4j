@@ -44,12 +44,7 @@ import static org.recast4j.detour.DetourCommon.vMin;
 import static org.recast4j.detour.DetourCommon.vNormalize;
 import static org.recast4j.detour.DetourCommon.vSub;*/
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
 
-import org.recast4j.detour.DetourCommon.IntersectResult;
 
 public class NavMeshQuery {
 
@@ -161,9 +156,9 @@ public class NavMeshQuery {
 		}
 
 		var s:Number= frand.frand();
-		var t:Number= frand.frand();
+		var t2:Number= frand.frand();
 
-		var pt:Array= randomPointInConvexPoly(verts, poly.vertCount, areas, s, t);
+		var pt:Array= randomPointInConvexPoly(verts, poly.vertCount, areas, s, t2);
 
 		pt[1] = getPolyHeight(polyRef, new VectorPtr(pt, 0));
 
@@ -230,10 +225,10 @@ public class NavMeshQuery {
 				// Calc area of the polygon.
 				var polyArea:Number= 0.0;
 				for (var j:int= 2; j < bestPoly.vertCount; ++j) {
-					var va:int= bestPoly.verts[0] * 3;
-					var vb:int= bestPoly.verts[j - 1] * 3;
+					var va2:int= bestPoly.verts[0] * 3;
+					var vb2:int= bestPoly.verts[j - 1] * 3;
 					var vc:int= bestPoly.verts[j] * 3;
-					polyArea += triArea2D(bestTile.data.verts, va, vb, vc);
+					polyArea += triArea2D(bestTile.data.verts, va2, vb2, vc);
 				}
 				// Choose random polygon weighted by area, using reservoi sampling.
 				areaSum += polyArea;
@@ -386,9 +381,9 @@ public class NavMeshQuery {
 					imin = i;
 				}
 			}
-			var va:int= imin * 3;
-			var vb:int= ((imin + 1) % nv) * 3;
-			closest = vLerp(verts, va, vb, edget[imin]);
+			var va2:int= imin * 3;
+			var vb2:int= ((imin + 1) % nv) * 3;
+			closest = vLerp(verts, va2, vb2, edget[imin]);
 			posOverPoly = false;
 		} else {
 			posOverPoly = true;
@@ -1718,7 +1713,7 @@ public class NavMeshQuery {
 	}
 
 	// Returns portal points between two polygons.
-	protected function getPortalPoints(from:Number, fromPoly:Poly, fromTile:MeshTile, to:Number, toPoly:Poly, toTile:MeshTile,
+	protected function getPortalPoints2(from:Number, fromPoly:Poly, fromTile:MeshTile, to:Number, toPoly:Poly, toTile:MeshTile,
 			fromType:int, toType:int):PortalResult {
 		var left:Array= new float[3];
 		var right:Array= new float[3];
@@ -1793,7 +1788,7 @@ public class NavMeshQuery {
 		return mid;
 	}
 
-	protected function getEdgeMidPoint(from:Number,fromPoly:Poly,fromTile:MeshTile, to:Number, toPoly:Poly,
+	protected function getEdgeMidPoint2(from:Number,fromPoly:Poly,fromTile:MeshTile, to:Number, toPoly:Poly,
 			toTile:MeshTile):Array {
 		var ppoints:PortalResult= getPortalPoints(from, fromPoly, fromTile, to, toPoly, toTile, 0, 0);
 		var left:Array= ppoints.left;
@@ -2883,7 +2878,7 @@ public class NavMeshQuery {
 	
 	*/
 }
-
+}
 import java.util.ArrayList;
 import java.util.List;
 import staticorg.recast4j.detour.DetourCommon.vSub
@@ -2897,7 +2892,7 @@ import staticorg.recast4j.detour.DetourCommon.vSub
 import org.recast4j.detour.DetourCommon.IntersectResult;
 
 
-	public class FRand {
+	 class FRand {
 		var r:Random= new Random();
 
 		public function frand():Number {
@@ -2936,4 +2931,3 @@ import org.recast4j.detour.DetourCommon.IntersectResult;
 
 	
 
-}

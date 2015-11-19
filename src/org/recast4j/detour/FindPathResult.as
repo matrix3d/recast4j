@@ -17,23 +17,22 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 public class FindPathResult {
-	private var status:Status;
+	private var status:int;
 	///  @param[out]	path		An ordered list of polygon references representing the path. (Start to end.) 
-	private List<Long> refs;
+	private var refs:Array;
 
-	public function FindPathResult(status:Status, List<Long> refs) {
+	public function FindPathResult(status:int,  refs:Array) {
 		this.status = status;
 		this.refs = refs;
 	}
 
-	public function getStatus():Status {
+	public function getStatus():int {
 		return status;
 	}
 
-	public List<Long> getRefs() {
+	public function getRefs():Array {
 		return refs;
 	}
 

@@ -23,8 +23,8 @@ internal class QueryData {
 	var lastBestNode:Node;
 	var lastBestNodeCost:Number;
 	var startRef:Number, endRef;
-	var startPos:Array= new float[3];
-	var endPos:Array= new float[3];
+	var startPos:Array= []//new float[3];
+	var endPos:Array= []//new float[3];
 	var filter:QueryFilter;
 	var options:int;
 	var raycastLimitSqr:Number;

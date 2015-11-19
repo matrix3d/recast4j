@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
+	import org.recast4j.Arrays;
 
 public class RecastArea {
 
@@ -34,7 +35,7 @@ public class RecastArea {
 		ctx.startTimer("ERODE_AREA");
 
 		var dist:Array= new int[chf.spanCount];
-		Arrays.fill(dist, 255);
+		Arrays.fill2(dist, 255);
 		// Mark boundary cells.
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {

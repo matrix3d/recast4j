@@ -17,10 +17,12 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
+	import org.recast4j.Arrays;
+	import org.recast4j.System;
 
 public class RecastRegion {
 
-	static const RC_NULL_NEI:int= 0;
+	public static const RC_NULL_NEI:int= 0;
 
 	
 
@@ -37,7 +39,8 @@ public class RecastRegion {
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					var area:int= chf.areas[i];
 
@@ -58,17 +61,17 @@ public class RecastRegion {
 		}
 
 		// Pass 1
-		for (var y:int= 0; y < h; ++y) {
-			for (var x:int= 0; x < w; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					var s:CompactSpan= chf.spans[i];
+		for (y= 0; y < h; ++y) {
+			for (x= 0; x < w; ++x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
+					s= chf.spans[i];
 
 					if (RecastCommon.GetCon(s, 0) != RecastConstants.RC_NOT_CONNECTED) {
 						// (-1,0)
-						var ax:int= x + RecastCommon.GetDirOffsetX(0);
-						var ay:int= y + RecastCommon.GetDirOffsetY(0);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 0);
+						ax= x + RecastCommon.GetDirOffsetX(0);
+						ay= y + RecastCommon.GetDirOffsetY(0);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 0);
 						var as_:CompactSpan= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
@@ -84,18 +87,18 @@ public class RecastRegion {
 					}
 					if (RecastCommon.GetCon(s, 3) != RecastConstants.RC_NOT_CONNECTED) {
 						// (0,-1)
-						var ax:int= x + RecastCommon.GetDirOffsetX(3);
-						var ay:int= y + RecastCommon.GetDirOffsetY(3);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
-						var as_:CompactSpan= chf.spans[ai];
+						ax= x + RecastCommon.GetDirOffsetX(3);
+						ay= y + RecastCommon.GetDirOffsetY(3);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
+						as_= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (1,-1)
 						if (RecastCommon.GetCon(as_, 2) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(2);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(2);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
+							aax= ax + RecastCommon.GetDirOffsetX(2);
+							aay= ay + RecastCommon.GetDirOffsetY(2);
+							aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -105,44 +108,44 @@ public class RecastRegion {
 		}
 
 		// Pass 2
-		for (var y:int= h - 1; y >= 0; --y) {
-			for (var x:int= w - 1; x >= 0; --x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					var s:CompactSpan= chf.spans[i];
+		for (y= h - 1; y >= 0; --y) {
+			for (x= w - 1; x >= 0; --x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
+					s= chf.spans[i];
 
 					if (RecastCommon.GetCon(s, 2) != RecastConstants.RC_NOT_CONNECTED) {
 						// (1,0)
-						var ax:int= x + RecastCommon.GetDirOffsetX(2);
-						var ay:int= y + RecastCommon.GetDirOffsetY(2);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
-						var as_:CompactSpan= chf.spans[ai];
+						ax= x + RecastCommon.GetDirOffsetX(2);
+						ay= y + RecastCommon.GetDirOffsetY(2);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
+						as_= chf.spans[ai];
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (1,1)
 						if (RecastCommon.GetCon(as_, 1) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(1);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(1);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
+							aax= ax + RecastCommon.GetDirOffsetX(1);
+							aay= ay + RecastCommon.GetDirOffsetY(1);
+							aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
 					}
 					if (RecastCommon.GetCon(s, 1) != RecastConstants.RC_NOT_CONNECTED) {
 						// (0,1)
-						var ax:int= x + RecastCommon.GetDirOffsetX(1);
-						var ay:int= y + RecastCommon.GetDirOffsetY(1);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
-						var as_:CompactSpan= chf.spans[ai];
+						ax= x + RecastCommon.GetDirOffsetX(1);
+						ay= y + RecastCommon.GetDirOffsetY(1);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
+						as_= chf.spans[ai] as CompactSpan;
 						if (src[ai] + 2< src[i])
 							src[i] = src[ai] + 2;
 
 						// (-1,1)
 						if (RecastCommon.GetCon(as_, 0) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(0);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(0);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
+							aax= ax + RecastCommon.GetDirOffsetX(0);
+							aay= ay + RecastCommon.GetDirOffsetY(0);
+							aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
 							if (src[aai] + 3< src[i])
 								src[i] = src[aai] + 3;
 						}
@@ -152,7 +155,7 @@ public class RecastRegion {
 		}
 
 		maxDist = 0;
-		for (var i:int= 0; i < chf.spanCount; ++i)
+		for (i= 0; i < chf.spanCount; ++i)
 			maxDist = Math.max(src[i], maxDist);
 
 		return maxDist;
@@ -168,7 +171,7 @@ public class RecastRegion {
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					var cd:int= src[i];
 					if (cd <= thr) {
@@ -272,11 +275,11 @@ public class RecastRegion {
 			count++;
 
 			// Expand neighbours.
-			for (var dir:int= 0; dir < 4; ++dir) {
+			for (dir= 0; dir < 4; ++dir) {
 				if (RecastCommon.GetCon(cs, dir) != RecastConstants.RC_NOT_CONNECTED) {
-					var ax:int= cx + RecastCommon.GetDirOffsetX(dir);
-					var ay:int= cy + RecastCommon.GetDirOffsetY(dir);
-					var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(cs, dir);
+					ax= cx + RecastCommon.GetDirOffsetX(dir);
+					ay= cy + RecastCommon.GetDirOffsetY(dir);
+					ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(cs, dir);
 					if (chf.areas[ai] != area)
 						continue;
 					if (chf.dist[ai] >= lev && srcReg[ai] == 0) {
@@ -304,7 +307,7 @@ public class RecastRegion {
 			for (var y:int= 0; y < h; ++y) {
 				for (var x:int= 0; x < w; ++x) {
 					var c:CompactCell= chf.cells[x + y * w];
-					for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+					for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 						if (chf.dist[i] >= level && srcReg[i] == 0&& chf.areas[i] != RecastConstants.RC_NULL_AREA) {
 							stack.add(x);
 							stack.add(y);
@@ -317,7 +320,7 @@ public class RecastRegion {
 		{
 			// mark all cells which already have a region
 			for (var j:int= 0; j < stack.size(); j += 3) {
-				var i:int= stack.get(j + 2);
+				i= stack.get(j + 2);
 				if (srcReg[i] != 0)
 					stack.set(j + 2, -1);
 			}
@@ -325,14 +328,14 @@ public class RecastRegion {
 
 		var iter:int= 0;
 		while (stack.size() > 0) {
-			var failed:int= 0;
+			var failed:int = 0;
 			System.arraycopy(srcReg, 0, dstReg, 0, chf.spanCount);
 			System.arraycopy(srcDist, 0, dstDist, 0, chf.spanCount);
 
-			for (var j:int= 0; j < stack.size(); j += 3) {
-				var x:int= stack.get(j + 0);
-				var y:int= stack.get(j + 1);
-				var i:int= stack.get(j + 2);
+			for (j= 0; j < stack.size(); j += 3) {
+				x= stack.get(j + 0);
+				y= stack.get(j + 1);
+				i= stack.get(j + 2);
 				if (i < 0) {
 					failed++;
 					continue;
@@ -402,7 +405,7 @@ public class RecastRegion {
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA || srcReg[i] != 0)
 						continue;
 
@@ -453,7 +456,7 @@ public class RecastRegion {
 				neiChanged = true;
 			}
 		}
-		for (var i:int= 0; i < reg.floors.size(); ++i) {
+		for (i= 0; i < reg.floors.size(); ++i) {
 			if (reg.floors.get(i) == oldId)
 				reg.floors.set(i, newId);
 		}
@@ -471,7 +474,7 @@ public class RecastRegion {
 		}
 		if (n > 1)
 			return false;
-		for (var i:int= 0; i < rega.floors.size(); ++i) {
+		for (i= 0; i < rega.floors.size(); ++i) {
 			if (rega.floors.get(i) == regb.id)
 				return false;
 		}
@@ -506,7 +509,7 @@ public class RecastRegion {
 
 		// Find insertion point on B.
 		var insb:int= -1;
-		for (var i:int= 0; i < bcon.size(); ++i) {
+		for (i= 0; i < bcon.size(); ++i) {
 			if (bcon.get(i) == aid) {
 				insb = i;
 				break;
@@ -516,11 +519,12 @@ public class RecastRegion {
 			return false;
 
 		// Merge neighbours.
+		var ni:int;
 		rega.connections.clear();
-		for (var i:int= 0, ni = acon.size(); i < ni - 1; ++i)
+		for (i= 0, ni = acon.size(); i < ni - 1; ++i)
 			rega.connections.add(acon.get((insa + 1+ i) % ni));
 
-		for (var i:int= 0, ni = bcon.size(); i < ni - 1; ++i)
+		for (i= 0, ni = bcon.size(); i < ni - 1; ++i)
 			rega.connections.add(bcon.get((insb + 1+ i) % ni));
 
 		removeAdjacentNeighbours(rega);
@@ -577,9 +581,9 @@ public class RecastRegion {
 				// Choose the edge corner
 				var r:int= 0;
 				if (RecastCommon.GetCon(s, dir) != RecastConstants.RC_NOT_CONNECTED) {
-					var ax:int= x + RecastCommon.GetDirOffsetX(dir);
-					var ay:int= y + RecastCommon.GetDirOffsetY(dir);
-					var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
+					ax= x + RecastCommon.GetDirOffsetX(dir);
+					ay= y + RecastCommon.GetDirOffsetY(dir);
+					ai= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(s, dir);
 					r = srcReg[ai];
 				}
 				if (r != curReg) {
@@ -638,8 +642,9 @@ public class RecastRegion {
 		// Find edge of a region and find connections around the contour.
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var c:CompactCell = chf.cells[x + y * w];
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var r:int= srcReg[i];
 					if (r == 0|| r >= nreg)
 						continue;
@@ -686,8 +691,8 @@ public class RecastRegion {
 		// Remove too small regions.
 		var stack:Array = [];
 		var trace:Array = [];
-		for (var i:int= 0; i < nreg; ++i) {
-			var reg:Region= regions[i];
+		for (i= 0; i < nreg; ++i) {
+			reg= regions[i];
 			if (reg.id == 0|| (reg.id & RecastConstants.RC_BORDER_REG) != 0)
 				continue;
 			if (reg.spanCount == 0)
@@ -714,7 +719,7 @@ public class RecastRegion {
 				spanCount += creg.spanCount;
 				trace.add(ri);
 
-				for (var j:int= 0; j < creg.connections.size(); ++j) {
+				for (j= 0; j < creg.connections.size(); ++j) {
 					if ((creg.connections.get(j) & RecastConstants.RC_BORDER_REG) != 0) {
 						connectsToBorder = true;
 						continue;
@@ -736,7 +741,7 @@ public class RecastRegion {
 			// can potentially remove necessary areas.
 			if (spanCount < minRegionArea && !connectsToBorder) {
 				// Kill all visited regions.
-				for (var j:int= 0; j < trace.size(); ++j) {
+				for (j= 0; j < trace.size(); ++j) {
 					regions[trace.get(j)].spanCount = 0;
 					regions[trace.get(j)].id = 0;
 				}
@@ -747,8 +752,8 @@ public class RecastRegion {
 		var mergeCount:int= 0;
 		do {
 			mergeCount = 0;
-			for (var i:int= 0; i < nreg; ++i) {
-				var reg:Region= regions[i];
+			for (i= 0; i < nreg; ++i) {
+				reg= regions[i];
 				if (reg.id == 0|| (reg.id & RecastConstants.RC_BORDER_REG) != 0)
 					continue;
 				if (reg.overlap)
@@ -765,7 +770,7 @@ public class RecastRegion {
 				// Find smallest neighbour region that connects to this one.
 				var smallest:int= 0;
 				var mergeId:int= reg.id;
-				for (var j:int= 0; j < reg.connections.size(); ++j) {
+				for (j= 0; j < reg.connections.size(); ++j) {
 					if ((reg.connections.get(j) & RecastConstants.RC_BORDER_REG) != 0)
 						continue;
 					var mreg:Region= regions[reg.connections.get(j)];
@@ -784,7 +789,7 @@ public class RecastRegion {
 					// Merge neighbours.
 					if (mergeRegions(target, reg)) {
 						// Fixup regions pointing to current region.
-						for (var j:int= 0; j < nreg; ++j) {
+						for (j= 0; j < nreg; ++j) {
 							if (regions[j].id == 0|| (regions[j].id & RecastConstants.RC_BORDER_REG) != 0)
 								continue;
 							// If another region was already merged into current region
@@ -802,7 +807,7 @@ public class RecastRegion {
 		} while (mergeCount > 0);
 
 		// Compress region Ids.
-		for (var i:int= 0; i < nreg; ++i) {
+		for (i= 0; i < nreg; ++i) {
 			regions[i].remap = false;
 			if (regions[i].id == 0)
 				continue; // Skip nil regions.
@@ -812,12 +817,12 @@ public class RecastRegion {
 		}
 
 		var regIdGen:int= 0;
-		for (var i:int= 0; i < nreg; ++i) {
+		for (i= 0; i < nreg; ++i) {
 			if (!regions[i].remap)
 				continue;
-			var oldId:int= regions[i].id;
+			oldId= regions[i].id;
 			var newId:int= ++regIdGen;
-			for (var j:int= i; j < nreg; ++j) {
+			for (j= i; j < nreg; ++j) {
 				if (regions[j].id == oldId) {
 					regions[j].id = newId;
 					regions[j].remap = false;
@@ -827,13 +832,13 @@ public class RecastRegion {
 		maxRegionId = regIdGen;
 
 		// Remap regions.
-		for (var i:int= 0; i < chf.spanCount; ++i) {
+		for (i= 0; i < chf.spanCount; ++i) {
 			if ((srcReg[i] & RecastConstants.RC_BORDER_REG) == 0)
 				srcReg[i] = regions[srcReg[i]].id;
 		}
 
 		// Return regions that we found to be overlapping.
-		for (var i:int= 0; i < nreg; ++i)
+		for (i= 0; i < nreg; ++i)
 			if (regions[i].overlap)
 				overlaps.add(regions[i].id);
 
@@ -865,8 +870,8 @@ public class RecastRegion {
 				var c:CompactCell= chf.cells[x + y * w];
 
 				lregs.clear();
-
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					var ri:int= srcReg[i];
 					if (ri == 0|| ri >= nreg)
@@ -897,7 +902,7 @@ public class RecastRegion {
 				}
 
 				// Update overlapping regions.
-				for (var i:int= 0; i < lregs.size() - 1; ++i) {
+				for (i= 0; i < lregs.size() - 1; ++i) {
 					for (var j:int= i + 1; j < lregs.size(); ++j) {
 						if (lregs.get(i) != lregs.get(j)) {
 							var ri2:Region= regions[lregs.get(i)];
@@ -914,12 +919,12 @@ public class RecastRegion {
 		// Create 2D layers from regions.
 		var layerId:int= 1;
 
-		for (var i:int= 0; i < nreg; ++i)
+		for (i= 0; i < nreg; ++i)
 			regions[i].id = 0;
 
 		// Merge montone regions to create non-overlapping areas.
 		var stack:Array = [];
-		for (var i:int= 1; i < nreg; ++i) {
+		for (i= 1; i < nreg; ++i) {
 			var root:Region= regions[i];
 			// Skip already visited.
 			if (root.id != 0)
@@ -933,10 +938,10 @@ public class RecastRegion {
 
 			while (stack.size() > 0) {
 				// Pop front
-				var reg:Region= regions[stack.remove(0)];
+				reg= regions[stack.remove(0)];
 
 				var ncons:int= reg.connections.size();
-				for (var j:int= 0; j < ncons; ++j) {
+				for (j= 0; j < ncons; ++j) {
 					var nei:int= reg.connections.get(j);
 					var regn:Region= regions[nei];
 					// Skip already visited.
@@ -959,7 +964,7 @@ public class RecastRegion {
 					// Mark layer id
 					regn.id = layerId;
 					// Merge current layers to root.
-					for (var k:int= 0; k < regn.floors.size(); ++k)
+					for (k= 0; k < regn.floors.size(); ++k)
 						addUniqueFloorRegion(root, regn.floors.get(k));
 					root.ymin = Math.min(root.ymin, regn.ymin);
 					root.ymax = Math.max(root.ymax, regn.ymax);
@@ -973,17 +978,17 @@ public class RecastRegion {
 		}
 
 		// Remove small regions
-		for (var i:int= 0; i < nreg; ++i) {
+		for (i= 0; i < nreg; ++i) {
 			if (regions[i].spanCount > 0&& regions[i].spanCount < minRegionArea && !regions[i].connectsToBorder) {
 				var reg2:int= regions[i].id;
-				for (var j:int= 0; j < nreg; ++j)
+				for (j= 0; j < nreg; ++j)
 					if (regions[j].id == reg2)
 						regions[j].id = 0;
 			}
 		}
 
 		// Compress region Ids.
-		for (var i:int= 0; i < nreg; ++i) {
+		for (i= 0; i < nreg; ++i) {
 			regions[i].remap = false;
 			if (regions[i].id == 0)
 				continue; // Skip nil regions.
@@ -993,12 +998,12 @@ public class RecastRegion {
 		}
 
 		var regIdGen:int= 0;
-		for (var i:int= 0; i < nreg; ++i) {
+		for (i= 0; i < nreg; ++i) {
 			if (!regions[i].remap)
 				continue;
 			var oldId:int= regions[i].id;
 			var newId:int= ++regIdGen;
-			for (var j:int= i; j < nreg; ++j) {
+			for (j= i; j < nreg; ++j) {
 				if (regions[j].id == oldId) {
 					regions[j].id = newId;
 					regions[j].remap = false;
@@ -1008,7 +1013,7 @@ public class RecastRegion {
 		maxRegionId = regIdGen;
 
 		// Remap regions.
-		for (var i:int= 0; i < chf.spanCount; ++i) {
+		for (i= 0; i < chf.spanCount; ++i) {
 			if ((srcReg[i] & RecastConstants.RC_BORDER_REG) == 0)
 				srcReg[i] = regions[srcReg[i]].id;
 		}
@@ -1057,7 +1062,7 @@ public class RecastRegion {
 		for (var y:int= miny; y < maxy; ++y) {
 			for (var x:int= minx; x < maxx; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					if (chf.areas[i] != RecastConstants.RC_NULL_AREA)
 						srcReg[i] = regId;
 				}
@@ -1128,8 +1133,8 @@ public class RecastRegion {
 
 			for (var x:int= borderSize; x < w - borderSize; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA)
 						continue;
@@ -1153,9 +1158,9 @@ public class RecastRegion {
 
 					// -y
 					if (RecastCommon.GetCon(s, 3) != RecastConstants.RC_NOT_CONNECTED) {
-						var ax:int= x + RecastCommon.GetDirOffsetX(3);
-						var ay:int= y + RecastCommon.GetDirOffsetY(3);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
+						 ax= x + RecastCommon.GetDirOffsetX(3);
+						 ay= y + RecastCommon.GetDirOffsetY(3);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
 						if (srcReg[ai] != 0&& (srcReg[ai] & RecastConstants.RC_BORDER_REG) == 0&& chf.areas[i] == chf.areas[ai]) {
 							var nr:int= srcReg[ai];
 							if (sweeps[previd].nei == 0|| sweeps[previd].nei == nr) {
@@ -1173,7 +1178,7 @@ public class RecastRegion {
 			}
 
 			// Create unique ID.
-			for (var i:int= 1; i < rid; ++i) {
+			for (i= 1; i < rid; ++i) {
 				if (sweeps[i].nei != RC_NULL_NEI && sweeps[i].nei != 0&& prev[sweeps[i].nei] == sweeps[i].ns) {
 					sweeps[i].id = sweeps[i].nei;
 				} else {
@@ -1182,10 +1187,9 @@ public class RecastRegion {
 			}
 
 			// Remap IDs
-			for (var x:int= borderSize; x < w - borderSize; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+			for (x= borderSize; x < w - borderSize; ++x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					if (srcReg[i] > 0&& srcReg[i] < rid)
 						srcReg[i] = sweeps[srcReg[i]].id;
 				}
@@ -1203,7 +1207,7 @@ public class RecastRegion {
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
 
 		// Store the result out.
-		for (var i:int= 0; i < chf.spanCount; ++i)
+		for (i= 0; i < chf.spanCount; ++i)
 			chf.spans[i].reg = srcReg[i];
 
 		ctx.stopTimer("BUILD_REGIONS");
@@ -1312,7 +1316,7 @@ public class RecastRegion {
 			for (var j:int= 0; j < lvlStacks.get(sId).size(); j += 3) {
 				var x:int= lvlStacks.get(sId).get(j);
 				var y:int= lvlStacks.get(sId).get(j + 1);
-				var i:int= lvlStacks.get(sId).get(j + 2);
+				i= lvlStacks.get(sId).get(j + 2);
 				if (i >= 0&& srcReg[i] == 0) {
 					if (floodRegion(x, y, i, level, regionId, chf, srcReg, srcDist, stack))
 						regionId++;
@@ -1324,7 +1328,7 @@ public class RecastRegion {
 
 		// Expand current regions until no empty connected cells found.
 		if (expandRegions(expandIters * 8, 0, chf, srcReg, srcDist, dstReg, dstDist, stack, true) != srcReg) {
-			var temp:Array= srcReg;
+			temp= srcReg;
 			srcReg = dstReg;
 			dstReg = temp;
 			temp = srcDist;
@@ -1348,7 +1352,7 @@ public class RecastRegion {
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
 
 		// Write the result out.
-		for (var i:int= 0; i < chf.spanCount; ++i)
+		for (i= 0; i < chf.spanCount; ++i)
 			chf.spans[i].reg = srcReg[i];
 
 		ctx.stopTimer("BUILD_REGIONS");
@@ -1398,8 +1402,8 @@ public class RecastRegion {
 
 			for (var x:int= borderSize; x < w - borderSize; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA)
 						continue;
@@ -1423,9 +1427,9 @@ public class RecastRegion {
 
 					// -y
 					if (RecastCommon.GetCon(s, 3) != RecastConstants.RC_NOT_CONNECTED) {
-						var ax:int= x + RecastCommon.GetDirOffsetX(3);
-						var ay:int= y + RecastCommon.GetDirOffsetY(3);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
+						ax= x + RecastCommon.GetDirOffsetX(3);
+						ay= y + RecastCommon.GetDirOffsetY(3);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
 						if (srcReg[ai] != 0&& (srcReg[ai] & RecastConstants.RC_BORDER_REG) == 0&& chf.areas[i] == chf.areas[ai]) {
 							var nr:int= srcReg[ai];
 							if (sweeps[previd].nei == 0|| sweeps[previd].nei == nr) {
@@ -1443,7 +1447,7 @@ public class RecastRegion {
 			}
 
 			// Create unique ID.
-			for (var i:int= 1; i < rid; ++i) {
+			for (i= 1; i < rid; ++i) {
 				if (sweeps[i].nei != RC_NULL_NEI && sweeps[i].nei != 0&& prev[sweeps[i].nei] == sweeps[i].ns) {
 					sweeps[i].id = sweeps[i].nei;
 				} else {
@@ -1452,10 +1456,10 @@ public class RecastRegion {
 			}
 
 			// Remap IDs
-			for (var x:int= borderSize; x < w - borderSize; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
+			for (x= borderSize; x < w - borderSize; ++x) {
+				 c= chf.cells[x + y * w];
 
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for ( i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					if (srcReg[i] > 0&& srcReg[i] < rid)
 						srcReg[i] = sweeps[srcReg[i]].id;
 				}
@@ -1471,7 +1475,7 @@ public class RecastRegion {
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
 
 		// Store the result out.
-		for (var i:int= 0; i < chf.spanCount; ++i)
+		for ( i= 0; i < chf.spanCount; ++i)
 			chf.spans[i].reg = srcReg[i];
 
 		ctx.stopTimer("BUILD_REGIONS");
@@ -1481,22 +1485,22 @@ public class RecastRegion {
 }
 
 class SweepSpan {
-		var rid:int; // row id
-		var id:int; // region id
-		var ns:int; // number samples
-		var nei:int; // neighbour id
+	public	var rid:int; // row id
+	public	var id:int; // region id
+	public	var ns:int; // number samples
+	public	var nei:int; // neighbour id
 	}
 	class Region {
-		var spanCount:int; // Number of spans belonging to this region
-		var id:int; // ID of the region
-		var areaType:int; // Are type.
-		var remap:Boolean;
-		var visited:Boolean;
-		var overlap:Boolean;
-		var connectsToBorder:Boolean;
-		var ymin:int, ymax;
-		var connections:Array;
-		var floors:Array;
+	public	var spanCount:int; // Number of spans belonging to this region
+	public	var id:int; // ID of the region
+	public	var areaType:int; // Are type.
+	public	var remap:Boolean;
+	public	var visited:Boolean;
+	public	var overlap:Boolean;
+	public	var connectsToBorder:Boolean;
+	public	var ymin:int, ymax:int;
+	public	var connections:Array;
+	public	var floors:Array;
 
 		public function Region(i:int) {
 			this.id = i;

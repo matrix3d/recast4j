@@ -33,7 +33,7 @@ public class ClosesPointOnPolyResult {
 	}
 
 	/** Returns the closest point on the polygon. [(x, y, z)] */
-	public float[] getClosest() {
+	public function getClosest():Array {
 		return closest;
 	}
 

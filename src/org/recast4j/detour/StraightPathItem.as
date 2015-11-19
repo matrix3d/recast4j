@@ -17,7 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import static org.recast4j.detour.DetourCommon.vCopy;
 
 //TODO: (PP) Add comments
 public class StraightPathItem {
@@ -25,11 +24,11 @@ public class StraightPathItem {
 	var flags:int;
 	var ref:Number;
 	public function StraightPathItem(pos:Array, flags:int, ref:Number) {
-		this.pos = vCopy(pos);
+		this.pos = DetourCommon.vCopy(pos);
 		this.flags = flags;
 		this.ref = ref;
 	}
-	public float[] getPos() {
+	public function getPos():Array {
 		return pos;
 	}
 	public function getFlags():int {

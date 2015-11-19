@@ -1,6 +1,8 @@
 package 
 {
 	import flash.display.Sprite;
+	import flash.system.System;
+	import org.recast4j.detour.NavMeshQuery;
 	/**
 	 * ...
 	 * @author lizhi
@@ -10,9 +12,8 @@ package
 		
 		public function Test() 
 		{
-			var arr:Array = [0, 0, 0];
-			arr.splice.apply(null, [0, 3, 1, 1]);
-			trace(arr);
+			new NavMeshQuery(null);
+			
 		}
 		
 	}

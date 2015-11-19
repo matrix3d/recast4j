@@ -17,25 +17,24 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 public class MoveAlongSurfaceResult {
 
 	/** The result position of the mover. [(x, y, z)] */
 	private var resultPos:Array;
 	/** The reference ids of the polygons visited during the move. */
-	private List<Long> visited;
+	private var visited:Array;
 
-	public function MoveAlongSurfaceResult(resultPos:Array, List<Long> visited) {
+	public function MoveAlongSurfaceResult(resultPos:Array, visited:Array) {
 		this.resultPos = resultPos;
 		this.visited = visited;
 	}
 
-	public float[] getResultPos() {
+	public function getResultPos():Array {
 		return resultPos;
 	}
 
-	public List<Long> getVisited() {
+	public function getVisited():Array {
 		return visited;
 	}
 

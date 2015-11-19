@@ -182,7 +182,7 @@ public class Recast {
 					var s2:CompactSpan= chf.spans[i];
 
 					for (var dir:int= 0; dir < 4; ++dir) {
-						RecastCommon.SetCon(s, dir, RecastConstants.RC_NOT_CONNECTED);
+						RecastCommon.SetCon(s2, dir, RecastConstants.RC_NOT_CONNECTED);
 						var nx:int= x + RecastCommon.GetDirOffsetX(dir);
 						var ny:int= y + RecastCommon.GetDirOffsetY(dir);
 						// First check that the neighbour cell is in bounds.

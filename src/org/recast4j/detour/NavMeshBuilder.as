@@ -17,8 +17,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.Arrays;
-import java.util.Comparator;
+import org.recast4j.Arrays;
+import org.recast4j.System;
 
 
 public class NavMeshBuilder {
@@ -100,13 +100,13 @@ public class NavMeshBuilder {
 
 			if (axis == 0) {
 				// Sort along x-axis
-				Arrays.sort(items, imin, imin + inum, new CompareItemX());
+				Arrays.sort(items, imin, imin + inum,  CompareItemX.compare);
 			} else if (axis == 1) {
 				// Sort along y-axis
-				Arrays.sort(items, imin, imin + inum, new CompareItemY());
+				Arrays.sort(items, imin, imin + inum,  CompareItemY.compare);
 			} else {
 				// Sort along z-axis
-				Arrays.sort(items, imin, imin + inum, new CompareItemZ());
+				Arrays.sort(items, imin, imin + inum,  CompareItemZ.compare);
 			}
 
 			var isplit:int= imin + inum / 2;
@@ -233,8 +233,8 @@ public class NavMeshBuilder {
 			offMeshConClass = new int[params.offMeshConCount * 2];
 
 			// Find tight heigh bounds, used for culling out off-mesh start locations.
-			var hmin:Number= Float.MAX_VALUE;
-			var hmax:Number= -Float.MAX_VALUE;
+			var hmin:Number= Number.MAX_VALUE;
+			var hmax:Number= -Number.MAX_VALUE;
 
 			if (params.detailVerts != null && params.detailVertsCount != 0) {
 				for (var i:int= 0; i < params.detailVertsCount; ++i) {
@@ -252,10 +252,10 @@ public class NavMeshBuilder {
 			}
 			hmin -= params.walkableClimb;
 			hmax += params.walkableClimb;
-			var bmin:Array= new float[3];
-			var bmax:Array= new float[3];
-			vCopy(bmin, params.bmin);
-			vCopy(bmax, params.bmax);
+			var bmin:Array= []//new float[3];
+			var bmax:Array= []//new float[3];
+			DetourCommon.vCopy2(bmin, params.bmin);
+			DetourCommon.vCopy2(bmax, params.bmax);
 			bmin[1] = hmin;
 			bmax[1] = hmax;
 
@@ -343,13 +343,13 @@ public class NavMeshBuilder {
 
 		var bvTreeSize:int= params.buildBvTree ? params.polyCount * 2: 0;
 		var header:MeshHeader= new MeshHeader();
-		var navVerts:Array= new float[3* totVertCount];
-		var navPolys:Array= new Poly[totPolyCount];
-		var navDMeshes:Array= new PolyDetail[params.polyCount];
-		var navDVerts:Array= new float[3* uniqueDetailVertCount];
-		var navDTris:Array= new int[4* detailTriCount];
-		var navBvtree:Array= new BVNode[bvTreeSize];
-		var offMeshCons:Array= new OffMeshConnection[storedOffMeshConCount];
+		var navVerts:Array= []//new float[3* totVertCount];
+		var navPolys:Array= []//new Poly[totPolyCount];
+		var navDMeshes:Array= []//new PolyDetail[params.polyCount];
+		var navDVerts:Array= []//new float[3* uniqueDetailVertCount];
+		var navDTris:Array= []//new int[4* detailTriCount];
+		var navBvtree:Array= []//new BVNode[bvTreeSize];
+		var offMeshCons:Array= []//new OffMeshConnection[storedOffMeshConCount];
 
 		// Store header
 		header.magic = MeshHeader.DT_NAVMESH_MAGIC;
@@ -361,8 +361,8 @@ public class NavMeshBuilder {
 		header.polyCount = totPolyCount;
 		header.vertCount = totVertCount;
 		header.maxLinkCount = maxLinkCount;
-		vCopy(header.bmin, params.bmin);
-		vCopy(header.bmax, params.bmax);
+		DetourCommon.vCopy2(header.bmin, params.bmin);
+		DetourCommon.vCopy2(header.bmax, params.bmax);
 		header.detailMeshCount = params.polyCount;
 		header.detailVertCount = uniqueDetailVertCount;
 		header.detailTriCount = detailTriCount;
@@ -553,7 +553,7 @@ class BVItem {
 	class CompareItemX {
 
 		
- public function compare(a:BVItem, b:BVItem):int {
+		public static function compare(a:BVItem, b:BVItem):int {
 			if (a.bmin[0] < b.bmin[0])
 				return -1;
 			if (a.bmin[0] > b.bmin[0])
@@ -566,7 +566,7 @@ class BVItem {
  class CompareItemY  {
 
 		
- public function compare(a:BVItem, b:BVItem):int {
+	 public static function compare(a:BVItem, b:BVItem):int {
 			if (a.bmin[1] < b.bmin[1])
 				return -1;
 			if (a.bmin[1] > b.bmin[1])
@@ -579,7 +579,7 @@ class BVItem {
 	 class CompareItemZ  {
 
 		
- public function compare(a:BVItem, b:BVItem):int {
+		 public static function compare(a:BVItem, b:BVItem):int {
 			if (a.bmin[2] < b.bmin[2])
 				return -1;
 			if (a.bmin[2] > b.bmin[2])

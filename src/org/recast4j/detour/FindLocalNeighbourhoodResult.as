@@ -17,23 +17,22 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 //TODO: (PP) Add comments
 public class FindLocalNeighbourhoodResult {
-	private List<Long> refs;
-	private List<Long> parentRefs;
+	private var refs:Array;
+	private var parentRefs:Array;
 
-	public function FindLocalNeighbourhoodResult(List<Long> refs, List<Long> parentRefs) {
+	public function FindLocalNeighbourhoodResult(refs:Array,parentRefs:Array) {
 		this.refs = refs;
 		this.parentRefs = parentRefs;
 	}
 
-	public List<Long> getRefs() {
+	public function getRefs() :Array{
 		return refs;
 	}
 
-	public List<Long> getParentRefs() {
+	public function getParentRefs():Array {
 		return parentRefs;
 	}
 

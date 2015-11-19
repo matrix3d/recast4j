@@ -32,7 +32,7 @@ public class FindNearestPolyResult {
 	}
 
 	/** Returns the nearest point on the polygon. [opt] [(x, y, z)] */
-	public float[] getNearestPos() {
+	public function getNearestPos():Array {
 		return nearestPos;
 	}
 

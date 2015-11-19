@@ -17,23 +17,22 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 public class GetPolyWallSegmentsResult {
 
-	private List<float[]> segmentVerts;
-	private List<Long> segmentRefs;
+	private var segmentVerts:Array;
+	private var segmentRefs:Array;
 
-	public function GetPolyWallSegmentsResult(List<float[]> segmentVerts, List<Long> segmentRefs) {
+	public function GetPolyWallSegmentsResult(segmentVerts:Array, segmentRefs:Array) {
 		this.segmentVerts = segmentVerts;
 		this.segmentRefs = segmentRefs;
 	}
 
-	public List<float[]> getSegmentVerts() {
+	public function getSegmentVerts():Array {
 		return segmentVerts;
 	}
 
-	public List<Long> getSegmentRefs() {
+	public function getSegmentRefs():Array {
 		return segmentRefs;
 	}
 

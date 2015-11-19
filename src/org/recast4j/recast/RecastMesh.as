@@ -17,6 +17,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
+	import org.recast4j.Arrays;
+	import org.recast4j.System;
 
 public class RecastMesh {
 
@@ -851,7 +853,7 @@ public class RecastMesh {
 
 		mesh.verts = new int[maxVertices * 3];
 		mesh.polys = new int[maxTris * nvp * 2];
-		Arrays.fill(mesh.polys, RecastConstants.RC_MESH_NULL_IDX);
+		Arrays.fill2(mesh.polys, RecastConstants.RC_MESH_NULL_IDX);
 		mesh.regs = new int[maxTris];
 		mesh.areas = new int[maxTris];
 
@@ -904,7 +906,7 @@ public class RecastMesh {
 
 			// Build initial polygons.
 			var npolys:int= 0;
-			Arrays.fill(polys, RecastConstants.RC_MESH_NULL_IDX);
+			Arrays.fill2(polys, RecastConstants.RC_MESH_NULL_IDX);
 			for (var j:int= 0; j < ntris; ++j) {
 				var t:int= j * 3;
 				if (tris[t + 0] != tris[t + 1] && tris[t + 0] != tris[t + 2] && tris[t + 1] != tris[t + 2]) {

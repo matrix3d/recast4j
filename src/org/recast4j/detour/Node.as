@@ -27,7 +27,7 @@ public class Node {
 	public var index:int;
 
 	/** Position of the node. */
-	var pos:Array= new float[3]; 
+	var pos:Array= []//new float[3]; 
 	/** Cost from previous node to current node. */
 	var cost:Number;
 	/** Cost up to the node. */

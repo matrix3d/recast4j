@@ -48,7 +48,7 @@ public class DetourCommon {
 		return dest;
 	}
 
-	public static function vLerp(verts:Array, v1:int, v2:int, t:Number):Array {
+	public static function vLerp2(verts:Array, v1:int, v2:int, t:Number):Array {
 		var dest:Array= []
 		dest[0] = verts[v1 + 0] + (verts[v2 + 0] - verts[v1 + 0]) * t;
 		dest[1] = verts[v1 + 1] + (verts[v2 + 1] - verts[v1 + 1]) * t;
@@ -56,7 +56,7 @@ public class DetourCommon {
 		return dest;
 	}
 
-	public static function vLerp(v1:Array,v2:Array, t:Number):Array {
+	public static function vLerp3(v1:Array,v2:Array, t:Number):Array {
 		var dest:Array= []
 		dest[0] = v1[0] + (v2[0] - v1[0]) * t;
 		dest[1] = v1[1] + (v2[1] - v1[1]) * t;
@@ -72,7 +72,7 @@ public class DetourCommon {
 		return dest;
 	}
 
-	public static function vSub(v1:Array, v2:Array):Array {
+	public static function vSub2(v1:Array, v2:Array):Array {
 		var dest:Array= []
 		dest[0] = v1[0] - v2[0];
 		dest[1] = v1[1] - v2[1];
@@ -88,7 +88,7 @@ public class DetourCommon {
 		return dest;
 	}
 
-	public static function vAdd(v1:Array,v2:Array):Array {
+	public static function vAdd2(v1:Array,v2:Array):Array {
 		var dest:Array= [];
 		dest[0] = v1[0] + v2[0];
 		dest[1] = v1[1] + v2[1];
@@ -110,13 +110,13 @@ public class DetourCommon {
 		out[2] = c;
 	}
 
-	public static function vCopy(out:Array, in_:Array):void {
+	public static function vCopy2(out:Array, in_:Array):void {
 		out[0] = in_[0];
 		out[1] = in_[1];
 		out[2] = in_[2];
 	}
 
-	public static function vCopy(out:Array, in_:Array, i:int):void {
+	public static function vCopy3(out:Array, in_:Array, i:int):void {
 		out[0] = in_[i];
 		out[1] = in_[i + 1];
 		out[2] = in_[i + 2];
@@ -142,7 +142,7 @@ public class DetourCommon {
 		var dx:Number= v2[0] - v1[0];
 		var dy:Number= v2[1] - v1[1];
 		var dz:Number= v2[2] - v1[2];
-		return float(Math.sqrt(dx * dx + dy * dy + dz * dz));
+		return (Math.sqrt(dx * dx + dy * dy + dz * dz));
 	}
 
 	/// Returns the distance between two points.
@@ -168,21 +168,21 @@ public class DetourCommon {
 	}
 
 	public static function vLen(v:Array):Number {
-		return float(Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
+		return (Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
 	}
 
-	static function vDist(v1:Array, verts:Array, i:int):Number {
+	static function vDist2(v1:Array, verts:Array, i:int):Number {
 		var dx:Number= verts[i] - v1[0];
 		var dy:Number= verts[i + 1] - v1[1];
 		var dz:Number= verts[i + 2] - v1[2];
-		return float(Math.sqrt(dx * dx + dy * dy + dz * dz));
+		return (Math.sqrt(dx * dx + dy * dy + dz * dz));
 	}
 
 	public static function clamp(v:Number, min:Number, max:Number):Number {
 		return Math.max(Math.min(v, max), min);
 	}
 
-	public static function clamp(v:int, min:int, max:int):int {
+	public static function clamp2(v:int, min:int, max:int):int {
 		return Math.max(Math.min(v, max), min);
 	}
 
@@ -196,13 +196,13 @@ public class DetourCommon {
 	public static function vDist2D(v1:VectorPtr, v2:VectorPtr):Number {
 		var dx:Number= v2.get(0) - v1.get(0);
 		var dz:Number= v2.get(2) - v1.get(2);
-		return float(Math.sqrt(dx * dx + dz * dz));
+		return (Math.sqrt(dx * dx + dz * dz));
 	}
 
-	public static function vDist2D(v1:Array, v2:Array):Number {
+	public static function vDist2D2(v1:Array, v2:Array):Number {
 		var dx:Number= v2[0] - v1[0];
 		var dz:Number= v2[2] - v1[2];
-		return float(Math.sqrt(dx * dx + dz * dz));
+		return (Math.sqrt(dx * dx + dz * dz));
 	}
 
 	public static function vDist2DSqr(v1:VectorPtr, v2:VectorPtr):Number {
@@ -211,7 +211,7 @@ public class DetourCommon {
 		return dx * dx + dz * dz;
 	}
 
-	public static function vDist2DSqr(v1:Array, v2:Array):Number {
+	public static function vDist2DSqr2(v1:Array, v2:Array):Number {
 		var dx:Number= v2[0] - v1[0];
 		var dz:Number= v2[2] - v1[2];
 		return dx * dx + dz * dz;
@@ -251,7 +251,7 @@ public class DetourCommon {
 		return u[0] * v[0] + u[2] * v[2];
 	}
 
-	static function vDot2D(u:Array, v:Array, vi:int):Number {
+	static function vDot2D2(u:Array, v:Array, vi:int):Number {
 		return u[0] * v[vi] + u[2] * v[vi + 2];
 	}
 
@@ -284,7 +284,7 @@ public class DetourCommon {
 		return acx * abz - abx * acz;
 	}
 
-	public static function triArea2D(a:Array, b:Array, c:Array):Number {
+	public static function triArea2D2(a:Array, b:Array, c:Array):Number {
 		var abx:Number= b[0] - a[0];
 		var abz:Number= b[2] - a[2];
 		var acx:Number= c[0] - a[0];
@@ -362,7 +362,7 @@ public class DetourCommon {
 		// If point lies inside the triangle, return interpolated ycoord.
 		if (u >= -EPS && v >= -EPS && (u + v) <= 1+ EPS) {
 			var h:Number= a.get(1) + v0[1] * u + v1[1] * v;
-			return new Tupple2<>(true, h);
+			return new Tupple2(true, h);
 		}
 
 		return new Tupple2(false, null);
@@ -395,22 +395,22 @@ public class DetourCommon {
 			if (((verts[vi + 2] > pt[2]) != (verts[vj + 2] > pt[2])) && (pt[0] < (verts[vj + 0] - verts[vi + 0])
 					* (pt[2] - verts[vi + 2]) / (verts[vj + 2] - verts[vi + 2]) + verts[vi + 0]))
 				c = !c;
-			Tupple2<Float, Float> edet = distancePtSegSqr2D(pt, verts, vj, vi);
+			var edet:Tupple2 = distancePtSegSqr2D2(pt, verts, vj, vi);
 			ed[j] = edet.first;
 			et[j] = edet.second;
 		}
 		return c;
 	}
 
-	static float[] projectPoly(var axis:Array, var poly:Array, var npoly:int) {
+	static public function projectPoly(axis:Array, poly:Array, npoly:int):Array {
 		var rmin:Number, rmax;
-		rmin = rmax = vDot2D(axis, poly, 0);
+		rmin = rmax = vDot2D2(axis, poly, 0);
 		for (var i:int= 1; i < npoly; ++i) {
-			var d:Number= vDot2D(axis, poly, i * 3);
+			var d:Number= vDot2D2(axis, poly, i * 3);
 			rmin = Math.min(rmin, d);
 			rmax = Math.max(rmax, d);
 		}
-		return new float[] { rmin, rmax };
+		return [ rmin, rmax ];
 	}
 
 	static function overlapRange(amin:Number, amax:Number, bmin:Number, bmax:Number, eps:Number):Boolean {
@@ -428,7 +428,7 @@ public class DetourCommon {
 			var va:int= j * 3;
 			var vb:int= i * 3;
 
-			var n:Array= new float[] { polya[vb + 2] - polya[va + 2], 0, -(polya[vb + 0] - polya[va + 0]) };
+			var n:Array= [ polya[vb + 2] - polya[va + 2], 0, -(polya[vb + 0] - polya[va + 0]) ];
 
 			var aminmax:Array= projectPoly(n, polya, npolya);
 			var bminmax:Array= projectPoly(n, polyb, npolyb);
@@ -441,7 +441,7 @@ public class DetourCommon {
 			var va:int= j * 3;
 			var vb:int= i * 3;
 
-			var n:Array= new float[] { polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]) };
+			var n:Array= [ polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]) ];
 
 			var aminmax:Array= projectPoly(n, polya, npolya);
 			var bminmax:Array= projectPoly(n, polyb, npolyb);
@@ -455,7 +455,7 @@ public class DetourCommon {
 
 	// Returns a random point in a convex polygon.
 	// Adapted from Graphics Gems article.
-	static float[] randomPointInConvexPoly(var pts:Array, var npts:int, var areas:Array, var s:Number, var t:Number) {
+	static public function randomPointInConvexPoly( pts:Array,  npts:int,  areas:Array,  s:Number,  t:Number):Array {
 		// Calc triangle araes
 		var areasum:Number= 0.0;
 		for (var i:int= 2; i < npts; i++) {
@@ -477,7 +477,7 @@ public class DetourCommon {
 			acc += dacc;
 		}
 
-		var v:Number= float(Math.sqrt(t));
+		var v:Number= (Math.sqrt(t));
 
 		var a:Number= 1- v;
 		var b:Number= (1- u) * v;
@@ -486,9 +486,9 @@ public class DetourCommon {
 		var pb:int= (tri - 1) * 3;
 		var pc:int= tri * 3;
 
-		return new float[] { a * pts[pa] + b * pts[pb] + c * pts[pc],
+		return [ a * pts[pa] + b * pts[pb] + c * pts[pc],
 				a * pts[pa + 1] + b * pts[pb + 1] + c * pts[pc + 1],
-				a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2] };
+				a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2] ];
 	}
 
 	static function nextPow2(v:int):int {
@@ -501,24 +501,17 @@ public class DetourCommon {
 		v++;
 		return v;
 	}
-}
 
 
 
-	public static 
-internal class IntersectResult {
-		var intersects:Boolean;
-		var tmin:Number;
-		var tmax:Number= 1;
-		var segMin:int= -1;
-		var segMax:int= -1;
-	}
+
+	 
 
 	static function intersectSegmentPoly2D(p0:Array, p1:Array, verts:Array, nverts:int):IntersectResult {
 
 		var result:IntersectResult= new IntersectResult();
 		var EPS:Number= 0.00000001;
-		var dir:Array= vSub(p1, p0);
+		var dir:Array= vSub2(p1, p0);
 
 		var p0v:VectorPtr= new VectorPtr(p0);
 		for (var i:int= 0, j = nverts - 1; i < nverts; j = i++) {
@@ -559,7 +552,7 @@ internal class IntersectResult {
 		return result;
 	}
 
-	public static Tupple2<Float, Float> distancePtSegSqr2D(var pt:Array, var verts:Array, var p:int, var q:int) {
+	public static function distancePtSegSqr2D2( pt:Array,  verts:Array,  p:int,  q:int):Tupple2 {
 		var pqx:Number= verts[q + 0] - verts[p + 0];
 		var pqz:Number= verts[q + 2] - verts[p + 2];
 		var dx:Number= pt[0] - verts[p + 0];
@@ -574,7 +567,7 @@ internal class IntersectResult {
 			t = 1;
 		dx = verts[p + 0] + t * pqx - pt[0];
 		dz = verts[p + 2] + t * pqz - pt[2];
-		return new Tupple2<>(dx * dx + dz * dz, t);
+		return new Tupple2(dx * dx + dz * dz, t);
 	}
 
 	static function oppositeTile(side:int):int {
@@ -585,24 +578,32 @@ internal class IntersectResult {
 		return a[0] * b[2] - a[2] * b[0];
 	}
 
-	static Tupple3<Boolean, Float, Float> intersectSegSeg2D(var ap:Array, var aq:Array, var bp:Array, var bq:Array) {
-		var u:Array= vSub(aq, ap);
-		var v:Array= vSub(bq, bp);
-		var w:Array= vSub(ap, bp);
+	static public function intersectSegSeg2D( ap:Array,  aq:Array,  bp:Array,  bq:Array):Tupple3 {
+		var u:Array= vSub2(aq, ap);
+		var v:Array= vSub2(bq, bp);
+		var w:Array= vSub2(ap, bp);
 		var d:Number= vperpXZ(u, v);
 		if (Math.abs(d) < 1e-6)
-			return new Tupple3<>(false, 0, 0);
+			return new Tupple3(false, 0, 0);
 		var s:Number= vperpXZ(v, w) / d;
 		var t:Number= vperpXZ(u, w) / d;
-		return new Tupple3<>(true, s, t);
+		return new Tupple3(true, s, t);
 	}
 
-	public static float[] vScale(var in:Array, var scale:Number) {
-		var out:Array= new float[3];
-		out[0] = in[0] * scale;
-		out[1] = in[1] * scale;
-		out[2] = in[2] * scale;
+	public static function  vScale( in_:Array,  scale:Number):Array {
+		var out:Array= [];
+		out[0] = in_[0] * scale;
+		out[1] = in_[1] * scale;
+		out[2] = in_[2] * scale;
 		return out;
 	}
 
 }
+}
+class IntersectResult {
+		var intersects:Boolean;
+		var tmin:Number;
+		var tmax:Number= 1;
+		var segMin:int= -1;
+		var segMax:int= -1;
+	}

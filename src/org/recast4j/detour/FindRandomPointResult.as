@@ -39,7 +39,7 @@ public class FindRandomPointResult {
 	}
 
 	/// @param[out] randomPt The random location.
-	public float[] getRandomPt() {
+	public function getRandomPt():Array {
 		return randomPt;
 	}
 

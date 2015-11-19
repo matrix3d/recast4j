@@ -47,7 +47,7 @@ public class QueryFilter {
 
 	private var m_excludeFlags:int;
 	private var m_includeFlags:int;
-	var m_areaCost:Array= new float[NavMesh.DT_MAX_AREAS];
+	var m_areaCost:Array= []//new float[NavMesh.DT_MAX_AREAS];
 
 	public function QueryFilter() {
 		this.m_includeFlags = 0;
@@ -62,7 +62,7 @@ public class QueryFilter {
 
 	public function getCost(pa:Array, pb:Array, prevRef:Number, prevTile:MeshTile, prevPoly:Poly, curRef:Number,
 			curTile:MeshTile, curPoly:Poly, nextRef:Number, nextTile:MeshTile, nextPoly:Poly):Number {
-		return vDist(pa, pb) * m_areaCost[curPoly.getArea()];
+		return DetourCommon.vDist(pa, pb) * m_areaCost[curPoly.getArea()];
 	}
 }
 }

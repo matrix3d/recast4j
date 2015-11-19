@@ -17,29 +17,28 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.List;
 
 // TODO: (PP) Add comments
 public class FindPolysAroundResult {
-	private List<Long> refs;
-	private List<Long> parentRefs;
-	private List<Float> costs;
+	private var refs:Array;
+	private var parentRefs:Array;
+	private var costs:Array;
 
-	public function FindPolysAroundResult(List<Long> refs, List<Long> parentRefs, List<Float> costs) {
+	public function FindPolysAroundResult(refs:Array,parentRefs:Array,costs:Array) {
 		this.refs = refs;
 		this.parentRefs = parentRefs;
 		this.costs = costs;
 	}
 
-	public List<Long> getRefs() {
+	public function getRefs():Array {
 		return refs;
 	}
 
-	public List<Long> getParentRefs() {
+	public function getParentRefs():Array {
 		return parentRefs;
 	}
 
-	public List<Float> getCosts() {
+	public function getCosts():Array {
 		return costs;
 	}
 

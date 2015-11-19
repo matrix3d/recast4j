@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.recast {
+	import org.recast4j.Arrays;
 
 public class RecastContour {
 	private static function getCornerHeight(x:int, y:int, i:int, dir:int, chf:CompactHeightfield, isBorderVertex:Boolean):int {
@@ -573,12 +574,7 @@ public class RecastContour {
 					}
 				}
 				// Sort potential diagonals by distance, we want to make the connection as short as possible.
-				//Arrays.sort(diags, 0, ndiags, new CompareDiagDist());
-				var temp:Array = diags.slice(0,ndiags);
-				temp.sort(CompareDiagDist.compare);
-				temp.unshift(ndiags);
-				temp.unshift(0);
-				diags.splice.apply(null, temp);
+				Arrays.sort(diags, 0, ndiags, CompareDiagDist.compare);
 				
 				
 				// Find a diagonal that is not intersecting the outline not the remaining holes.

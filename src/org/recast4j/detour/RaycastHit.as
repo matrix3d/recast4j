@@ -17,8 +17,6 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides information about raycast hit. Filled by NavMeshQuery::raycast
@@ -27,9 +25,9 @@ public class RaycastHit {
 	/** The hit parameter. (Float.MAX_VALUE if no wall hit.) */
 	public var t:Number;
 	/** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
-	public var hitNormal:Array= new float[3];
+	public var hitNormal:Array= []//new float[3];
 	/** Visited polygons. */
-	public List<Long> path = new ArrayList<>();
+	public var path:Array = [];// new ArrayList<>();
 	/** The cost of the path until hit. */
 	public var pathCost:Number;
 }

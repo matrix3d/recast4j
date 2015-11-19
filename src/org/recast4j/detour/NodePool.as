@@ -17,15 +17,11 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class NodePool {
 
-	Map<Long, List<Node>> m_map = new HashMap<>();
-	ArrayList<Node> m_nodes = new ArrayList<Node>();
+	var m_map:Object = { };//new HashMap<>();
+	var m_nodes:Array = [];// new ArrayList<Node>();
 
 	public function NodePool() {
 
@@ -36,26 +32,26 @@ public class NodePool {
 		m_map.clear();
 	}
 
-	List<Node> findNodes(var id:Number, var maxNodes:int) {
-		List<Node> nodes = m_map.get(id);
+	public function findNodes( id:Number,  maxNodes:int):Array {
+		var nodes:Array = m_map[id];
 		if (nodes == null) {
-			nodes = new ArrayList<>();
+			nodes = [];
 		}
 		return nodes;
 	}
 
 	function findNode(id:Number):Node {
-		List<Node> nodes = m_map.get(id);
+		var nodes:Array = m_map[id];
 		if (nodes != null && !nodes.isEmpty()) {
-			return nodes.get(0);
+			return nodes[0];
 		}
 		return null;
 	}
 
-	function findNode(id:Number, state:int):Node {
-		List<Node> nodes = m_map.get(id);
+	function findNode2(id:Number, state:int):Node {
+		var nodes:Array = m_map[id];
 		if (nodes != null) {
-			for (Node node : nodes) {
+			for each(var node:Node in  nodes) {
 				if (node.state == state) {
 					return node;
 				}
@@ -65,9 +61,9 @@ public class NodePool {
 	}
 
 	function getNode(id:Number, state:int):Node {
-		List<Node> nodes = m_map.get(id);
+		var nodes:Array = m_map[id];
 		if (nodes != null) {
-			for (Node node : nodes) {
+			for each(var node:Node in nodes) {
 				if (node.state == state) {
 					return node;
 				}
@@ -81,9 +77,9 @@ public class NodePool {
 		node.id = id;
 		node.state = state;
 		m_nodes.add(node);
-		List<Node> nodes = m_map.get(id);
+		var nodes:Array = m_map[id];
 		if (nodes == null) {
-			nodes = new ArrayList<>();
+			nodes = [];
 			m_map.put(id, nodes);
 		}
 		nodes.add(node);
@@ -102,7 +98,7 @@ public class NodePool {
 		return m_nodes.size();
 	}
 
-	public function getNode(ref:Number):Node {
+	public function getNode2(ref:Number):Node {
 		return getNode(ref, 0);
 	}
 
