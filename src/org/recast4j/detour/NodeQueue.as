@@ -17,35 +17,72 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import java.util.PriorityQueue;
 
 public class NodeQueue {
 
-	private PriorityQueue<Node> m_heap = new PriorityQueue<>((n1, n2) -> Float.compare(n1.total, n2.total));
-	
-	public function clear():void {
-		m_heap.clear();
-	}
-	
-	public function top():Node {
-		return m_heap.peek();
-	}
-
-	public function pop():Node {
-		return m_heap.poll();
-	}
-	
-	public function push(node:Node):void {
-		m_heap.offer(node);
-	}
-
-	public function modify(node:Node):void {
-		m_heap.remove(node);
-		m_heap.offer(node);
-	}
-
-	public function isEmpty():Boolean {
-		return m_heap.isEmpty();
-	}
+	private var m_heap:Array=[null];
+		private var m_capacity:int;
+		private       var m_size:int;
+		
+		public function NodeQueue() {
+		}
+		
+		public function clear():void {
+			m_size = 0;
+		}
+		
+		public function getCapacity():int {
+			return m_capacity;
+		}
+		
+		public function isEmpty():Boolean {
+			return m_size == 0;
+		}
+		
+		public function push(node:Node):void {
+			m_size++;
+			bubbleUp(m_size - 1, node);
+		}
+		
+		private function bubbleUp(i:int, node:Node):void {
+			var parent:int= (i - 1) / 2;
+			// note: (index > 0) means there is a parent
+			while ((i > 0) && (m_heap[parent].total > node.total)) {
+				m_heap[i] = m_heap[parent];
+				i = parent;
+				parent = (i - 1) / 2;
+			}
+			m_heap[i] = node;
+		}
+		
+		public function modify(node:Node):void {
+			for (var i:int= 0; i < m_size; ++i) {
+				if (m_heap[i] == node) {
+					bubbleUp(i, node);
+					return;
+				}
+			}
+		}
+		
+		public function pop():Node {
+			var result:Node= m_heap[0];
+			m_size--;
+			trickleDown(0, m_heap[m_size]);
+			return result;
+		}
+		
+		private function trickleDown(i:int, node:Node):void {
+			var child:int= (i * 2) + 1;
+			while (child < m_size) {
+				if (((child + 1) < m_size) &&
+					(m_heap[child].total > m_heap[child + 1].total)) {
+					child++;
+				}
+				m_heap[i] = m_heap[child];
+				i = child;
+				child = (i * 2) + 1;
+			}
+			bubbleUp(i, node);
+		}
 }
 }

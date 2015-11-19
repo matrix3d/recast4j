@@ -18,8 +18,8 @@ freely, subject to the following restrictions:
 */
 package org.recast4j.detour {
 
-internal class QueryData {
-	var status:Status;
+ class QueryData {
+	var status:int;
 	var lastBestNode:Node;
 	var lastBestNodeCost:Number;
 	var startRef:Number, endRef;

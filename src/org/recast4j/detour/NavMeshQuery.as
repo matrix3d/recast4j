@@ -16,33 +16,8 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-package org.recast4j.detour {/*
-import static org.recast4j.detour.DetourCommon.clamp;
-import static org.recast4j.detour.DetourCommon.closestHeightPointTriangle;
-import static org.recast4j.detour.DetourCommon.distancePtPolyEdgesSqr;
-import static org.recast4j.detour.DetourCommon.distancePtSegSqr2D;
-import static org.recast4j.detour.DetourCommon.intersectSegSeg2D;
-import static org.recast4j.detour.DetourCommon.intersectSegmentPoly2D;
-import static org.recast4j.detour.DetourCommon.overlapBounds;
-import static org.recast4j.detour.DetourCommon.overlapPolyPoly2D;
-import static org.recast4j.detour.DetourCommon.overlapQuantBounds;
-import static org.recast4j.detour.DetourCommon.pointInPolygon;
-import static org.recast4j.detour.DetourCommon.randomPointInConvexPoly;
-import static org.recast4j.detour.DetourCommon.sqr;
-import static org.recast4j.detour.DetourCommon.triArea2D;
-import static org.recast4j.detour.DetourCommon.vAdd;
-import static org.recast4j.detour.DetourCommon.vCopy;
-import static org.recast4j.detour.DetourCommon.vDist;
-import static org.recast4j.detour.DetourCommon.vDist2D;
-import static org.recast4j.detour.DetourCommon.vDistSqr;
-import static org.recast4j.detour.DetourCommon.vEqual;
-import static org.recast4j.detour.DetourCommon.vLenSqr;
-import static org.recast4j.detour.DetourCommon.vLerp;
-import static org.recast4j.detour.DetourCommon.vMad;
-import static org.recast4j.detour.DetourCommon.vMax;
-import static org.recast4j.detour.DetourCommon.vMin;
-import static org.recast4j.detour.DetourCommon.vNormalize;
-import static org.recast4j.detour.DetourCommon.vSub;*/
+package org.recast4j.detour {
+import org.recast4j.System;
 
 
 
@@ -132,7 +107,7 @@ public class NavMeshQuery {
 				var va:int= p.verts[0] * 3;
 				var vb:int= p.verts[j - 1] * 3;
 				var vc:int= p.verts[j] * 3;
-				polyArea += triArea2D(tile.data.verts, va, vb, vc);
+				polyArea += DetourCommon.triArea2D(tile.data.verts, va, vb, vc);
 			}
 
 			// Choose random polygon weighted by area, using reservoi sampling.
@@ -148,8 +123,8 @@ public class NavMeshQuery {
 			return new FindRandomPointResult(Status.FAILURE, 0, null);
 
 		// Randomly pick point on polygon.
-		var verts:Array= new float[3* NavMesh.DT_VERTS_PER_POLYGON];
-		var areas:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var verts:Array= []//new float[3* NavMesh.DT_VERTS_PER_POLYGON];
+		var areas:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
 		System.arraycopy(tile.data.verts, poly.verts[0] * 3, verts, 0, 3);
 		for (var j:int= 1; j < poly.vertCount; ++j) {
 			System.arraycopy(tile.data.verts, poly.verts[j] * 3, verts, j * 3, 3);
@@ -158,7 +133,7 @@ public class NavMeshQuery {
 		var s:Number= frand.frand();
 		var t2:Number= frand.frand();
 
-		var pt:Array= randomPointInConvexPoly(verts, poly.vertCount, areas, s, t2);
+		var pt:Array= DetourCommon.randomPointInConvexPoly(verts, poly.vertCount, areas, s, t2);
 
 		pt[1] = getPolyHeight(polyRef, new VectorPtr(pt, 0));
 
@@ -182,19 +157,19 @@ public class NavMeshQuery {
 
 		// Validate input
 		if (startRef == 0|| !m_nav.isValidPolyRef(startRef))
-			throw new IllegalArgumentException("Invalid start ref");
+			throw ("Invalid start ref");
 
-		Tupple2<MeshTile, Poly> tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(startRef);
-		var startTile:MeshTile= tileAndPoly.first;
-		var startPoly:Poly= tileAndPoly.second;
+		var tileAndPoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(startRef);
+		var startTile:MeshTile= tileAndPoly.first as MeshTile;
+		var startPoly:Poly= tileAndPoly.second as Poly;
 		if (!filter.passFilter(startRef, startTile, startPoly))
-			throw new IllegalArgumentException("Invalid start");
+			throw ("Invalid start");
 
 		m_nodePool.clear();
 		m_openList.clear();
 
-		var startNode:Node= m_nodePool.getNode(startRef);
-		vCopy(startNode.pos, centerPos);
+		var startNode:Node= m_nodePool.getNode2(startRef);
+		DetourCommon.vCopy2(startNode.pos, centerPos);
 		startNode.pidx = 0;
 		startNode.cost = 0;
 		startNode.total = 0;
@@ -216,9 +191,9 @@ public class NavMeshQuery {
 			// Get poly and tile.
 			// The API input has been cheked already, skip checking internal data.
 			var bestRef:Number= bestNode.id;
-			Tupple2<MeshTile, Poly> bestTilePoly = m_nav.getTileAndPolyByRefUnsafe(bestRef);
-			var bestTile:MeshTile= bestTilePoly.first;
-			var bestPoly:Poly= bestTilePoly.second;
+			var bestTilePoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(bestRef);
+			var bestTile:MeshTile= bestTilePoly.first as MeshTile;
+			var bestPoly:Poly= bestTilePoly.second as Poly;
 
 			// Place random locations on on ground.
 			if (bestPoly.getType() == Poly.DT_POLYTYPE_GROUND) {
@@ -228,7 +203,7 @@ public class NavMeshQuery {
 					var va2:int= bestPoly.verts[0] * 3;
 					var vb2:int= bestPoly.verts[j - 1] * 3;
 					var vc:int= bestPoly.verts[j] * 3;
-					polyArea += triArea2D(bestTile.data.verts, va2, vb2, vc);
+					polyArea += DetourCommon.triArea2D(bestTile.data.verts, va2, vb2, vc);
 				}
 				// Choose random polygon weighted by area, using reservoi sampling.
 				areaSum += polyArea;
@@ -245,9 +220,9 @@ public class NavMeshQuery {
 			if (bestNode.pidx != 0)
 				parentRef = m_nodePool.getNodeAtIdx(bestNode.pidx).id;
 			if (parentRef != 0) {
-				Tupple2<MeshTile, Poly> parentTilePoly = m_nav.getTileAndPolyByRefUnsafe(parentRef);
-				var parentTile:MeshTile= parentTilePoly.first;
-				var parentPoly:Poly= parentTilePoly.second;
+				var parentTilePoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(parentRef);
+				var parentTile:MeshTile= parentTilePoly.first as MeshTile;
+				var parentPoly:Poly= parentTilePoly.second as Poly;
 			}
 
 			for (var i:int= bestPoly.firstLink; i != NavMesh.DT_NULL_LINK; i = bestTile.links.get(i).next) {
@@ -258,37 +233,37 @@ public class NavMeshQuery {
 					continue;
 
 				// Expand to neighbour
-				Tupple2<MeshTile, Poly> neighbourTilePoly = m_nav.getTileAndPolyByRefUnsafe(neighbourRef);
-				var neighbourTile:MeshTile= neighbourTilePoly.first;
-				var neighbourPoly:Poly= neighbourTilePoly.second;
+				var neighbourTilePoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(neighbourRef);
+				var neighbourTile:MeshTile= neighbourTilePoly.first as MeshTile;
+				var neighbourPoly:Poly= neighbourTilePoly.second as Poly;
 
 				// Do not advance if the polygon is excluded by the filter.
 				if (!filter.passFilter(neighbourRef, neighbourTile, neighbourPoly))
 					continue;
 
 				// Find edge and calc distance to the edge.
-				var portalpoints:PortalResult= getPortalPoints(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
+				var portalpoints:PortalResult= getPortalPoints2(bestRef, bestPoly, bestTile, neighbourRef, neighbourPoly,
 						neighbourTile, 0, 0);
 				var va:Array= portalpoints.left;
 				var vb:Array= portalpoints.right;
 
 				// If the circle is not touching the next polygon, skip it.
-				Tupple2<Float,Float> distseg = distancePtSegSqr2D(centerPos, va, vb);
-				var distSqr:Number= distseg.first;
-				var tseg:Number= distseg.second;
+				var distseg:Tupple2 = DetourCommon.distancePtSegSqr2D(centerPos, va, vb);
+				var distSqr:Number= distseg.first as Number;
+				var tseg:Number= distseg.second as Number;
 				if (distSqr > radiusSqr)
 					continue;
 
-				var neighbourNode:Node= m_nodePool.getNode(neighbourRef);
+				var neighbourNode:Node= m_nodePool.getNode2(neighbourRef);
 
 				if ((neighbourNode.flags & Node.DT_NODE_CLOSED) != 0)
 					continue;
 
 				// Cost
 				if (neighbourNode.flags == 0)
-					neighbourNode.pos = vLerp(va, vb, 0.5);
+					neighbourNode.pos = DetourCommon.vLerp3(va, vb, 0.5);
 
-				var total:Number= bestNode.total + vDist(bestNode.pos, neighbourNode.pos);
+				var total:Number= bestNode.total + DetourCommon.vDist(bestNode.pos, neighbourNode.pos);
 
 				// The node is already in open list and the new result is worse, skip.
 				if ((neighbourNode.flags & Node.DT_NODE_OPEN) != 0&& total >= neighbourNode.total)
@@ -312,8 +287,8 @@ public class NavMeshQuery {
 			return new FindRandomPointResult(Status.FAILURE, 0, null);
 
 		// Randomly pick point on polygon.
-		var verts:Array= new float[3* NavMesh.DT_VERTS_PER_POLYGON];
-		var areas:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var verts:Array= []//new float[3* NavMesh.DT_VERTS_PER_POLYGON];
+		var areas:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
 		System.arraycopy(randomTile.data.verts, randomPoly.verts[0] * 3, verts, 0, 3);
 		for (var j:int= 1; j < randomPoly.vertCount; ++j) {
 			System.arraycopy(randomTile.data.verts, randomPoly.verts[j] * 3, verts, j * 3, 3);
@@ -322,7 +297,7 @@ public class NavMeshQuery {
 		var s:Number= frand.frand();
 		var t:Number= frand.frand();
 
-		var pt:Array= randomPointInConvexPoly(verts, randomPoly.vertCount, areas, s, t);
+		var pt:Array= DetourCommon.randomPointInConvexPoly(verts, randomPoly.vertCount, areas, s, t);
 
 		pt[1] = getPolyHeight(randomPolyRef, new VectorPtr(pt, 0));
 
@@ -345,35 +320,35 @@ public class NavMeshQuery {
 	///  @param[out]	posOverPoly	
 	/// @returns The status flags for the query.
 	public function closestPointOnPoly(ref:Number, pos:Array):ClosesPointOnPolyResult {
-		Tupple2<MeshTile, Poly> tileAndPoly = m_nav.getTileAndPolyByRef(ref);
-		var tile:MeshTile= tileAndPoly.first;
-		var poly:Poly= tileAndPoly.second;
+		var tileAndPoly:Tupple2 = m_nav.getTileAndPolyByRef(ref);
+		var tile:MeshTile= tileAndPoly.first as MeshTile;
+		var poly:Poly= tileAndPoly.second as Poly;
 
 		// Off-mesh connections don't have detail polygons.
 		if (poly.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION) {
 			var v0:int= poly.verts[0] * 3;
 			var v1:int= poly.verts[1] * 3;
-			var d0:Number= vDist(pos, tile.data.verts, v0);
-			var d1:Number= vDist(pos, tile.data.verts, v1);
+			var d0:Number= DetourCommon.vDist2(pos, tile.data.verts, v0);
+			var d1:Number= DetourCommon.vDist2(pos, tile.data.verts, v1);
 			var u:Number= d0 / (d0 + d1);
-			var closest:Array= vLerp(tile.data.verts, v0, v1, u);
+			var closest:Array= DetourCommon.vLerp2(tile.data.verts, v0, v1, u);
 			return new ClosesPointOnPolyResult(false, closest);
 		}
 
 		// Clamp point to be inside the polygon.
-		var verts:Array= new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
-		var edged:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
-		var edget:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var verts:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
+		var edged:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var edget:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
 		var nv:int= poly.vertCount;
 		for (var i:int= 0; i < nv; ++i)
 			System.arraycopy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
 
 		var posOverPoly:Boolean= false;
-		var closest:Array= new float[3];
-		vCopy(closest, pos);
-		if (!distancePtPolyEdgesSqr(pos, verts, nv, edged, edget)) {
+		var closest:Array= []//new float[3];
+		DetourCommon.vCopy2(closest, pos);
+		if (!DetourCommon.distancePtPolyEdgesSqr(pos, verts, nv, edged, edget)) {
 			// Point is outside the polygon, dtClamp to nearest edge.
-			var dmin:Number= Float.MAX_VALUE;
+			var dmin:Number= Number.MAX_VALUE;
 			var imin:int= -1;
 			for (var i:int= 0; i < nv; ++i) {
 				if (edged[i] < dmin) {
@@ -383,7 +358,7 @@ public class NavMeshQuery {
 			}
 			var va2:int= imin * 3;
 			var vb2:int= ((imin + 1) % nv) * 3;
-			closest = vLerp(verts, va2, vb2, edget[imin]);
+			closest = DetourCommon.vLerp2(verts, va2, vb2, edget[imin]);
 			posOverPoly = false;
 		} else {
 			posOverPoly = true;
@@ -403,7 +378,7 @@ public class NavMeshQuery {
 						v[k] = new VectorPtr(tile.data.detailVerts,
 								(pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3);
 				}
-				Tupple2<Boolean, Float> clp = closestHeightPointTriangle(posV, v[0], v[1], v[2]);
+				var clp:Tupple2 = DetourCommon.closestHeightPointTriangle(posV, v[0], v[1], v[2]);
 				if (clp.first) {
 					closest[1] = clp.second;
 					break;
@@ -432,24 +407,24 @@ public class NavMeshQuery {
 	/// @returns The status flags for the query.
 	public function closestPointOnPolyBoundary(ref:Number,pos:Array):Array {
 
-		Tupple2<MeshTile,Poly> tileAndPoly = m_nav.getTileAndPolyByRef(ref);
-		var tile:MeshTile= tileAndPoly.first;
-		var poly:Poly= tileAndPoly.second;
+		var tileAndPoly:Tupple2 = m_nav.getTileAndPolyByRef(ref);
+		var tile:MeshTile= tileAndPoly.first as MeshTile;
+		var poly:Poly= tileAndPoly.second as Poly;
 
 		// Collect vertices.
-		var verts:Array= new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
-		var edged:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
-		var edget:Array= new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var verts:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
+		var edged:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
+		var edget:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON];
 		var nv:int= poly.vertCount;
 		for (var i:int= 0; i < nv; ++i)
 			System.arraycopy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
 
 		var closest:Array;
-		if (distancePtPolyEdgesSqr(pos, verts, nv, edged, edget)) {
-			closest = vCopy(pos);
+		if (DetourCommon.distancePtPolyEdgesSqr(pos, verts, nv, edged, edget)) {
+			closest = DetourCommon.vCopy(pos);
 		} else {
 			// Point is outside the polygon, dtClamp to nearest edge.
-			var dmin:Number= Float.MAX_VALUE;
+			var dmin:Number= Number.MAX_VALUE;
 			var imin:int= -1;
 			for (var i:int= 0; i < nv; ++i) {
 				if (edged[i] < dmin) {
@@ -459,7 +434,7 @@ public class NavMeshQuery {
 			}
 			var va:int= imin * 3;
 			var vb:int= ((imin + 1) % nv) * 3;
-			closest = vLerp(verts, va, vb, edget[imin]);
+			closest = DetourCommon.vLerp2(verts, va, vb, edget[imin]);
 		}
 		return closest;
 	}
@@ -475,14 +450,14 @@ public class NavMeshQuery {
 	///  @param[out]	height		The height at the surface of the polygon.
 	/// @returns The status flags for the query.
 	public function getPolyHeight(ref:Number, pos:VectorPtr):Number {
-		Tupple2<MeshTile,Poly> tileAndPoly = m_nav.getTileAndPolyByRef(ref);
-		var tile:MeshTile= tileAndPoly.first;
-		var poly:Poly= tileAndPoly.second;
+		var tileAndPoly:Tupple2 = m_nav.getTileAndPolyByRef(ref);
+		var tile:MeshTile= tileAndPoly.first as MeshTile;
+		var poly:Poly= tileAndPoly.second as Poly;
 		if (poly.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION) {
 			var v0:VectorPtr= new VectorPtr(tile.data.verts, poly.verts[0] * 3);
 			var v1:VectorPtr= new VectorPtr(tile.data.verts, poly.verts[1] * 3);
-			var d0:Number= vDist2D(pos, v0);
-			var d1:Number= vDist2D(pos, v1);
+			var d0:Number= DetourCommon.vDist2D(pos, v0);
+			var d1:Number= DetourCommon.vDist2D(pos, v1);
 			var u:Number= d0 / (d0 + d1);
 			return v0.get(1) + (v1.get(1) - v0.get(1)) * u;
 		} else {
@@ -498,13 +473,13 @@ public class NavMeshQuery {
 						v[k] = new VectorPtr(tile.data.detailVerts,
 								(pd.vertBase + (tile.data.detailTris[t + k] - poly.vertCount)) * 3);
 				}
-				Tupple2<Boolean, Float> heightResult = closestHeightPointTriangle(pos, v[0], v[1], v[2]);
+				var heightResult:Tupple2 = DetourCommon.closestHeightPointTriangle(pos, v[0], v[1], v[2]);
 				if (heightResult.first) {
-					return heightResult.second;
+					return heightResult.second as Number;
 				}
 			}
 		}
-		throw new IllegalArgumentException("Invalid ref");
+		throw ("Invalid ref");
 	}
 
 	/// @par
@@ -530,11 +505,11 @@ public class NavMeshQuery {
 		var nearestPt:Array= null;
 
 		// Get nearby polygons from proximity grid.
-		List<Long> polys = queryPolygons(center, extents, filter);
+		var polys:Array = queryPolygons(center, extents, filter);
 
 		// Find nearest polygon amongst the nearby polygons.
 		var nearest:Number= 0;
-		var nearestDistanceSqr:Number= Float.MAX_VALUE;
+		var nearestDistanceSqr:Number= Number.MAX_VALUE;
 		for (var i:int= 0; i < polys.size(); ++i) {
 			var ref:Number= polys.get(i);
 			var closest:ClosesPointOnPolyResult= closestPointOnPoly(ref, center);
@@ -544,10 +519,10 @@ public class NavMeshQuery {
 			// If a point is directly over a polygon and closer than
 			// climb height, favor that instead of straight line nearest point.
 			var d:Number= 0;
-			var diff:Array= vSub(center, closestPtPoly);
+			var diff:Array= DetourCommon.vSub2(center, closestPtPoly);
 			if (posOverPoly) {
-				Tupple2<MeshTile, Poly> tilaAndPoly = m_nav.getTileAndPolyByRefUnsafe(polys.get(i));
-				var tile:MeshTile= tilaAndPoly.first;
+				var tilaAndPoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(polys.get(i));
+				var tile:MeshTile= tilaAndPoly.first as MeshTile;
 				d = Math.abs(diff[1]) - tile.data.header.walkableClimb;
 				d = d > 0? d * d : 0;
 			} else {
@@ -576,12 +551,12 @@ public class NavMeshQuery {
 			var bmin:Array= new int[3];
 			var bmax:Array= new int[3];
 			// dtClamp query box to world box.
-			var minx:Number= clamp(qmin[0], tbmin[0], tbmax[0]) - tbmin[0];
-			var miny:Number= clamp(qmin[1], tbmin[1], tbmax[1]) - tbmin[1];
-			var minz:Number= clamp(qmin[2], tbmin[2], tbmax[2]) - tbmin[2];
-			var maxx:Number= clamp(qmax[0], tbmin[0], tbmax[0]) - tbmin[0];
-			var maxy:Number= clamp(qmax[1], tbmin[1], tbmax[1]) - tbmin[1];
-			var maxz:Number= clamp(qmax[2], tbmin[2], tbmax[2]) - tbmin[2];
+			var minx:Number= DetourCommon.clamp(qmin[0], tbmin[0], tbmax[0]) - tbmin[0];
+			var miny:Number= DetourCommon.clamp(qmin[1], tbmin[1], tbmax[1]) - tbmin[1];
+			var minz:Number= DetourCommon.clamp(qmin[2], tbmin[2], tbmax[2]) - tbmin[2];
+			var maxx:Number= DetourCommon.clamp(qmax[0], tbmin[0], tbmax[0]) - tbmin[0];
+			var maxy:Number= DetourCommon.clamp(qmax[1], tbmin[1], tbmax[1]) - tbmin[1];
+			var maxz:Number= DetourCommon.clamp(qmax[2], tbmin[2], tbmax[2]) - tbmin[2];
 			// Quantize
 			bmin[0] = int((qfac * minx) )& 0xe;
 			bmin[1] = int((qfac * miny) )& 0xe;
@@ -595,7 +570,7 @@ public class NavMeshQuery {
 			var end:int= tile.data.header.bvNodeCount;
 			while (nodeIndex < end) {
 				var node:BVNode= tile.data.bvTree[nodeIndex];
-				var overlap:Boolean= overlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
+				var overlap:Boolean= DetourCommon.overlapQuantBounds(bmin, bmax, node.bmin, node.bmax);
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
@@ -627,12 +602,12 @@ public class NavMeshQuery {
 					continue;
 				// Calc polygon bounds.
 				var v:int= p.verts[0] * 3;
-				vCopy(bmin, tile.data.verts, v);
-				vCopy(bmax, tile.data.verts, v);
+				DetourCommon.vCopy3(bmin, tile.data.verts, v);
+				DetourCommon.vCopy3(bmax, tile.data.verts, v);
 				for (var j:int= 1; j < p.vertCount; ++j) {
 					v = p.verts[j] * 3;
-					vMin(bmin, tile.data.verts, v);
-					vMax(bmax, tile.data.verts, v);
+					DetourCommon.vMin(bmin, tile.data.verts, v);
+					DetourCommon.vMax(bmax, tile.data.verts, v);
 				}
 				if (overlapBounds(qmin, qmax, bmin, bmax)) {
 					polys.add(ref);
@@ -656,8 +631,8 @@ public class NavMeshQuery {
 	 * @return The reference ids of the polygons that overlap the query box.
 	 */
 	public function queryPolygons(center:Array, extents:Array, filter:QueryFilter):Array {
-		var bmin:Array= vSub(center, extents);
-		var bmax:Array= vAdd(center, extents);
+		var bmin:Array= DetourCommon.vSub2(center, extents);
+		var bmax:Array= DetourCommon.vAdd2(center, extents);
 		// Find tiles the query touches.
 		var minxy:Array= m_nav.calcTileLoc(bmin);
 		var minx:int= minxy[0];
@@ -668,7 +643,7 @@ public class NavMeshQuery {
 		var polys:Array = [];
 		for (var y:int= miny; y <= maxy; ++y) {
 			for (var x:int= minx; x <= maxx; ++x) {
-				List<MeshTile> neis = m_nav.getTilesAt(x, y);
+				var neis:Array = m_nav.getTilesAt(x, y);
 				for (var j:int= 0; j < neis.size(); ++j) {
 					List<Long> polysInTile = queryPolygonsInTile(neis.get(j), bmin, bmax, filter);
 					polys.addAll(polysInTile);
@@ -701,11 +676,11 @@ public class NavMeshQuery {
 	public function findPath(startRef:Number, endRef:Number, startPos:Array, endPos:Array,
 			filter:QueryFilter):FindPathResult {
 		if (startRef == 0|| endRef == 0)
-			throw new IllegalArgumentException("Start or end ref = 0");
+			throw ("Start or end ref = 0");
 
 		// Validate input
 		if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef))
-			throw new IllegalArgumentException("Invalid start or end ref");
+			throw ("Invalid start or end ref");
 
 		var path:Array = [];
 		if (startRef == endRef) {
@@ -720,7 +695,7 @@ public class NavMeshQuery {
 		vCopy(startNode.pos, startPos);
 		startNode.pidx = 0;
 		startNode.cost = 0;
-		startNode.total = vDist(startPos, endPos) * H_SCALE;
+		startNode.total = DetourCommon.vDist(startPos, endPos) * H_SCALE;
 		startNode.id = startRef;
 		startNode.flags = Node.DT_NODE_OPEN;
 		m_openList.push(startNode);
@@ -745,9 +720,9 @@ public class NavMeshQuery {
 			// Get current poly and tile.
 			// The API input has been cheked already, skip checking internal data.
 			var bestRef:Number= bestNode.id;
-			Tupple2<MeshTile, Poly> tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(bestRef);
-			var bestTile:MeshTile= tileAndPoly.first;
-			var bestPoly:Poly= tileAndPoly.second;
+			var tileAndPoly:Tupple2 = m_nav.getTileAndPolyByRefUnsafe(bestRef);
+			var bestTile:MeshTile= tileAndPoly.first as MeshTile;
+			var bestPoly:Poly= tileAndPoly.second as Poly;
 
 			// Get parent poly and tile.
 			var parentRef:Number= 0;
@@ -771,8 +746,8 @@ public class NavMeshQuery {
 				// Get neighbour poly and tile.
 				// The API input has been cheked already, skip checking internal data.
 				tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(neighbourRef);
-				var neighbourTile:MeshTile= tileAndPoly.first;
-				var neighbourPoly:Poly= tileAndPoly.second;
+				var neighbourTile:MeshTile= tileAndPoly.first as MeshTile;
+				var neighbourPoly:Poly= tileAndPoly.second as Poly;
 
 				if (!filter.passFilter(neighbourRef, neighbourTile, neighbourPoly))
 					continue;
@@ -810,7 +785,7 @@ public class NavMeshQuery {
 					var curCost:Number= filter.getCost(bestNode.pos, neighbourNode.pos, parentRef, parentTile, parentPoly,
 							bestRef, bestTile, bestPoly, neighbourRef, neighbourTile, neighbourPoly);
 					cost = bestNode.cost + curCost;
-					heuristic = vDist(neighbourNode.pos, endPos) * H_SCALE;
+					heuristic = DetourCommon.vDist(neighbourNode.pos, endPos) * H_SCALE;
 				}
 
 				var total:Number= cost + heuristic;
@@ -896,18 +871,18 @@ public class NavMeshQuery {
 		m_query.status = Status.FAILURE;
 		m_query.startRef = startRef;
 		m_query.endRef = endRef;
-		vCopy(m_query.startPos, startPos);
-		vCopy(m_query.endPos, endPos);
+		DetourCommon.vCopy2(m_query.startPos, startPos);
+		DetourCommon.vCopy2(m_query.endPos, endPos);
 		m_query.filter = filter;
 		m_query.options = options;
-		m_query.raycastLimitSqr = Float.MAX_VALUE;
+		m_query.raycastLimitSqr = Number.MAX_VALUE;
 
 		if (startRef == 0|| endRef == 0)
-			throw new IllegalArgumentException("Start or end ref = 0");
+			throw ("Start or end ref = 0");
 
 		// Validate input
 		if (!m_nav.isValidPolyRef(startRef) || !m_nav.isValidPolyRef(endRef))
-			throw new IllegalArgumentException("Invalid start or end ref");
+			throw ("Invalid start or end ref");
 
 		// trade quality with performance?
 		if ((options & DT_FINDPATH_ANY_ANGLE) != 0) {
@@ -987,8 +962,8 @@ public class NavMeshQuery {
 				// The polygon has disappeared during the sliced query, fail.
 				return new UpdateSlicedPathResult(m_query.status, iter);
 			}
-			var bestTile:MeshTile= tileAndPoly.first;
-			var bestPoly:Poly= tileAndPoly.second;
+			var bestTile:MeshTile= tileAndPoly.first as MeshTile;
+			var bestPoly:Poly= tileAndPoly.second as Poly;
 			// Get parent and grand parent poly and tile.
 			var parentRef:Number= 0, grandpaRef = 0;
 			var parentTile:MeshTile= null;
@@ -1036,8 +1011,8 @@ public class NavMeshQuery {
 				// The API input has been cheked already, skip checking internal
 				// data.
 				Tupple2<MeshTile, Poly> tileAndPolyUns = m_nav.getTileAndPolyByRefUnsafe(neighbourRef);
-				var neighbourTile:MeshTile= tileAndPolyUns.first;
-				var neighbourPoly:Poly= tileAndPolyUns.second;
+				var neighbourTile:MeshTile= tileAndPolyUns.first as MeshTile;
+				var neighbourPoly:Poly= tileAndPolyUns.second as Poly;
 
 				if (!m_query.filter.passFilter(neighbourRef, neighbourTile, neighbourPoly))
 					continue;
@@ -1053,7 +1028,7 @@ public class NavMeshQuery {
 				// If the node is visited the first time, calculate node
 				// position.
 				if (neighbourNode.flags == 0) {
-					neighbourNode.pos = getEdgeMidPoint(bestRef, bestPoly, bestTile, neighbourRef,
+					neighbourNode.pos = getEdgeMidPoint2(bestRef, bestPoly, bestTile, neighbourRef,
 							neighbourPoly, neighbourTile);
 				}
 
@@ -1275,7 +1250,7 @@ public class NavMeshQuery {
 		return new FindPathResult(status, path);
 	}	
 	
-	protected function appendVertex(pos:Array, flags:int, ref:Number, straightPath:Array):Status {
+	protected function appendVertex(pos:Array, flags:int, ref:Number, straightPath:Array):int {
 		if (straightPath.size() > 0&& vEqual(straightPath.get(straightPath.size() - 1).pos, pos)) {
 			// The vertices are equal, update flags and poly.
 			straightPath.get(straightPath.size() - 1).flags = flags;
@@ -1375,9 +1350,9 @@ public class NavMeshQuery {
 			return straightPath;
 
 		if (path.size() > 1) {
-			var portalApex:Array= vCopy(closestStartPos);
-			var portalLeft:Array= vCopy(portalApex);
-			var portalRight:Array= vCopy(portalApex);
+			var portalApex:Array= DetourCommon.vCopy(closestStartPos);
+			var portalLeft:Array= DetourCommon.vCopy(portalApex);
+			var portalRight:Array= DetourCommon.vCopy(portalApex);
 			var apexIndex:int= 0;
 			var leftIndex:int= 0;
 			var rightIndex:int= 0;
@@ -1420,8 +1395,8 @@ public class NavMeshQuery {
 					}
 				} else {
 					// End of the path.
-					left = vCopy(closestEndPos);
-					right = vCopy(closestEndPos);
+					left = DetourCommon.vCopy(closestEndPos);
+					right = DetourCommon.vCopy(closestEndPos);
 					fromType = toType = Poly.DT_POLYTYPE_GROUND;
 				}
 
@@ -1455,8 +1430,8 @@ public class NavMeshQuery {
 						if (stat != Status.IN_PROGRESS)
 							return straightPath;
 
-						portalLeft = vCopy(portalApex);
-						portalRight = vCopy(portalApex);
+						portalLeft = DetourCommon.vCopy(portalApex);
+						portalRight = DetourCommon.vCopy(portalApex);
 						leftIndex = apexIndex;
 						rightIndex = apexIndex;
 
@@ -1497,8 +1472,8 @@ public class NavMeshQuery {
 						if (stat != Status.IN_PROGRESS)
 							return straightPath;
 
-						portalLeft = vCopy(portalApex);
-						portalRight = vCopy(portalApex);
+						portalLeft = DetourCommon.vCopy(portalApex);
+						portalRight = DetourCommon.vCopy(portalApex);
 						leftIndex = apexIndex;
 						rightIndex = apexIndex;
 
@@ -1572,7 +1547,7 @@ public class NavMeshQuery {
 		var bestPos:Array= new float[3];
 		var bestDist:Number= Float.MAX_VALUE;
 		var bestNode:Node= null;
-		vCopy(bestPos, startPos);
+		DetourCommon.vCopy2(bestPos, startPos);
 
 		// Search constraints
 		var searchPos:Array= vLerp(startPos, endPos, 0.5);
@@ -1599,7 +1574,7 @@ public class NavMeshQuery {
 			// If target is inside the poly, stop search.
 			if (pointInPolygon(endPos, verts, nverts)) {
 				bestNode = curNode;
-				vCopy(bestPos, endPos);
+				DetourCommon.vCopy2(bestPos, endPos);
 				break;
 			}
 
@@ -2568,8 +2543,8 @@ public class NavMeshQuery {
 	/// @returns The status flags for the query.
 	public function getPolyWallSegments(ref:Number, filter:QueryFilter):GetPolyWallSegmentsResult {
 		Tupple2<MeshTile, Poly> tileAndPoly = m_nav.getTileAndPolyByRef(ref);
-		var tile:MeshTile= tileAndPoly.first;
-		var poly:Poly= tileAndPoly.second;
+		var tile:MeshTile= tileAndPoly.first as MeshTile;
+		var poly:Poly= tileAndPoly.second as Poly;
 
 		var segmentRefs:Array = [];
 		var segmentVerts:Array = [];

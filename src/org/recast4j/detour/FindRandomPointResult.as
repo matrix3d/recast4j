@@ -19,17 +19,17 @@ freely, subject to the following restrictions:
 package org.recast4j.detour {
 //TODO: (PP) Add comments
 public class FindRandomPointResult {
-	private var status:Status;
+	private var status:int;
 	private var randomRef:Number;
 	private var randomPt:Array;
 
-	public function FindRandomPointResult(status:Status, randomRef:Number, randomPt:Array) {
+	public function FindRandomPointResult(status:int, randomRef:Number, randomPt:Array) {
 		this.status = status;
 		this.randomRef = randomRef;
 		this.randomPt = randomPt;
 	}
 
-	public function getStatus():Status {
+	public function getStatus():int {
 		return status;
 	}
 
