@@ -66,7 +66,7 @@ override public function equal == (obj:Object):Boolean {
 	private var m_cellSize:Number;
 	private var m_invCellSize:Number;
 	private Map<ItemKey, List<Integer>> items;
-	var m_bounds:Array= new int[4];
+	var m_bounds:Array= []//4];
 
 	public function ProximityGrid(m_cellSize:Number, m_invCellSize:Number) {
 		this.m_cellSize = m_cellSize;
@@ -101,7 +101,7 @@ override public function equal == (obj:Object):Boolean {
 					ids = new ArrayList<>();
 					items.put(key, ids);
 				}
-				ids.add(id);
+				ids.push(id);
 			}
 		}
 	}
@@ -129,6 +129,6 @@ override public function equal == (obj:Object):Boolean {
 	function getItemCountAt(x:int, y:int):int {
 		var key:ItemKey= new ItemKey(x, y);
 		List<Integer> ids = items.get(key);
-		return ids != null ? ids.size() : 0;
+		return ids != null ? ids.length : 0;
 	}
 }

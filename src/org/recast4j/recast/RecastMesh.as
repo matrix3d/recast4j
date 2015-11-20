@@ -31,11 +31,11 @@ public class RecastMesh {
 		// http://www.terathon.com/code/edges.php
 
 		var maxEdgeCount:int= npolys * vertsPerPoly;
-		var firstEdge:Array= new int[nverts + maxEdgeCount];
+		var firstEdge:Array= []//nverts + maxEdgeCount];
 		var nextEdge:int= nverts;
 		var edgeCount:int= 0;
 
-		var edges:Array= new Edge[maxEdgeCount];
+		var edges:Array= []//new Edge[maxEdgeCount];
 
 		for (var i:int= 0; i < nverts; i++)
 			firstEdge[i] = RecastConstants.RC_MESH_NULL_IDX;
@@ -531,7 +531,7 @@ public class RecastMesh {
 		// Find edges which share the removed vertex.
 		var maxEdges:int= numTouchedVerts * 2;
 		var nedges:int= 0;
-		var edges:Array= new int[maxEdges * 3];
+		var edges:Array= []//maxEdges * 3];
 
 		for (i= 0; i < mesh.npolys; ++i) {
 			p= i * nvp * 2;
@@ -599,16 +599,16 @@ public class RecastMesh {
 		}
 
 		var nedges:int= 0;
-		var edges:Array= new int[numRemovedVerts * nvp * 4];
+		var edges:Array= []//numRemovedVerts * nvp * 4];
 
 		var nhole:int= 0;
-		var hole:Array= new int[numRemovedVerts * nvp];
+		var hole:Array= []//numRemovedVerts * nvp];
 
 		var nhreg:int= 0;
-		var hreg:Array= new int[numRemovedVerts * nvp];
+		var hreg:Array= []//numRemovedVerts * nvp];
 
 		var nharea:int= 0;
-		var harea:Array= new int[numRemovedVerts * nvp];
+		var harea:Array= []//numRemovedVerts * nvp];
 
 		for (i= 0; i < mesh.npolys; ++i) {
 			p= i * nvp * 2;
@@ -712,11 +712,11 @@ public class RecastMesh {
 				break;
 		}
 
-		var tris:Array= new int[nhole * 3];
+		var tris:Array= []//nhole * 3];
 
-		var tverts:Array= new int[nhole * 4];
+		var tverts:Array= []//nhole * 4];
 
-		var thole:Array= new int[nhole];
+		var thole:Array= []//nhole];
 
 		// Generate temp vertex array for triangulation.
 		for (i= 0; i < nhole; ++i) {
@@ -736,9 +736,9 @@ public class RecastMesh {
 		}
 
 		// Merge the hole triangles back to polygons.
-		var polys:Array= new int[(ntris + 1) * nvp];
-		var pregs:Array= new int[ntris];
-		var pareas:Array= new int[ntris];
+		var polys:Array= []//(ntris + 1) * nvp];
+		var pregs:Array= []//ntris];
+		var pareas:Array= []//ntris];
 
 		var tmpPoly:int= ntris * nvp;
 
@@ -839,44 +839,44 @@ public class RecastMesh {
 		var maxVertices:int= 0;
 		var maxTris:int= 0;
 		var maxVertsPerCont:int= 0;
-		for (var i:int= 0; i < cset.conts.size(); ++i) {
+		for (var i:int= 0; i < cset.conts.length; ++i) {
 			// Skip null contours.
-			if (cset.conts.get(i).nverts < 3)
+			if (cset.conts[i].nverts < 3)
 				continue;
-			maxVertices += cset.conts.get(i).nverts;
-			maxTris += cset.conts.get(i).nverts - 2;
-			maxVertsPerCont = Math.max(maxVertsPerCont, cset.conts.get(i).nverts);
+			maxVertices += cset.conts[i].nverts;
+			maxTris += cset.conts[i].nverts - 2;
+			maxVertsPerCont = Math.max(maxVertsPerCont, cset.conts[i].nverts);
 		}
 		if (maxVertices >= 0xe) {
 			throw ("rcBuildPolyMesh: Too many vertices " + maxVertices);
 		}
-		var vflags:Array= new int[maxVertices];
+		var vflags:Array = [];// []//maxVertices];
 
-		mesh.verts = new int[maxVertices * 3];
-		mesh.polys = new int[maxTris * nvp * 2];
+		mesh.verts = [];// []//maxVertices * 3];
+		mesh.polys = [];// []//maxTris * nvp * 2];
 		Arrays.fill2(mesh.polys, RecastConstants.RC_MESH_NULL_IDX);
-		mesh.regs = new int[maxTris];
-		mesh.areas = new int[maxTris];
+		mesh.regs = [];// []//maxTris];
+		mesh.areas = [];// []//maxTris];
 
 		mesh.nverts = 0;
 		mesh.npolys = 0;
 		mesh.nvp = nvp;
 		mesh.maxpolys = maxTris;
 
-		var nextVert:Array= new int[maxVertices];
+		var nextVert:Array= []//[]//maxVertices];
 
-		var firstVert:Array= new int[VERTEX_BUCKET_COUNT];
+		var firstVert:Array= []//[]//VERTEX_BUCKET_COUNT];
 		for (i= 0; i < VERTEX_BUCKET_COUNT; ++i)
 			firstVert[i] = -1;
 
-		var indices:Array= new int[maxVertsPerCont];
-		var tris:Array= new int[maxVertsPerCont * 3];
-		var polys:Array= new int[(maxVertsPerCont + 1) * nvp];
+		var indices:Array= []//maxVertsPerCont];
+		var tris:Array= []//maxVertsPerCont * 3];
+		var polys:Array= []//(maxVertsPerCont + 1) * nvp];
 
 		var tmpPoly:int= maxVertsPerCont * nvp;
 
-		for (i= 0; i < cset.conts.size(); ++i) {
-			var cont:Contour= cset.conts.get(i);
+		for (i= 0; i < cset.conts.length; ++i) {
+			var cont:Contour= cset.conts[i];
 
 			// Skip null contours.
 			if (cont.nverts < 3)
@@ -1027,7 +1027,7 @@ public class RecastMesh {
 		}
 
 		// Just allocate the mesh flags array. The user is resposible to fill it.
-		mesh.flags = new int[mesh.npolys];
+		mesh.flags = []//mesh.npolys];
 
 		if (mesh.nverts > 0) {
 			throw ("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
@@ -1069,22 +1069,22 @@ public class RecastMesh {
 		}
 
 		mesh.nverts = 0;
-		mesh.verts = new int[maxVerts * 3];
+		mesh.verts = []//maxVerts * 3];
 
 		mesh.npolys = 0;
-		mesh.polys = new int[maxPolys * 2* mesh.nvp];
+		mesh.polys = []//maxPolys * 2* mesh.nvp];
 		Arrays.fill(mesh.polys, 0, mesh.polys.length, RecastConstants.RC_MESH_NULL_IDX);
-		mesh.regs = new int[maxPolys];
-		mesh.areas = new int[maxPolys];
-		mesh.flags = new int[maxPolys];
+		mesh.regs = []//maxPolys];
+		mesh.areas = []//maxPolys];
+		mesh.flags = []//maxPolys];
 
-		var nextVert:Array= new int[maxVerts];
+		var nextVert:Array= []//maxVerts];
 
-		var firstVert:Array= new int[VERTEX_BUCKET_COUNT];
+		var firstVert:Array= []//VERTEX_BUCKET_COUNT];
 		for (i= 0; i < VERTEX_BUCKET_COUNT; ++i)
 			firstVert[i] = -1;
 
-		var vremap:Array= new int[maxVertsPerMesh];
+		var vremap:Array= []//maxVertsPerMesh];
 
 		for (i= 0; i < nmeshes; ++i) {
 			var pmesh:PolyMesh= meshes[i];
@@ -1177,15 +1177,15 @@ public class RecastMesh {
 		dst.ch = src.ch;
 		dst.borderSize = src.borderSize;
 
-		dst.verts = new int[src.nverts * 3];
+		dst.verts = []//src.nverts * 3];
 		System.arraycopy(src.verts, 0, dst.verts, 0, dst.verts.length);
-		dst.polys = new int[src.npolys * 2* src.nvp];
+		dst.polys = []//src.npolys * 2* src.nvp];
 		System.arraycopy(src.polys, 0, dst.polys, 0, dst.polys.length);
-		dst.regs = new int[src.npolys];
+		dst.regs = []//src.npolys];
 		System.arraycopy(src.regs, 0, dst.regs, 0, dst.regs.length);
-		dst.areas = new int[src.npolys];
+		dst.areas = []//src.npolys];
 		System.arraycopy(src.areas, 0, dst.areas, 0, dst.areas.length);
-		dst.flags = new int[src.npolys];
+		dst.flags = []//src.npolys];
 		System.arraycopy(src.flags, 0, dst.flags, 0, dst.flags.length);
 		return dst;
 	}

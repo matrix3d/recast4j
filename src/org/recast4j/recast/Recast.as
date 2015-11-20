@@ -46,7 +46,7 @@ public class Recast {
 	/// 
 	/// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
 	static public function markWalkableTriangles( ctx:Context,  walkableSlopeAngle:Number,  verts:Array,  nv:int,  tris:Array,  nt:int):Array {
-		var areas:Array= new int[nt];
+		var areas:Array = [];// []//nt];
 		var walkableThr:Number= (Math.cos(walkableSlopeAngle / 180.0 * Math.PI));
 		var norm:Array = [];
 		for (var i:int= 0; i < nt; ++i) {
@@ -136,14 +136,14 @@ public class Recast {
 		chf.bmax[1] += walkableHeight * hf.ch;
 		chf.cs = hf.cs;
 		chf.ch = hf.ch;
-		chf.cells = new CompactCell[w * h];
-		chf.spans = new CompactSpan[spanCount];
-		chf.areas = new int[spanCount];
+		chf.cells = []//new CompactCell[w * h];
+		chf.spans = []//new CompactSpan[spanCount];
+		chf.areas = []//[]//spanCount];
 		var MAX_HEIGHT:int= 0;
-		for (var i:int= 0; i < chf.cells.length; i++) {
+		for (var i:int= 0; i < w*h; i++) {
 			chf.cells[i] = new CompactCell();
 		}
-		for (i= 0; i < chf.spans.length; i++) {
+		for (i= 0; i < spanCount; i++) {
 			chf.spans[i] = new CompactSpan();
 		}
 		// Fill in cells and spans.

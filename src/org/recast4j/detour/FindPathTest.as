@@ -98,7 +98,7 @@ public class FindPathTest extends AbstractDetourTest {
 			var endPos:Array= endPoss[i];
 			var path:FindPathResult= query.findPath(startRef, endRef, startPos, endPos, filter);
 			Assert.assertEquals(statuses[i], path.getStatus());
-			Assert.assertEquals(results[i].length, path.getRefs().size());
+			Assert.assertEquals(results[i].length, path.getRefs().length);
 			for (var j:int= 0; j < results[i].length; j++) {
 				Assert.assertEquals(results[i][j], path.getRefs().get(j).longValue());
 			}
@@ -120,7 +120,7 @@ public class FindPathTest extends AbstractDetourTest {
 			}
 			var path:FindPathResult= query.finalizeSlicedFindPath();
 			Assert.assertEquals(statuses[i], path.getStatus());
-			Assert.assertEquals(results[i].length, path.getRefs().size());
+			Assert.assertEquals(results[i].length, path.getRefs().length);
 			for (var j:int= 0; j < results[i].length; j++) {
 				Assert.assertEquals(results[i][j], path.getRefs().get(j).longValue());
 			}
@@ -137,7 +137,7 @@ public class FindPathTest extends AbstractDetourTest {
 			var endPos:Array= endPoss[i];
 			var path:FindPathResult= query.findPath(startRef, endRef, startPos, endPos, filter);
 			List<StraightPathItem> straightPath = query.findStraightPath(startPos, endPos, path.getRefs(), 0);
-			Assert.assertEquals(straightPaths[i].length, straightPath.size());
+			Assert.assertEquals(straightPaths[i].length, straightPath.length);
 			for (var j:int= 0; j < straightPaths[i].length; j++) {
 				Assert.assertEquals(straightPaths[i][j].ref, straightPath.get(j).ref);
 				for (var v:int= 0; v < 3; v++) {

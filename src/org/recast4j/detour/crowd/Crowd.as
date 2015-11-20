@@ -396,7 +396,7 @@ internal class CrowdNeighbour
 		var nei:CrowdNeighbour= new CrowdNeighbour();
 		nei.idx = idx;
 		nei.dist = dist;
-		neis.add(nei);
+		neis.push(nei);
 		Collections.sort(neis, (o1, o2) -> Float.compare(o1.dist, o2.dist));
 	}
 
@@ -407,7 +407,7 @@ internal class CrowdNeighbour
 		if (slot < 0) {
 			slot = -slot - 1;
 		}
-		agents.add(slot, newag);
+		agents.push(slot, newag);
 	}
 
 	public List<CrowdAgent> addToPathQueue(var newag:CrowdAgent, List<CrowdAgent> agents) {
@@ -417,7 +417,7 @@ internal class CrowdNeighbour
 		if (slot < 0) {
 			slot = -slot - 1;
 		}
-		agents.add(slot, newag);
+		agents.push(slot, newag);
 		return agents;
 	}
 
@@ -680,7 +680,7 @@ internal class CrowdNeighbour
 		List<CrowdAgent> agents = new ArrayList<>m_maxAgents();
 		for (var i:int= 0; i < m_maxAgents; ++i) {
 			if (m_agents[i].active) {
-				agents.add(m_agents[i]);
+				agents.push(m_agents[i]);
 			}
 		}
 		return agents;
@@ -725,10 +725,10 @@ internal class CrowdNeighbour
 				List<Long> reqPath = pathFound.getRefs();
 				if (!pathFound.getStatus().isFailed() && !pathFound.getRefs().isEmpty()) {
 					// In progress or succeed.
-					if (reqPath.get(reqPath.size() - 1) != ag.targetRef) {
+					if (reqPath.get(reqPath.length - 1) != ag.targetRef) {
 						// Partial path, constrain target position inside the last polygon.
 						var closest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(
-								pathFound.getRefs().get(pathFound.getRefs().size() - 1), ag.targetPos);
+								pathFound.getRefs().get(pathFound.getRefs().length - 1), ag.targetPos);
 						reqPos = closest.getClosest();
 					} else {
 						vCopy(reqPos, ag.targetPos);
@@ -737,14 +737,14 @@ internal class CrowdNeighbour
 					// Could not find path, start the request from current location.
 					vCopy(reqPos, ag.npos);
 					reqPath = new ArrayList<>();
-					reqPath.add(path.get(0));
+					reqPath.push(path.get(0));
 				}
 
 				ag.corridor.setCorridor(reqPos, reqPath);
 				ag.boundary.reset();
 				ag.partial = false;
 
-				if (reqPath.get(reqPath.size() - 1) == ag.targetRef) {
+				if (reqPath.get(reqPath.length - 1) == ag.targetRef) {
 					ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
 					ag.targetReplanTime = 0.0;
 				} else {
@@ -758,8 +758,8 @@ internal class CrowdNeighbour
 			}
 		}
 
-		for (var i:int= 0; i < queue.size(); ++i) {
-			var ag:CrowdAgent= queue.get(i);
+		for (var i:int= 0; i < queue.length; ++i) {
+			var ag:CrowdAgent= queue[i];
 			ag.targetPathqRef = m_pathq.request(ag.corridor.getLastPoly(), ag.targetRef, ag.corridor.getTarget(),
 					ag.targetPos, m_filters[ag.params.queryFilterType]);
 			if (ag.targetPathqRef != PathQueue.DT_PATHQ_INVALID)
@@ -818,15 +818,15 @@ internal class CrowdNeighbour
 
 					// The last ref in the old path should be the same as
 					// the location where the request was issued..
-					if (valid && path.get(path.size() - 1).longValue() != res.get(0).longValue())
+					if (valid && path.get(path.length - 1).longValue() != res.get(0).longValue())
 						valid = false;
 
 					if (valid) {
 						// Put the old path infront of the old path.
-						if (path.size() > 1) {
-							res.addAll(0, path.subList(1, path.size()));
+						if (path.length > 1) {
+							res.addAll(0, path.subList(1, path.length));
 							// Remove trackbacks
-							for (var j:int= 1; j < res.size() - 1; ++j) {
+							for (var j:int= 1; j < res.length - 1; ++j) {
 								if (res.get(j - 1) == res.get(j + 1)) {
 									res.remove(j);
 									res.remove(j + 1);
@@ -836,9 +836,9 @@ internal class CrowdNeighbour
 						}
 
 						// Check for partial path.
-						if (res.get(res.size() - 1) != ag.targetRef) {
+						if (res.get(res.length - 1) != ag.targetRef) {
 							// Partial path, constrain target position inside the last polygon.
-							var nearest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(res.get(res.size() - 1),
+							var nearest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(res.get(res.length - 1),
 									targetPos);
 							vCopy(targetPos, nearest.getClosest());
 						}

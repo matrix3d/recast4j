@@ -148,8 +148,8 @@ public class NavMesh {
 	public function allocLink(tile:MeshTile):int {
 		var link:Link= new Link();
 		link.next = DT_NULL_LINK;
-		tile.links.add(link);
-		return tile.links.size() - 1;
+		tile.links.push(link);
+		return tile.links.length - 1;
 	}
 
 	/**
@@ -256,8 +256,8 @@ public class NavMesh {
 			var tbmax:Array= tile.data.header.bmax;
 			var qfac:Number= tile.data.header.bvQuantFactor;
 			// Calculate quantized box
-			var bmin:Array= new int[3];
-			var bmax:Array= new int[3];
+			var bmin:Array= []//3];
+			var bmax:Array= []//3];
 			// dtClamp query box to world box.
 			var minx:Number= DetourCommon.clamp(qmin[0], tbmin[0], tbmax[0]) - tbmin[0];
 			var miny:Number= DetourCommon.clamp(qmin[1], tbmin[1], tbmax[1]) - tbmin[1];
@@ -282,7 +282,7 @@ public class NavMesh {
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
-					polys.add(base | node.i);
+					polys.push(base | node.i);
 				}
 
 				if (overlap || isLeafNode)
@@ -313,7 +313,7 @@ public class NavMesh {
 					DetourCommon.vMax(bmax, tile.data.verts, v);
 				}
 				if (DetourCommon.overlapBounds(qmin, qmax, bmin, bmax)) {
-					polys.add(base | i);
+					polys.push(base | i);
 				}
 			}
 			return polys;
@@ -406,7 +406,7 @@ public class NavMesh {
 
 		// Connect with layers in current tile.
 		var neis:Array = getTilesAt(header.x, header.y);
-		for (var j:int= 0; j < neis.size(); ++j) {
+		for (var j:int= 0; j < neis.length; ++j) {
 			if (neis.get(j) != tile) {
 				connectExtLinks(tile, neis.get(j), -1);
 				connectExtLinks(neis.get(j), tile, -1);
@@ -418,7 +418,7 @@ public class NavMesh {
 		// Connect with neighbour tiles.
 		for (var i:int= 0; i < 8; ++i) {
 			neis = getNeighbourTilesAt(header.x, header.y, i);
-			for (j= 0; j < neis.size(); ++j) {
+			for (j= 0; j < neis.length; ++j) {
 				connectExtLinks(tile, neis.get(j), i);
 				connectExtLinks(neis.get(j), tile, DetourCommon.oppositeTile(i));
 				connectExtOffMeshLinks(tile, neis.get(j), i);
@@ -871,8 +871,8 @@ public class NavMesh {
 		// Find nearest polygon amongst the nearby polygons.
 		var nearest:Number= 0;
 		var nearestDistanceSqr:Number= Number.MAX_VALUE;
-		for (var i:int= 0; i < polys.size(); ++i) {
-			var ref:Number= polys.get(i);
+		for (var i:int= 0; i < polys.length; ++i) {
+			var ref:Number= polys[i];
 			var d:Number;
 			var cpp:Tupple2 = closestPointOnPoly(ref, center);
 			var posOverPoly:Boolean= cpp.first as Boolean;
@@ -951,7 +951,7 @@ public class NavMesh {
 		var tile:MeshTile= m_posLookup[h];
 		while (tile != null) {
 			if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y) {
-				tiles.add(tile);
+				tiles.push(tile);
 			}
 			tile = tile.next;
 		}
@@ -1021,9 +1021,9 @@ public class NavMesh {
 		var idx0:int= 0, idx1:int = 1;
 
 		// Find link that points to first vertex.
-		for (var i:int= poly.firstLink; i != DT_NULL_LINK; i = tile.links.get(i).next) {
-			if (tile.links.get(i).edge == 0) {
-				if (tile.links.get(i).ref != prevRef) {
+		for (var i:int= poly.firstLink; i != DT_NULL_LINK; i = tile.links[i].next) {
+			if (tile.links[i].edge == 0) {
+				if (tile.links[i].ref != prevRef) {
 					idx0 = 1;
 					idx1 = 0;
 				}

@@ -27,12 +27,12 @@ public class InputGeom {
 
 	public function InputGeom(vertexPositions:Array, meshFaces:Array) {
 		vertices = []
-		for (var i:int= 0; i < vertices.length; i++) {
-			vertices[i] = vertexPositions.get(i);
+		for (var i:int= 0; i < vertexPositions.length; i++) {
+			vertices[i] = vertexPositions[i];
 		}
-		faces = new int[meshFaces.size()];
-		for (i= 0; i < faces.length; i++) {
-			faces[i] = meshFaces.get(i);
+		faces = [];// []//meshFaces.length];
+		for (i= 0; i < meshFaces.length; i++) {
+			faces[i] = meshFaces[i];
 		}
 		bmin = []
 		bmax = [];

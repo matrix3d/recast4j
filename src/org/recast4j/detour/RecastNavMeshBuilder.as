@@ -57,13 +57,13 @@ public class RecastNavMeshBuilder {
 		params.offMeshConVerts[5] = 0.6;
 		params.offMeshConRad = [];
 		params.offMeshConRad[0] = 0.1;
-		params.offMeshConDir = new int[1];
+		params.offMeshConDir = []//1];
 		params.offMeshConDir[0] = 1;
-		params.offMeshConAreas = new int[1];
+		params.offMeshConAreas = []//1];
 		params.offMeshConAreas[0] = 2;
-		params.offMeshConFlags = new int[1];
+		params.offMeshConFlags = []//1];
 		params.offMeshConFlags[0] = 12;
-		params.offMeshConUserID = new int[1];
+		params.offMeshConUserID = []//1];
 		params.offMeshConUserID[0] = 0x4567;
 		params.offMeshConCount = 1;
 		meshData = NavMeshBuilder.createNavMeshData(params);

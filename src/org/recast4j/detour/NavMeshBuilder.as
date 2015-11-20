@@ -28,8 +28,8 @@ public class NavMeshBuilder {
  
 
 	private static function calcExtends( items:Array, nitems:int, imin:int, imax:int):Array {
-		var bmin:Array= new int[3];
-		var bmax:Array= new int[3];
+		var bmin:Array= []//3];
+		var bmax:Array= []//3];
 		bmin[0] = items[imin].bmin[0];
 		bmin[1] = items[imin].bmin[1];
 		bmin[2] = items[imin].bmin[2];
@@ -230,7 +230,7 @@ public class NavMeshBuilder {
 		var offMeshConLinkCount:int= 0;
 
 		if (params.offMeshConCount > 0) {
-			offMeshConClass = new int[params.offMeshConCount * 2];
+			offMeshConClass = []//params.offMeshConCount * 2];
 
 			// Find tight heigh bounds, used for culling out off-mesh start locations.
 			var hmin:Number= Number.MAX_VALUE;
@@ -347,7 +347,7 @@ public class NavMeshBuilder {
 		var navPolys:Array= []//new Poly[totPolyCount];
 		var navDMeshes:Array= []//new PolyDetail[params.polyCount];
 		var navDVerts:Array= []//new float[3* uniqueDetailVertCount];
-		var navDTris:Array= []//new int[4* detailTriCount];
+		var navDTris:Array= []//[]//4* detailTriCount];
 		var navBvtree:Array= []//new BVNode[bvTreeSize];
 		var offMeshCons:Array= []//new OffMeshConnection[storedOffMeshConCount];
 

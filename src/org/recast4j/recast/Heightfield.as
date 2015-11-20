@@ -42,7 +42,7 @@ public class Heightfield {
 		this.bmax = bmax;
 		this.cs = cs;
 		this.ch = ch;
-		this.spans = new Span[width * height];
+		this.spans =[]// new Span[width * height];
 
 	}
 }

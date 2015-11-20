@@ -132,10 +132,10 @@ public class RecastContour {
 					r |= RecastConstants.RC_BORDER_VERTEX;
 				if (isAreaBorder)
 					r |= RecastConstants.RC_AREA_BORDER;
-				points.add(px);
-				points.add(py);
-				points.add(pz);
-				points.add(r);
+				points.push(px);
+				points.push(py);
+				points.push(pz);
+				points.push(r);
 
 				flags[i] &= ~(1<< dir); // Remove visited edges
 				dir = (dir + 1) & 0x3; // Rotate CW
@@ -188,7 +188,7 @@ public class RecastContour {
 			buildFlags:int):void {
 		// Add initial points.
 		var hasConnections:Boolean= false;
-		for (var i:int= 0; i < points.size(); i += 4) {
+		for (var i:int= 0; i < points.length; i += 4) {
 			if ((points.get(i + 3) & RecastConstants.RC_CONTOUR_REG_MASK) != 0) {
 				hasConnections = true;
 				break;
@@ -199,7 +199,7 @@ public class RecastContour {
 			// The contour has some portals to other regions.
 			// Add a new point to every location where the region changes.
 			var ni:int;
-			for (i= 0, ni = points.size() / 4; i < ni; ++i) {
+			for (i= 0, ni = points.length / 4; i < ni; ++i) {
 				var ii:int= (i + 1) % ni;
 				var differentRegs:Boolean= (points.get(i * 4+ 3)
 						& RecastConstants.RC_CONTOUR_REG_MASK) != (points.get(ii * 4+ 3)
@@ -207,15 +207,15 @@ public class RecastContour {
 				var areaBorders:Boolean= (points.get(i * 4+ 3)
 						& RecastConstants.RC_AREA_BORDER) != (points.get(ii * 4+ 3) & RecastConstants.RC_AREA_BORDER);
 				if (differentRegs || areaBorders) {
-					simplified.add(points.get(i * 4+ 0));
-					simplified.add(points.get(i * 4+ 1));
-					simplified.add(points.get(i * 4+ 2));
-					simplified.add(i);
+					simplified.push(points.get(i * 4+ 0));
+					simplified.push(points.get(i * 4+ 1));
+					simplified.push(points.get(i * 4+ 2));
+					simplified.push(i);
 				}
 			}
 		}
 
-		if (simplified.size() == 0) {
+		if (simplified.length == 0) {
 			// If there is no connections at all,
 			// create some initial points for the simplification process.
 			// Find lower-left and upper-right vertices of the contour.
@@ -227,7 +227,7 @@ public class RecastContour {
 			var ury:int= points.get(1);
 			var urz:int= points.get(2);
 			var uri:int= 0;
-			for (i= 0; i < points.size(); i += 4) {
+			for (i= 0; i < points.length; i += 4) {
 				var x:int= points.get(i + 0);
 				var y:int= points.get(i + 1);
 				var z:int= points.get(i + 2);
@@ -244,21 +244,21 @@ public class RecastContour {
 					uri = i / 4;
 				}
 			}
-			simplified.add(llx);
-			simplified.add(lly);
-			simplified.add(llz);
-			simplified.add(lli);
+			simplified.push(llx);
+			simplified.push(lly);
+			simplified.push(llz);
+			simplified.push(lli);
 
-			simplified.add(urx);
-			simplified.add(ury);
-			simplified.add(urz);
-			simplified.add(uri);
+			simplified.push(urx);
+			simplified.push(ury);
+			simplified.push(urz);
+			simplified.push(uri);
 		}
 		// Add points until all raw points are within
 		// error tolerance to the simplified shape.
-		var pn:int= points.size() / 4;
-		for (i= 0; i < simplified.size() / 4;) {
-			ii= (i + 1) % (simplified.size() / 4);
+		var pn:int= points.length / 4;
+		for (i= 0; i < simplified.length / 4;) {
+			ii= (i + 1) % (simplified.length / 4);
 
 			var ax:int= simplified.get(i * 4+ 0);
 			var az:int= simplified.get(i * 4+ 2);
@@ -306,10 +306,10 @@ public class RecastContour {
 			// add new point, else continue to next segment.
 			if (maxi != -1&& maxd > (maxError * maxError)) {
 				// Add the point.
-				simplified.add((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
-				simplified.add((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
-				simplified.add((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
-				simplified.add((i + 1) * 4+ 3, maxi);
+				simplified.push((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
+				simplified.push((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
+				simplified.push((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
+				simplified.push((i + 1) * 4+ 3, maxi);
 			} else {
 				++i;
 			}
@@ -317,8 +317,8 @@ public class RecastContour {
 		// Split too long edges.
 		if (maxEdgeLen > 0&& (buildFlags
 				& (RecastConstants.RC_CONTOUR_TESS_WALL_EDGES | RecastConstants.RC_CONTOUR_TESS_AREA_EDGES)) != 0) {
-			for (i= 0; i < simplified.size() / 4;) {
-				ii= (i + 1) % (simplified.size() / 4);
+			for (i= 0; i < simplified.length / 4;) {
+				ii= (i + 1) % (simplified.length / 4);
 
 				ax= simplified.get(i * 4+ 0);
 				az= simplified.get(i * 4+ 2);
@@ -362,16 +362,16 @@ public class RecastContour {
 				// add new point, else continue to next segment.
 				if (maxi != -1) {
 					// Add the point.
-					simplified.add((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
-					simplified.add((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
-					simplified.add((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
-					simplified.add((i + 1) * 4+ 3, maxi);
+					simplified.push((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
+					simplified.push((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
+					simplified.push((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
+					simplified.push((i + 1) * 4+ 3, maxi);
 				} else {
 					++i;
 				}
 			}
 		}
-		for (i= 0; i < simplified.size() / 4; ++i) {
+		for (i= 0; i < simplified.length / 4; ++i) {
 			// The edge vertex flag is take from the current raw point,
 			// and the neighbour region is take from the next raw point.
 			ai= (simplified.get(i * 4+ 3) + 1) % pn;
@@ -398,7 +398,7 @@ public class RecastContour {
 	private static function intersectSegCountour(d0:int, d1:int, i:int, n:int, verts:Array, d0verts:Array,
 			d1verts:Array):Boolean {
 		// For each edge (k,k+1) of P
-		var pverts:Array= new int[4* 4];
+		var pverts:Array= []//4* 4];
 		for (var g:int= 0; g < 4; g++) {
 			pverts[g] = d0verts[d0 + g];
 			pverts[4+ g] = d1verts[d1 + g];
@@ -432,7 +432,7 @@ public class RecastContour {
 		var pi:int= i * 4;
 		var pi1:int= RecastMesh.next(i, n) * 4;
 		var pin1:int= RecastMesh.prev(i, n) * 4;
-		var pverts:Array= new int[4* 4];
+		var pverts:Array= []//4* 4];
 		for (var g:int= 0; g < 4; g++) {
 			pverts[g] = verts[pi + g];
 			pverts[4+ g] = verts[pi1 + g];
@@ -454,7 +454,7 @@ public class RecastContour {
 	private static function removeDegenerateSegments(simplified:Array):void {
 		// Remove adjacent vertices which are equal on xz-plane,
 		// or else the triangulator will get confused.
-		var npts:int= simplified.size() / 4;
+		var npts:int= simplified.length / 4;
 		for (var i:int= 0; i < npts; ++i) {
 			var ni:int= RecastMesh.next(i, npts);
 
@@ -473,7 +473,7 @@ public class RecastContour {
 
 	private static function mergeContours(ca:Contour, cb:Contour, ia:int, ib:int):void {
 		var maxVerts:int= ca.nverts + cb.nverts + 2;
-		var verts:Array= new int[maxVerts * 4];
+		var verts:Array= []//maxVerts * 4];
 
 		var nv:int= 0;
 
@@ -644,7 +644,7 @@ public class RecastContour {
 		cset.height = chf.height - chf.borderSize * 2;
 		cset.borderSize = chf.borderSize;
 
-		var flags:Array= new int[chf.spanCount];
+		var flags:Array = [];//[]//chf.spanCount];
 
 		ctx.startTimer("BUILD_CONTOURS_TRACE");
 
@@ -707,14 +707,14 @@ public class RecastContour {
 
 					// Store region->contour remap info.
 					// Create contour.
-					if (simplified.size() / 4>= 3) {
+					if (simplified.length / 4>= 3) {
 
 						var cont:Contour= new Contour();
-						cset.conts.add(cont);
+						cset.conts.push(cont);
 
-						cont.nverts = simplified.size() / 4;
-						cont.verts = new int[simplified.size()];
-						for (var l:int= 0; l < cont.verts.length; l++) {
+						cont.nverts = simplified.length / 4;
+						cont.verts = []//simplified.length];
+						for (var l:int= 0; l < simplified.length; l++) {
 							cont.verts[l] = simplified.get(l);
 						}
 
@@ -726,9 +726,9 @@ public class RecastContour {
 							}
 						}
 
-						cont.nrverts = verts.size() / 4;
-						cont.rverts = new int[verts.size()];
-						for (l= 0; l < cont.rverts.length; l++) {
+						cont.nrverts = verts.length / 4;
+						cont.rverts = []//verts.length];
+						for (l= 0; l < verts.length; l++) {
 							cont.rverts[l] = verts.get(l);
 						}
 						if (borderSize > 0) {
@@ -747,12 +747,12 @@ public class RecastContour {
 		}
 
 		// Merge holes if needed.
-		if (cset.conts.size() > 0) {
+		if (cset.conts.length > 0) {
 			// Calculate winding of all polygons.
-			var winding:Array= new int[cset.conts.size()];
+			var winding:Array= []//cset.conts.length];
 			var nholes:int= 0;
-			for (i= 0; i < cset.conts.size(); ++i) {
-				cont= cset.conts.get(i);
+			for (i= 0; i < cset.conts.length; ++i) {
+				cont= cset.conts[i];
 				// If the contour is wound backwards, it is a hole.
 				winding[i] = calcAreaOfPolygon2D(cont.verts, cont.nverts) < 0? -1: 1;
 				if (winding[i] < 0)
@@ -768,8 +768,8 @@ public class RecastContour {
 					regions[i] = new ContourRegion();
 				}
 
-				for (i= 0; i < cset.conts.size(); ++i) {
-					cont= cset.conts.get(i);
+				for (i= 0; i < cset.conts.length; ++i) {
+					cont= cset.conts[i];
 					// Positively would contours are outlines, negative holes.
 					if (winding[i] > 0) {
 						if (regions[cont.reg].outline != null) {
@@ -790,8 +790,8 @@ public class RecastContour {
 						regions[i].nholes = 0;
 					}
 				}
-				for (i= 0; i < cset.conts.size(); ++i) {
-					cont= cset.conts.get(i);
+				for (i= 0; i < cset.conts.length; ++i) {
+					cont= cset.conts[i];
 					var reg2:ContourRegion= regions[cont.reg];
 					if (winding[i] < 0)
 						reg2.holes[reg2.nholes++].contour = cont;

@@ -34,7 +34,7 @@ public class RecastArea {
 		var h:int= chf.height;
 		ctx.startTimer("ERODE_AREA");
 
-		var dist:Array= new int[chf.spanCount];
+		var dist:Array = [];////[]//chf.spanCount];
 		Arrays.fill2(dist, 255);
 		// Mark boundary cells.
 		for (var y:int= 0; y < h; ++y) {
@@ -190,7 +190,7 @@ public class RecastArea {
 
 		ctx.startTimer("MEDIAN_AREA");
 
-		var areas:Array= new int[chf.spanCount];
+		var areas:Array= []//chf.spanCount];
 
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {

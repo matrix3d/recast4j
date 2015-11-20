@@ -73,16 +73,16 @@ public class NodePool {
 	}
 
 	protected function create(id:Number, state:int):Node {
-		var node:Node= new Node(m_nodes.size() + 1);
+		var node:Node= new Node(m_nodes.length + 1);
 		node.id = id;
 		node.state = state;
-		m_nodes.add(node);
+		m_nodes.push(node);
 		var nodes:Array = m_map[id];
 		if (nodes == null) {
 			nodes = [];
 			m_map.put(id, nodes);
 		}
-		nodes.add(node);
+		nodes.push(node);
 		return node;
 	}
 
@@ -95,7 +95,7 @@ public class NodePool {
 	}
 
 	public function getNodeCount():int {
-		return m_nodes.size();
+		return m_nodes.length;
 	}
 
 	/*

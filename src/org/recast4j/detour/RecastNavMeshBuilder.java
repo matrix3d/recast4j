@@ -1,7 +1,7 @@
 package org.recast4j.detour;
 
 import org.recast4j.recast.InputGeom;
-import org.recast4j.detour.ObjImporter;
+import org.recast4j.recast.ObjImporter;
 import org.recast4j.recast.PolyMesh;
 import org.recast4j.recast.PolyMeshDetail;
 import org.recast4j.recast.RecastBuilder;

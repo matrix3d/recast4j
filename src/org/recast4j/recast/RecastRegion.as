@@ -164,7 +164,7 @@ public class RecastRegion {
 	private static function boxBlur(chf:CompactHeightfield, thr:int, src:Array):Array {
 		var w:int= chf.width;
 		var h:int= chf.height;
-		var dst:Array= new int[chf.spanCount];
+		var dst:Array= []//[]//chf.spanCount];
 
 		thr *= 2;
 
@@ -216,19 +216,19 @@ public class RecastRegion {
 
 		// Flood fill mark region.
 		stack.clear();
-		stack.add(x);
-		stack.add(y);
-		stack.add(i);
+		stack.push(x);
+		stack.push(y);
+		stack.push(i);
 		srcReg[i] = r;
 		srcDist[i] = 0;
 
 		var lev:int= level >= 2? level - 2: 0;
 		var count:int= 0;
 
-		while (stack.size() > 0) {
-			var ci:int= stack.remove(stack.size() - 1);
-			var cy:int= stack.remove(stack.size() - 1);
-			var cx:int= stack.remove(stack.size() - 1);
+		while (stack.length > 0) {
+			var ci:int= stack.remove(stack.length - 1);
+			var cy:int= stack.remove(stack.length - 1);
+			var cx:int= stack.remove(stack.length - 1);
 
 			var cs:CompactSpan= chf.spans[ci];
 
@@ -285,9 +285,9 @@ public class RecastRegion {
 					if (chf.dist[ai] >= lev && srcReg[ai] == 0) {
 						srcReg[ai] = r;
 						srcDist[ai] = 0;
-						stack.add(ax);
-						stack.add(ay);
-						stack.add(ai);
+						stack.push(ax);
+						stack.push(ay);
+						stack.push(ai);
 					}
 				}
 			}
@@ -303,15 +303,15 @@ public class RecastRegion {
 
 		if (fillStack) {
 			// Find cells revealed by the raised level.
-			stack.clear();
+			stack.splice(0, stack.length);// .clear();
 			for (var y:int= 0; y < h; ++y) {
 				for (var x:int= 0; x < w; ++x) {
 					var c:CompactCell= chf.cells[x + y * w];
 					for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 						if (chf.dist[i] >= level && srcReg[i] == 0&& chf.areas[i] != RecastConstants.RC_NULL_AREA) {
-							stack.add(x);
-							stack.add(y);
-							stack.add(i);
+							stack.push(x);
+							stack.push(y);
+							stack.push(i);
 						}
 					}
 				}
@@ -319,7 +319,7 @@ public class RecastRegion {
 		} else // use cells in the input stack
 		{
 			// mark all cells which already have a region
-			for (var j:int= 0; j < stack.size(); j += 3) {
+			for (var j:int= 0; j < stack.length; j += 3) {
 				i= stack.get(j + 2);
 				if (srcReg[i] != 0)
 					stack.set(j + 2, -1);
@@ -327,12 +327,12 @@ public class RecastRegion {
 		}
 
 		var iter:int= 0;
-		while (stack.size() > 0) {
+		while (stack.length > 0) {
 			var failed:int = 0;
 			System.arraycopy(srcReg, 0, dstReg, 0, chf.spanCount);
 			System.arraycopy(srcDist, 0, dstDist, 0, chf.spanCount);
 
-			for (j= 0; j < stack.size(); j += 3) {
+			for (j= 0; j < stack.length; j += 3) {
 				x= stack.get(j + 0);
 				y= stack.get(j + 1);
 				i= stack.get(j + 2);
@@ -377,7 +377,7 @@ public class RecastRegion {
 			srcDist = dstDist;
 			dstDist = temp;
 
-			if (failed * 3== stack.size())
+			if (failed * 3== stack.length)
 				break;
 
 			if (level > 0) {
@@ -416,22 +416,22 @@ public class RecastRegion {
 					if (sId < 0)
 						sId = 0;
 
-					stacks.get(sId).add(x);
-					stacks.get(sId).add(y);
-					stacks.get(sId).add(i);
+					stacks.get(sId).push(x);
+					stacks.get(sId).push(y);
+					stacks.get(sId).push(i);
 				}
 			}
 		}
 	}
 
 	private static function appendStacks(srcStack:Array, dstStack:Array, srcReg:Array):void {
-		for (var j:int= 0; j < srcStack.size(); j += 3) {
+		for (var j:int= 0; j < srcStack.length; j += 3) {
 			var i:int= srcStack.get(j + 2);
 			if ((i < 0) || (srcReg[i] != 0))
 				continue;
-			dstStack.add(srcStack.get(j));
-			dstStack.add(srcStack.get(j + 1));
-			dstStack.add(srcStack.get(j + 2));
+			dstStack.push(srcStack.get(j));
+			dstStack.push(srcStack.get(j + 1));
+			dstStack.push(srcStack.get(j + 2));
 		}
 	}
 
@@ -439,9 +439,9 @@ public class RecastRegion {
 
 	private static function removeAdjacentNeighbours(reg:Region):void {
 		// Remove adjacent duplicates.
-		for (var i:int= 0; i < reg.connections.size() && reg.connections.size() > 1;) {
-			var ni:int= (i + 1) % reg.connections.size();
-			if (reg.connections.get(i) == reg.connections.get(ni)) {
+		for (var i:int= 0; i < reg.connections.length && reg.connections.length > 1;) {
+			var ni:int= (i + 1) % reg.connections.length;
+			if (reg.connections[i] == reg.connections.get(ni)) {
 				reg.connections.remove(i);
 			} else
 				++i;
@@ -450,14 +450,14 @@ public class RecastRegion {
 
 	private static function replaceNeighbour(reg:Region, oldId:int, newId:int):void {
 		var neiChanged:Boolean= false;
-		for (var i:int= 0; i < reg.connections.size(); ++i) {
-			if (reg.connections.get(i) == oldId) {
+		for (var i:int= 0; i < reg.connections.length; ++i) {
+			if (reg.connections[i] == oldId) {
 				reg.connections.set(i, newId);
 				neiChanged = true;
 			}
 		}
-		for (i= 0; i < reg.floors.size(); ++i) {
-			if (reg.floors.get(i) == oldId)
+		for (i= 0; i < reg.floors.length; ++i) {
+			if (reg.floors[i] == oldId)
 				reg.floors.set(i, newId);
 		}
 		if (neiChanged)
@@ -468,14 +468,14 @@ public class RecastRegion {
 		if (rega.areaType != regb.areaType)
 			return false;
 		var n:int= 0;
-		for (var i:int= 0; i < rega.connections.size(); ++i) {
-			if (rega.connections.get(i) == regb.id)
+		for (var i:int= 0; i < rega.connections.length; ++i) {
+			if (rega.connections[i] == regb.id)
 				n++;
 		}
 		if (n > 1)
 			return false;
-		for (i= 0; i < rega.floors.size(); ++i) {
-			if (rega.floors.get(i) == regb.id)
+		for (i= 0; i < rega.floors.length; ++i) {
+			if (rega.floors[i] == regb.id)
 				return false;
 		}
 		return true;
@@ -483,7 +483,7 @@ public class RecastRegion {
 
 	private static function addUniqueFloorRegion(reg:Region, n:int):void {
 		if (!reg.floors.contains(n)) {
-			reg.floors.add(n);
+			reg.floors.push(n);
 		}
 	}
 
@@ -492,14 +492,14 @@ public class RecastRegion {
 		var bid:int= regb.id;
 
 		// Duplicate current neighbourhood.
-		var acon:Array = [];
+		var acon:Array = rega.connections;
 		//rega.connections();
 		var bcon:Array = regb.connections;
 
 		// Find insertion point on A.
 		var insa:int= -1;
-		for (var i:int= 0; i < acon.size(); ++i) {
-			if (acon.get(i) == bid) {
+		for (var i:int= 0; i < acon.length; ++i) {
+			if (acon[i] == bid) {
 				insa = i;
 				break;
 			}
@@ -509,8 +509,8 @@ public class RecastRegion {
 
 		// Find insertion point on B.
 		var insb:int= -1;
-		for (i= 0; i < bcon.size(); ++i) {
-			if (bcon.get(i) == aid) {
+		for (i= 0; i < bcon.length; ++i) {
+			if (bcon[i] == aid) {
 				insb = i;
 				break;
 			}
@@ -521,15 +521,15 @@ public class RecastRegion {
 		// Merge neighbours.
 		var ni:int;
 		rega.connections.clear();
-		for (i= 0, ni = acon.size(); i < ni - 1; ++i)
-			rega.connections.add(acon.get((insa + 1+ i) % ni));
+		for (i= 0, ni = acon.length; i < ni - 1; ++i)
+			rega.connections.push(acon.get((insa + 1+ i) % ni));
 
-		for (i= 0, ni = bcon.size(); i < ni - 1; ++i)
-			rega.connections.add(bcon.get((insb + 1+ i) % ni));
+		for (i= 0, ni = bcon.length; i < ni - 1; ++i)
+			rega.connections.push(bcon.get((insb + 1+ i) % ni));
 
 		removeAdjacentNeighbours(rega);
 
-		for (var j:int= 0; j < regb.floors.size(); ++j)
+		for (var j:int= 0; j < regb.floors.length; ++j)
 			addUniqueFloorRegion(rega, regb.floors.get(j));
 		rega.spanCount += regb.spanCount;
 		regb.spanCount = 0;
@@ -571,7 +571,7 @@ public class RecastRegion {
 			var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(ss, dir);
 			curReg = srcReg[ai];
 		}
-		cont.add(curReg);
+		cont.push(curReg);
 
 		var iter:int= 0;
 		while (++iter < 40000) {
@@ -588,7 +588,7 @@ public class RecastRegion {
 				}
 				if (r != curReg) {
 					curReg = r;
-					cont.add(curReg);
+					cont.push(curReg);
 				}
 
 				dir = (dir + 1) & 0x3; // Rotate CW
@@ -616,9 +616,9 @@ public class RecastRegion {
 		}
 
 		// Remove adjacent duplicates.
-		if (cont.size() > 1) {
-			for (var j:int= 0; j < cont.size();) {
-				var nj:int= (j + 1) % cont.size();
+		if (cont.length > 1) {
+			for (var j:int= 0; j < cont.length;) {
+				var nj:int= (j + 1) % cont.length;
 				if (cont.get(j) == cont.get(nj)) {
 					cont.remove(j);
 				} else
@@ -633,7 +633,7 @@ public class RecastRegion {
 		var h:int= chf.height;
 
 		var nreg:int= maxRegionId + 1;
-		var regions:Array= new Region[nreg];
+		var regions:Array = [];////new Region[nreg];
 
 		// Construct regions
 		for (var i:int= 0; i < nreg; ++i)
@@ -665,7 +665,7 @@ public class RecastRegion {
 					}
 
 					// Have found contour
-					if (reg.connections.size() > 0)
+					if (reg.connections.length > 0)
 						continue;
 
 					reg.areaType = chf.areas[i];
@@ -708,18 +708,18 @@ public class RecastRegion {
 			trace.clear();
 
 			reg.visited = true;
-			stack.add(i);
+			stack.push(i);
 
-			while (stack.size() > 0) {
+			while (stack.length > 0) {
 				// Pop
-				var ri:int= stack.remove(stack.size() - 1);
+				var ri:int= stack.remove(stack.length - 1);
 
 				var creg:Region= regions[ri];
 
 				spanCount += creg.spanCount;
-				trace.add(ri);
+				trace.push(ri);
 
-				for (j= 0; j < creg.connections.size(); ++j) {
+				for (j= 0; j < creg.connections.length; ++j) {
 					if ((creg.connections.get(j) & RecastConstants.RC_BORDER_REG) != 0) {
 						connectsToBorder = true;
 						continue;
@@ -730,7 +730,7 @@ public class RecastRegion {
 					if (neireg.id == 0|| (neireg.id & RecastConstants.RC_BORDER_REG) != 0)
 						continue;
 					// Visit
-					stack.add(neireg.id);
+					stack.push(neireg.id);
 					neireg.visited = true;
 				}
 			}
@@ -741,7 +741,7 @@ public class RecastRegion {
 			// can potentially remove necessary areas.
 			if (spanCount < minRegionArea && !connectsToBorder) {
 				// Kill all visited regions.
-				for (j= 0; j < trace.size(); ++j) {
+				for (j= 0; j < trace.length; ++j) {
 					regions[trace.get(j)].spanCount = 0;
 					regions[trace.get(j)].id = 0;
 				}
@@ -770,7 +770,7 @@ public class RecastRegion {
 				// Find smallest neighbour region that connects to this one.
 				var smallest:int= 0;
 				var mergeId:int= reg.id;
-				for (j= 0; j < reg.connections.size(); ++j) {
+				for (j= 0; j < reg.connections.length; ++j) {
 					if ((reg.connections.get(j) & RecastConstants.RC_BORDER_REG) != 0)
 						continue;
 					var mreg:Region= regions[reg.connections.get(j)];
@@ -840,14 +840,14 @@ public class RecastRegion {
 		// Return regions that we found to be overlapping.
 		for (i= 0; i < nreg; ++i)
 			if (regions[i].overlap)
-				overlaps.add(regions[i].id);
+				overlaps.push(regions[i].id);
 
 		return maxRegionId;
 	}
 
 	private static function addUniqueConnection(reg:Region, n:int):void {
 		if (!reg.connections.contains(n)) {
-			reg.connections.add(n);
+			reg.connections.push(n);
 		}
 	}
 
@@ -883,7 +883,7 @@ public class RecastRegion {
 					reg.ymin = Math.min(reg.ymin, s.y);
 					reg.ymax = Math.max(reg.ymax, s.y);
 					// Collect all region layers.
-					lregs.add(ri);
+					lregs.push(ri);
 
 					// Update neighbours
 					for (var dir:int= 0; dir < 4; ++dir) {
@@ -902,13 +902,13 @@ public class RecastRegion {
 				}
 
 				// Update overlapping regions.
-				for (i= 0; i < lregs.size() - 1; ++i) {
-					for (var j:int= i + 1; j < lregs.size(); ++j) {
-						if (lregs.get(i) != lregs.get(j)) {
-							var ri2:Region= regions[lregs.get(i)];
+				for (i= 0; i < lregs.length - 1; ++i) {
+					for (var j:int= i + 1; j < lregs.length; ++j) {
+						if (lregs[i] != lregs.get(j)) {
+							var ri2:Region= regions[lregs[i]];
 							var rj:Region= regions[lregs.get(j)];
 							addUniqueFloorRegion(ri2, lregs.get(j));
-							addUniqueFloorRegion(rj, lregs.get(i));
+							addUniqueFloorRegion(rj, lregs[i]);
 						}
 					}
 				}
@@ -934,13 +934,13 @@ public class RecastRegion {
 			root.id = layerId;
 
 			stack.clear();
-			stack.add(i);
+			stack.push(i);
 
-			while (stack.size() > 0) {
+			while (stack.length > 0) {
 				// Pop front
 				reg= regions[stack.remove(0)];
 
-				var ncons:int= reg.connections.size();
+				var ncons:int= reg.connections.length;
 				for (j= 0; j < ncons; ++j) {
 					var nei:int= reg.connections.get(j);
 					var regn:Region= regions[nei];
@@ -949,7 +949,7 @@ public class RecastRegion {
 						continue;
 					// Skip if the neighbour is overlapping root region.
 					var overlap:Boolean= false;
-					for (var k:int= 0; k < root.floors.size(); k++) {
+					for (var k:int= 0; k < root.floors.length; k++) {
 						if (root.floors.get(k) == nei) {
 							overlap = true;
 							break;
@@ -959,12 +959,12 @@ public class RecastRegion {
 						continue;
 
 					// Deepen
-					stack.add(nei);
+					stack.push(nei);
 
 					// Mark layer id
 					regn.id = layerId;
 					// Merge current layers to root.
-					for (k= 0; k < regn.floors.size(); ++k)
+					for (k= 0; k < regn.floors.length; ++k)
 						addUniqueFloorRegion(root, regn.floors.get(k));
 					root.ymin = Math.min(root.ymin, regn.ymin);
 					root.ymax = Math.max(root.ymax, regn.ymax);
@@ -1034,7 +1034,7 @@ public class RecastRegion {
 	public static function buildDistanceField(ctx:Context, chf:CompactHeightfield):void {
 
 		ctx.startTimer("BUILD_DISTANCEFIELD");
-		var src:Array= new int[chf.spanCount];
+		var src:Array= []//[]//chf.spanCount];
 		ctx.startTimer("DISTANCEFIELD_DIST");
 
 		var maxDist:int= calculateDistanceField(chf, src);
@@ -1097,7 +1097,7 @@ public class RecastRegion {
 		var h:int= chf.height;
 		var id:int= 1;
 
-		var srcReg:Array= new int[chf.spanCount];
+		var srcReg:Array= []//chf.spanCount];
 
 		var nsweeps:int= Math.max(chf.width, chf.height);
 		var sweeps:Array= new SweepSpan[nsweeps];
@@ -1123,7 +1123,7 @@ public class RecastRegion {
 			chf.borderSize = borderSize;
 		}
 
-		var prev:Array= new int[256];
+		var prev:Array= []//256];
 
 		// Sweep one line at a time.
 		for (var y:int= borderSize; y < h - borderSize; ++y) {
@@ -1246,14 +1246,14 @@ public class RecastRegion {
 		var NB_STACKS:int= 1<< LOG_NB_STACKS;
 		var lvlStacks:Array = [];
 		for (var i:int= 0; i < NB_STACKS; ++i)
-			lvlStacks.add([]);
+			lvlStacks.push([]);
 
 		var stack:Array = [];
 
-		var srcReg:Array= new int[chf.spanCount];
-		var srcDist:Array= new int[chf.spanCount];
-		var dstReg:Array= new int[chf.spanCount];
-		var dstDist:Array= new int[chf.spanCount];
+		var srcReg:Array= []//[]//chf.spanCount];
+		var srcDist:Array= []//[]//chf.spanCount];
+		var dstReg:Array= []//[]//chf.spanCount];
+		var dstDist:Array= []//[]//chf.spanCount];
 
 		var regionId:int= 1;
 		var level:int= (chf.maxDistance + 1) & ~1;
@@ -1313,7 +1313,7 @@ public class RecastRegion {
 			ctx.startTimer("BUILD_REGIONS_FLOOD");
 
 			// Mark new regions with IDs.
-			for (var j:int= 0; j < lvlStacks.get(sId).size(); j += 3) {
+			for (var j:int= 0; j < lvlStacks.get(sId).length; j += 3) {
 				var x:int= lvlStacks.get(sId).get(j);
 				var y:int= lvlStacks.get(sId).get(j + 1);
 				i= lvlStacks.get(sId).get(j + 2);
@@ -1345,8 +1345,8 @@ public class RecastRegion {
 		chf.maxRegions = mergeAndFilterRegions(ctx, minRegionArea, mergeRegionArea, regionId, chf, srcReg, overlaps);
 
 		// If overlapping regions were found during merging, split those regions.
-		if (overlaps.size() > 0) {
-			("rcBuildRegions: " + overlaps.size() + " overlapping regions.");
+		if (overlaps.length > 0) {
+			("rcBuildRegions: " + overlaps.length + " overlapping regions.");
 		}
 
 		ctx.stopTimer("BUILD_REGIONS_FILTER");
@@ -1367,7 +1367,7 @@ public class RecastRegion {
 		var h:int= chf.height;
 		var id:int= 1;
 
-		var srcReg:Array= new int[chf.spanCount];
+		var srcReg:Array= []//chf.spanCount];
 		var nsweeps:int= Math.max(chf.width, chf.height);
 		var sweeps:Array= new SweepSpan[nsweeps];
 		for (var i:int= 0; i < sweeps.length; i++) {
@@ -1392,7 +1392,7 @@ public class RecastRegion {
 			chf.borderSize = borderSize;
 		}
 
-		var prev:Array= new int[256];
+		var prev:Array= []//256];
 
 		// Sweep one line at a time.
 		for (var y:int= borderSize; y < h - borderSize; ++y) {

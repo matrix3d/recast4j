@@ -84,7 +84,7 @@ public class FindPolysAroundShapeTest extends AbstractDetourTest {
 			var startPos:Array= startPoss[i];
 			var polys:FindPolysAroundResult= query.findPolysAroundShape(startRef, getQueryPoly(startPos, endPoss[i]), 4,
 					filter);
-			Assert.assertEquals(refs[i].length, polys.getRefs().size());
+			Assert.assertEquals(refs[i].length, polys.getRefs().length);
 			for (var v:int= 0; v < refs[i].length; v++) {
 				Assert.assertEquals(refs[i][v], polys.getRefs().get(v).longValue());
 			}

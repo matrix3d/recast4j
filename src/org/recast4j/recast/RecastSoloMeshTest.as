@@ -236,7 +236,7 @@ public class RecastSoloMeshTest {
 		var m_cset:ContourSet= RecastContour.buildContours(m_ctx, m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen,
 				RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
-		Assert.assertEquals("Contours", expContours, m_cset.conts.size());
+		Assert.assertEquals("Contours", expContours, m_cset.conts.length);
 		//
 		// Step 6. Build polygons mesh from contours.
 		//

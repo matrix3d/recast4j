@@ -241,7 +241,7 @@ public class RecastMeshDetail {
 	}
 
 	private static function findEdge( edges:Array, s:int, t:int):int {
-		for (var i:int= 0; i < edges.size() / 4; i++) {
+		for (var i:int= 0; i < edges.length / 4; i++) {
 			var e:int= i * 4;
 			if ((edges.get(e + 0) == s && edges.get(e + 1) == t) || (edges.get(e + 0) == t && edges.get(e + 1) == s))
 				return i;
@@ -250,17 +250,17 @@ public class RecastMeshDetail {
 	}
 
 	private static function addEdge(ctx:Context,  edges:Array, maxEdges:int, s:int, t:int, l:int, r:int):void {
-		if (edges.size() / 4>= maxEdges) {
-			throw ("addEdge: Too many edges (" + edges.size() / 4+ "/" + maxEdges + ").");
+		if (edges.length / 4>= maxEdges) {
+			throw ("addEdge: Too many edges (" + edges.length / 4+ "/" + maxEdges + ").");
 		}
 
 		// Add edge if not already in the triangulation.
 		var e:int= findEdge(edges, s, t);
 		if (e == EV_UNDEF) {
-			edges.add(s);
-			edges.add(t);
-			edges.add(l);
-			edges.add(r);
+			edges.push(s);
+			edges.push(t);
+			edges.push(l);
+			edges.push(r);
 		}
 	}
 
@@ -284,7 +284,7 @@ public class RecastMeshDetail {
 	}
 
 	private static function overlapEdges(pts:Array, edges:Array,  s1:int, t1:int):Boolean {
-		for (var i:int= 0; i < edges.size() / 4; ++i) {
+		for (var i:int= 0; i < edges.length / 4; ++i) {
 			var s0:int= edges.get(i * 4+ 0);
 			var t0:int= edges.get(i * 4+ 1);
 			// Same or connected edges do not overlap.
@@ -385,7 +385,7 @@ public class RecastMeshDetail {
 		for (var i:int= 0, j:int = nhull - 1; i < nhull; j = i++)
 			addEdge(ctx, edges, maxEdges, hull[j], hull[i], EV_HULL, EV_UNDEF);
 		var currentEdge:int= 0;
-		while (currentEdge < edges.size() / 4) {
+		while (currentEdge < edges.length / 4) {
 			if (edges.get(currentEdge * 4+ 2) == EV_UNDEF) {
 				nfaces = completeFacet(ctx, pts, npts, edges, maxEdges, nfaces, currentEdge);
 			}
@@ -397,9 +397,9 @@ public class RecastMeshDetail {
 		// Create tris
 		tris.clear();
 		for (i= 0; i < nfaces * 4; ++i)
-			tris.add(-1);
+			tris.push(-1);
 
-		for (i= 0; i < edges.size() / 4; ++i) {
+		for (i= 0; i < edges.length / 4; ++i) {
 			var e:int= i * 4;
 			if (edges.get(e + 3) >= 0) {
 				// Left face
@@ -425,19 +425,19 @@ public class RecastMeshDetail {
 			}
 		}
 
-		for (i= 0; i < tris.size() / 4; ++i) {
+		for (i= 0; i < tris.length / 4; ++i) {
 			t= i * 4;
 			if (tris.get(t + 0) == -1|| tris.get(t + 1) == -1|| tris.get(t + 2) == -1) {
 				trace("Dangling! " + tris.get(t) + " " + tris.get(t + 1) + "  " + tris.get(t + 2));
 				//ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t[0],t[1],t[2]);
-				tris.set(t + 0, tris.get(tris.size() - 4));
-				tris.set(t + 1, tris.get(tris.size() - 3));
-				tris.set(t + 2, tris.get(tris.size() - 2));
-				tris.set(t + 3, tris.get(tris.size() - 1));
-				tris.remove(tris.size() - 1);
-				tris.remove(tris.size() - 1);
-				tris.remove(tris.size() - 1);
-				tris.remove(tris.size() - 1);
+				tris.set(t + 0, tris.get(tris.length - 4));
+				tris.set(t + 1, tris.get(tris.length - 3));
+				tris.set(t + 2, tris.get(tris.length - 2));
+				tris.set(t + 3, tris.get(tris.length - 1));
+				tris.remove(tris.length - 1);
+				tris.remove(tris.length - 1);
+				tris.remove(tris.length - 1);
+				tris.remove(tris.length - 1);
 				--i;
 			}
 		}
@@ -484,10 +484,10 @@ public class RecastMeshDetail {
 		}
 
 		// Add first triangle
-		tris.add(hull[start]);
-		tris.add(hull[left]);
-		tris.add(hull[right]);
-		tris.add(0);
+		tris.push(hull[start]);
+		tris.push(hull[left]);
+		tris.push(hull[right]);
+		tris.push(0);
 
 		// Triangulate the polygon by moving left or right,
 		// depending on which triangle has shorter perimeter.
@@ -506,16 +506,16 @@ public class RecastMeshDetail {
 			var dright:Number= vdist2(verts, cvright, nvright) + vdist2(verts, cvleft, nvright);
 
 			if (dleft < dright) {
-				tris.add(hull[left]);
-				tris.add(hull[nleft]);
-				tris.add(hull[right]);
-				tris.add(0);
+				tris.push(hull[left]);
+				tris.push(hull[nleft]);
+				tris.push(hull[right]);
+				tris.push(0);
 				left = nleft;
 			} else {
-				tris.add(hull[left]);
-				tris.add(hull[nright]);
-				tris.add(hull[right]);
-				tris.add(0);
+				tris.push(hull[left]);
+				tris.push(hull[nright]);
+				tris.push(hull[right]);
+				tris.push(0);
 				right = nright;
 			}
 		}
@@ -536,7 +536,7 @@ public class RecastMeshDetail {
 
 		var nverts:int= 0;
 		var edge:Array= []//new [(MAX_VERTS_PER_EDGE + 1) * 3];
-		var hull:Array= []//new int[MAX_VERTS];
+		var hull:Array= []//[]//MAX_VERTS];
 		var nhull:int= 0;
 
 		nverts = 0;
@@ -599,7 +599,7 @@ public class RecastMeshDetail {
 							* chf.ch;
 				}
 				// Simplify samples.
-				var idx:Array= []//new int[MAX_VERTS_PER_EDGE];
+				var idx:Array= []//[]//MAX_VERTS_PER_EDGE];
 				idx[0] = 0;
 				idx[1] = nn;
 				var nidx:int= 2;
@@ -660,7 +660,7 @@ public class RecastMeshDetail {
 		// are no internal points.
 		triangulateHull(nverts, verts, nhull, hull, tris);
 
-		if (tris.size() == 0) {
+		if (tris.length == 0) {
 			// Could not triangulate the poly, make sure there is some valid data there.
 			throw ("buildPolyDetail: Could not triangulate polygon (" + nverts + ") verts).");
 		}
@@ -689,17 +689,17 @@ public class RecastMeshDetail {
 					// Make sure the samples are not too close to the edges.
 					if (distToPoly(nin, in_, pt) > -sampleDist / 2)
 						continue;
-					samples.add(x);
-					samples.add(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.ch, hp));
-					samples.add(z);
-					samples.add(0); // Not added
+					samples.push(x);
+					samples.push(getHeight(pt[0], pt[1], pt[2], cs, ics, chf.ch, hp));
+					samples.push(z);
+					samples.push(0); // Not added
 				}
 			}
 
 			// Add the samples starting from the one that has the most
 			// error. The procedure stops when all samples are added
 			// or when the max error is within treshold.
-			var nsamples:int= samples.size() / 4;
+			var nsamples:int= samples.length / 4;
 			for (var iter:int= 0; iter < nsamples; ++iter) {
 				if (nverts >= MAX_VERTS)
 					break;
@@ -718,7 +718,7 @@ public class RecastMeshDetail {
 					pt[0] = samples.get(s + 0) * sampleDist + getJitterX(i) * cs * 0.1;
 					pt[1] = samples.get(s + 1) * chf.ch;
 					pt[2] = samples.get(s + 2) * sampleDist + getJitterY(i) * cs * 0.1;
-					 d= distToTriMesh(pt, verts, nverts, tris, tris.size() / 4);
+					 d= distToTriMesh(pt, verts, nverts, tris, tris.length / 4);
 					if (d < 0)
 						continue; // did not hit the mesh.
 					if (d > bestd) {
@@ -742,7 +742,7 @@ public class RecastMeshDetail {
 			}
 		}
 
-		var ntris:int= tris.size() / 4;
+		var ntris:int= tris.length / 4;
 		if (ntris > MAX_TRIS) {
 			var subList:Array =tris.slice(0, MAX_TRIS * 4);
 			tris.clear();
@@ -791,9 +791,9 @@ public class RecastMeshDetail {
 				}
 			}
 			if (ci != -1) {
-				stack.add(cx);
-				stack.add(cz);
-				stack.add(ci);
+				stack.push(cx);
+				stack.push(cz);
+				stack.push(ci);
 			}
 		}
 
@@ -806,24 +806,24 @@ public class RecastMeshDetail {
 		pcx /= npoly;
 		pcz /= npoly;
 
-		for (var i:int= 0; i < stack.size(); i += 3) {
+		for (var i:int= 0; i < stack.length; i += 3) {
 			cx= stack.get(i + 0);
 			var cy:int= stack.get(i + 1);
 			var idx:int= cx - hp.xmin + (cy - hp.ymin) * hp.width;
 			hp.data[idx] = 1;
 		}
 
-		while (stack.size() > 0) {
-			 ci= stack.remove(stack.size() - 1);
-			 cy= stack.remove(stack.size() - 1);
-			 cx= stack.remove(stack.size() - 1);
+		while (stack.length > 0) {
+			 ci= stack.remove(stack.length - 1);
+			 cy= stack.remove(stack.length - 1);
+			 cx= stack.remove(stack.length - 1);
 
 			// Check if close to center of the polygon.
 			if (Math.abs(cx - pcx) <= 1&& Math.abs(cy - pcz) <= 1) {
 				stack.clear();
-				stack.add(cx);
-				stack.add(cy);
-				stack.add(ci);
+				stack.push(cx);
+				stack.push(cy);
+				stack.push(ci);
 				break;
 			}
 
@@ -847,16 +847,16 @@ public class RecastMeshDetail {
 				idx= ax - hp.xmin + (ay - hp.ymin) * hp.width;
 				hp.data[idx] = 1;
 
-				stack.add(ax);
-				stack.add(ay);
-				stack.add(ai);
+				stack.push(ax);
+				stack.push(ay);
+				stack.push(ai);
 			}
 		}
 
 		Arrays.fill(hp.data, 0, hp.width * hp.height, RC_UNSET_HEIGHT);
 
 		// Mark start locations.
-		for ( i= 0; i < stack.size(); i += 3) {
+		for ( i= 0; i < stack.length; i += 3) {
 			 cx= stack.get(i + 0);
 			 cy= stack.get(i + 1);
 			ci= stack.get(i + 2);
@@ -913,9 +913,9 @@ public class RecastMeshDetail {
 							}
 						}
 						if (border) {
-							stack.add(x);
-							stack.add(y);
-							stack.add(i);
+							stack.push(x);
+							stack.push(y);
+							stack.push(i);
 						}
 						break;
 					}
@@ -930,14 +930,14 @@ public class RecastMeshDetail {
 
 		var head:int= 0;
 
-		while (head * 3< stack.size()) {
+		while (head * 3< stack.length) {
 			var cx:int= stack.get(head * 3+ 0);
 			var cy:int= stack.get(head * 3+ 1);
 			var ci:int= stack.get(head * 3+ 2);
 			head++;
 			if (head >= RETRACT_SIZE) {
 				head = 0;
-				stack = stack.subList(RETRACT_SIZE * 3, stack.size());
+				stack = stack.subList(RETRACT_SIZE * 3, stack.length);
 			}
 
 			var cs:CompactSpan= chf.spans[ci];
@@ -961,9 +961,9 @@ public class RecastMeshDetail {
 
 				hp.data[hx + hy * hp.width] = as_.y;
 
-				stack.add(ax);
-				stack.add(ay);
-				stack.add(ai);
+				stack.push(ax);
+				stack.push(ay);
+				stack.push(ai);
 			}
 		}
 	}
@@ -1012,7 +1012,7 @@ public class RecastMeshDetail {
 		var nPolyVerts:int= 0;
 		var maxhw:int= 0, maxhh:int = 0;
 
-		var bounds:Array= new int[mesh.npolys * 4];
+		var bounds:Array= []//mesh.npolys * 4];
 		var poly:Array= []//new float[nvp * 3];
 
 		// Find max size for a polygon area.
@@ -1041,12 +1041,12 @@ public class RecastMeshDetail {
 			maxhw = Math.max(maxhw, bounds[i * 4+ 1] - bounds[i * 4+ 0]);
 			maxhh = Math.max(maxhh, bounds[i * 4+ 3] - bounds[i * 4+ 2]);
 		}
-		hp.data = new int[maxhw * maxhh];
+		hp.data = []//maxhw * maxhh];
 
 		dmesh.nmeshes = mesh.npolys;
 		dmesh.nverts = 0;
 		dmesh.ntris = 0;
-		dmesh.meshes = new int[dmesh.nmeshes * 4];
+		dmesh.meshes = []//dmesh.nmeshes * 4];
 
 		var vcap:int= nPolyVerts + nPolyVerts / 2;
 		var tcap:int= vcap * 2;
@@ -1054,7 +1054,7 @@ public class RecastMeshDetail {
 		dmesh.nverts = 0;
 		dmesh.verts = []//new float[vcap * 3];
 		dmesh.ntris = 0;
-		dmesh.tris = new int[tcap * 4];
+		dmesh.tris = []//tcap * 4];
 
 		for ( i= 0; i < mesh.npolys; ++i) {
 			 p= i * nvp * 2;
@@ -1095,7 +1095,7 @@ public class RecastMeshDetail {
 			}
 
 			// Store detail submesh.
-			var ntris:int= tris.size() / 4;
+			var ntris:int= tris.length / 4;
 
 			dmesh.meshes[i * 4+ 0] = dmesh.nverts;
 			dmesh.meshes[i * 4+ 1] = nverts;
@@ -1123,7 +1123,7 @@ public class RecastMeshDetail {
 			if (dmesh.ntris + ntris > tcap) {
 				while (dmesh.ntris + ntris > tcap)
 					tcap += 256;
-				var newt:Array= new int[tcap * 4];
+				var newt:Array= []//tcap * 4];
 				if (dmesh.ntris != 0)
 					System.arraycopy(dmesh.tris, 0, newt, 0, 4* dmesh.ntris);
 				dmesh.tris = newt;
@@ -1163,9 +1163,9 @@ public class RecastMeshDetail {
 		}
 
 		mesh.nmeshes = 0;
-		mesh.meshes = new int[maxMeshes * 4];
+		mesh.meshes = []//maxMeshes * 4];
 		mesh.ntris = 0;
-		mesh.tris = new int[maxTris * 4];
+		mesh.tris = []//maxTris * 4];
 		mesh.nverts = 0;
 		mesh.verts = []//new float[maxVerts * 3];
 

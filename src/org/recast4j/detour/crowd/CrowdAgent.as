@@ -87,7 +87,7 @@ internal class CrowdAgent {
 	var cornerVerts:Array= new float[Crowd.DT_CROWDAGENT_MAX_CORNERS * 3];
 
 	/// The local path corridor corner flags. (See: #dtStraightPathFlags) [(flags) * #ncorners]
-	var cornerFlags:Array= new int[Crowd.DT_CROWDAGENT_MAX_CORNERS];
+	var cornerFlags:Array= []//Crowd.DT_CROWDAGENT_MAX_CORNERS];
 
 	/// The reference id of the polygon being entered at the corner. [(polyRef) * #ncorners]
 	var cornerPolys:Array= new long[Crowd.DT_CROWDAGENT_MAX_CORNERS];

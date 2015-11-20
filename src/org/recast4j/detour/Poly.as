@@ -28,9 +28,9 @@ public class Poly {
 	/** Index to first link in linked list. (Or #DT_NULL_LINK if there is no link.) */
 	public var firstLink:int;
 	/** The indices of the polygon's vertices. The actual vertices are located in MeshTile::verts. */
-	public var verts:Array= new int[NavMesh.DT_VERTS_PER_POLYGON];
+	public var verts:Array= []//NavMesh.DT_VERTS_PER_POLYGON];
 	/** Packed data representing neighbor polygons references and flags for each edge. */
-	public var neis:Array= new int[NavMesh.DT_VERTS_PER_POLYGON];
+	public var neis:Array= []//NavMesh.DT_VERTS_PER_POLYGON];
 	/** The user defined polygon flags. */
 	public var flags:int;
 	/** The number of vertices in the polygon. */

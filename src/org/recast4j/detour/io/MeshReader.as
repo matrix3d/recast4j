@@ -81,7 +81,7 @@ public class MeshReader {
 	}
 
 	private float[] readVerts(var buf:ByteBuffer, var count:int) {
-		var verts:Array= new float[count * 3];
+		var verts:Array = [];// new float[count * 3];
 		for (var i:int= 0; i < verts.length; i++) {
 			verts[i] = buf.getFloat();
 		}
@@ -119,7 +119,7 @@ public class MeshReader {
 	}
 
 	private int[] readDTris(var buf:ByteBuffer, var header:MeshHeader) {
-		var tris:Array= new int[4* header.detailTriCount];
+		var tris:Array= []//4* header.detailTriCount];
 		for (var i:int= 0; i < tris.length; i++) {
 			tris[i] = buf.get() & 0xFF;
 		}

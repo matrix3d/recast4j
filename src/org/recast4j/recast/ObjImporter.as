@@ -19,13 +19,81 @@ package org.recast4j.recast {
 
 public class ObjImporter {
 
-	
 
-    public function load(a:Object):InputGeom {
-        return new InputGeom(null,null);
+    public function load(txt:String):InputGeom {
+        var context:ObjImporterContext= new ObjImporterContext();
+		var line:String;
+		var lines:Array = txt.split(/[\r\n]+/g);
+		while ((line = lines.shift()) != null) {
+			line = trim(line);
+			readLine(line, context);
+		}
+        
+        return new InputGeom(context.vertexPositions, context.meshFaces);
 
     }
+	public function trim(s:String):String {
+		return s ? s.replace(/^\s+|\s+$/gs, '') : "";
+	}
 
+    private function readLine(line:String, context:ObjImporterContext):void {
+        if (line.charAt(0)=="v") {
+            readVertex(line, context);
+        } else if (line.charAt(0)=="f") {
+            readFace(line, context);
+        }
+    }
+
+    private function readVertex(line:String, context:ObjImporterContext):void {
+        if (line.substr(0,2)=="v ") {
+        	var vert:Array= readVector3f(line);
+        	for each(var vp:Number in vert) {
+        		context.vertexPositions.push(vp);
+        	}
+        }
+    }
+
+    private function readVector3f(line:String):Array {
+        var v:Array= line.split(/\s+/);
+        if (v.length < 4) {
+            throw ("Invalid vector, expected 3 coordinates, found " + (v.length - 1));
+        }
+        return [parseFloat(v[1]), parseFloat(v[2]), parseFloat(v[3])];
+    }
+
+    private function readFace(line:String, context:ObjImporterContext):void {
+        var v:Array= line.split(/\s+/);
+        if (v.length < 4) {
+            throw ("Invalid number of face vertices: 3 coordinates expected, found "
+                    + v.length);
+        }
+        for (var j:int= 0; j < v.length - 3; j++) {
+    		context.meshFaces.push(readFaceVertex(v[1], context));
+        	for (var i:int= 0; i < 2; i++) {
+        		context.meshFaces.push(readFaceVertex(v[2+ j + i], context));
+        	}
+        }
+    }
+
+    private function readFaceVertex(face:String, context:ObjImporterContext):int {
+        var v:Array= face.split("/");
+        return getIndex(parseInt(v[0]), context.vertexPositions.length);
+    }
+
+    private function getIndex(posi:int, size:int):int {
+        if (posi > 0) {
+            posi--;
+        } else if (posi < 0) {
+            posi = size + posi;
+        } else {
+            throw ("0 vertex index");
+        }
+        return posi;
+    }
 
 }
 }
+class ObjImporterContext {
+public	var vertexPositions:Array = [];
+	 public var    meshFaces:Array = [];
+	}

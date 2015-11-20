@@ -59,13 +59,13 @@ internal class Segment {
 
 	protected function addSegment(dist:Number, s:Array):void {
 		// Insert neighbour based on the distance.
-		if (m_segs.size() >= MAX_LOCAL_SEGS) {
+		if (m_segs.length >= MAX_LOCAL_SEGS) {
 			return;
 		}
 		var seg:Segment= new Segment();
 		System.arraycopy(s, 0, seg.s, 0, 6);
 		seg.d = dist;
-		m_segs.add(seg);
+		m_segs.push(seg);
 	}
 
 	public function update(ref:Number, pos:Array, collisionQueryRange:Number, navquery:NavMeshQuery, filter:QueryFilter):void {
@@ -79,9 +79,9 @@ internal class Segment {
 		this.m_polys = res.getRefs();
 		m_segs.clear();
 		// Secondly, store all polygon edges.
-		for (var j:int= 0; j < m_polys.size(); ++j) {
+		for (var j:int= 0; j < m_polys.length; ++j) {
 			var gpws:GetPolyWallSegmentsResult= navquery.getPolyWallSegments(m_polys.get(j), filter);
-			for (var k:int= 0; k < gpws.getSegmentRefs().size(); ++k) {
+			for (var k:int= 0; k < gpws.getSegmentRefs().length; ++k) {
 				var s:Array= gpws.getSegmentVerts().get(k);
 				// Skip too distant segments.
 				Tupple2<Float, Float> distseg = distancePtSegSqr2D(pos, s, 0, 3);
