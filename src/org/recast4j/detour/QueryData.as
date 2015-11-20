@@ -18,15 +18,15 @@ freely, subject to the following restrictions:
 */
 package org.recast4j.detour {
 
- class QueryData {
-	var status:int;
-	var lastBestNode:Node;
-	var lastBestNodeCost:Number;
-	var startRef:Number, endRef;
-	var startPos:Array= []//new float[3];
-	var endPos:Array= []//new float[3];
-	var filter:QueryFilter;
-	var options:int;
-	var raycastLimitSqr:Number;
+public class QueryData {
+	public var status:int;
+	public var lastBestNode:Node;
+	public var lastBestNodeCost:Number;
+	public var startRef:Number, endRef:Number;
+	public var startPos:Array= []//new float[3];
+	public var endPos:Array= []//new float[3];
+	public var filter:QueryFilter;
+	public var options:int;
+	public var raycastLimitSqr:Number;
 }
 }

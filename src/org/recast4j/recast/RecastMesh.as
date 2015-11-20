@@ -22,7 +22,7 @@ package org.recast4j.recast {
 
 public class RecastMesh {
 
-	static var VERTEX_BUCKET_COUNT:int= (1<< 12);
+	public static const VERTEX_BUCKET_COUNT:int= (1<< 12);
 
 	
 
@@ -40,7 +40,7 @@ public class RecastMesh {
 		for (var i:int= 0; i < nverts; i++)
 			firstEdge[i] = RecastConstants.RC_MESH_NULL_IDX;
 
-		for (var i:int= 0; i < npolys; ++i) {
+		for (i= 0; i < npolys; ++i) {
 			var t:int= i * vertsPerPoly * 2;
 			for (var j:int= 0; j < vertsPerPoly; ++j) {
 				if (polys[t + j] == RecastConstants.RC_MESH_NULL_IDX)
@@ -65,17 +65,17 @@ public class RecastMesh {
 			}
 		}
 
-		for (var i:int= 0; i < npolys; ++i) {
-			var t:int= i * vertsPerPoly * 2;
-			for (var j:int= 0; j < vertsPerPoly; ++j) {
+		for (i= 0; i < npolys; ++i) {
+			t= i * vertsPerPoly * 2;
+			for (j= 0; j < vertsPerPoly; ++j) {
 				if (polys[t + j] == RecastConstants.RC_MESH_NULL_IDX)
 					break;
-				var v0:int= polys[t + j];
-				var v1:int= (j + 1>= vertsPerPoly || polys[t + j + 1] == RecastConstants.RC_MESH_NULL_IDX) ? polys[t + 0]
+				v0= polys[t + j];
+				v1= (j + 1>= vertsPerPoly || polys[t + j + 1] == RecastConstants.RC_MESH_NULL_IDX) ? polys[t + 0]
 						: polys[t + j + 1];
 				if (v0 > v1) {
 					for (var e:int= firstEdge[v1]; e != RecastConstants.RC_MESH_NULL_IDX; e = firstEdge[nextEdge + e]) {
-						var edge:Edge= edges[e];
+						edge= edges[e];
 						if (edge.vert[1] == v0 && edge.poly[0] == edge.poly[1]) {
 							edge.poly[1] = i;
 							edge.polyEdge[1] = j;
@@ -87,7 +87,7 @@ public class RecastMesh {
 		}
 
 		// Store adjacency
-		for (var i:int= 0; i < edgeCount; ++i) {
+		for (i= 0; i < edgeCount; ++i) {
 			var e2:Edge= edges[i];
 			if (e2.poly[0] != e2.poly[1]) {
 				var p0:int= e2.poly[0] * vertsPerPoly * 2;
@@ -112,7 +112,7 @@ public class RecastMesh {
 		var i:int= firstVert[bucket];
 
 		while (i != -1) {
-			var v:int= i * 3;
+			v= i * 3;
 			if (verts[v + 0] == x && (Math.abs(verts[v + 1] - y) <= 2) && verts[v + 2] == z)
 				return [ i, nv ];
 			i = nextVert[i]; // next
@@ -131,11 +131,11 @@ public class RecastMesh {
 		return [ i, nv ];
 	}
 
-	static function prev(i:int, n:int):int {
+	public static function prev(i:int, n:int):int {
 		return i - 1>= 0? i - 1: n - 1;
 	}
 
-	static function next(i:int, n:int):int {
+	public static function next(i:int, n:int):int {
 		return i + 1< n ? i + 1: 0;
 	}
 
@@ -146,11 +146,11 @@ public class RecastMesh {
 
 	// Returns true iff c is strictly to the left of the directed
 	// line through a to b.
-	static function left(verts:Array, a:int, b:int, c:int):Boolean {
+	public static function left(verts:Array, a:int, b:int, c:int):Boolean {
 		return area2(verts, a, b, c) < 0;
 	}
 
-	static function leftOn(verts:Array, a:int, b:int, c:int):Boolean {
+	public static function leftOn(verts:Array, a:int, b:int, c:int):Boolean {
 		return area2(verts, a, b, c) <= 0;
 	}
 
@@ -185,7 +185,7 @@ public class RecastMesh {
 	}
 
 	// Returns true iff segments ab and cd intersect, properly or improperly.
-	static function intersect(verts:Array, a:int, b:int, c:int, d:int):Boolean {
+	public static function intersect(verts:Array, a:int, b:int, c:int, d:int):Boolean {
 		if (intersectProp(verts, a, b, c, d))
 			return true;
 		else if (between(verts, a, b, c) || between(verts, a, b, d) || between(verts, c, d, a)
@@ -195,7 +195,7 @@ public class RecastMesh {
 			return false;
 	}
 
-	static function vequal(verts:Array, a:int, b:int):Boolean {
+	public static function vequal(verts:Array, a:int, b:int):Boolean {
 		return verts[a + 0] == verts[b + 0] && verts[a + 2] == verts[b + 2];
 	}
 
@@ -300,8 +300,8 @@ public class RecastMesh {
 		while (n > 3) {
 			var minLen:int= -1;
 			var mini:int= -1;
-			for (var i:int= 0; i < n; i++) {
-				var i1:int= next(i, n);
+			for (i= 0; i < n; i++) {
+				i1= next(i, n);
 				if ((indices[i1] & 0x80000000) != 0) {
 					var p0:int= (indices[i] & 0x0) * 4;
 					var p2:int= (indices[next(i1, n)] & 0x0) * 4;
@@ -328,15 +328,15 @@ public class RecastMesh {
 				// like A-B or C-D can be found and we can continue.
 				minLen = -1;
 				mini = -1;
-				for (var i:int= 0; i < n; i++) {
-					var i1:int= next(i, n);
-					var i2:int= next(i1, n);
+				for (i= 0; i < n; i++) {
+					i1= next(i, n);
+					i2= next(i1, n);
 					if (diagonalLoose(i, i2, n, verts, indices)) {
-						var p0:int= (indices[i] & 0x0) * 4;
-						var p2:int= (indices[next(i2, n)] & 0x0) * 4;
-						var dx:int= verts[p2 + 0] - verts[p0 + 0];
-						var dy:int= verts[p2 + 2] - verts[p0 + 2];
-						var len:int= dx * dx + dy * dy;
+						p0= (indices[i] & 0x0) * 4;
+						p2= (indices[next(i2, n)] & 0x0) * 4;
+						dx= verts[p2 + 0] - verts[p0 + 0];
+						dy= verts[p2 + 2] - verts[p0 + 2];
+						len= dx * dx + dy * dy;
 
 						if (minLen < 0|| len < minLen) {
 							minLen = len;
@@ -351,9 +351,9 @@ public class RecastMesh {
 				}
 			}
 
-			var i:int= mini;
-			var i1:int= next(i, n);
-			var i2:int= next(i1, n);
+			i= mini;
+			i1= next(i, n);
+			i2= next(i1, n);
 
 			tris[ntris * 3] = indices[i] & 0x0;
 			tris[ntris * 3+ 1] = indices[i1] & 0x0;
@@ -425,7 +425,7 @@ public class RecastMesh {
 				var vb0:int= polys[pb + j];
 				var vb1:int= polys[pb + (j + 1) % nb];
 				if (vb0 > vb1) {
-					var temp:int= vb0;
+					temp= vb0;
 					vb0 = vb1;
 					vb1 = temp;
 				}
@@ -442,7 +442,7 @@ public class RecastMesh {
 			return [ -1, ea, eb ];
 
 		// Check to see if the merged polygon would be convex.
-		var va:int, vb, vc;
+		var va:int, vb:int, vc:int;
 
 		va = polys[pa + (ea + na - 1) % na];
 		vb = polys[pa + ea];
@@ -478,7 +478,7 @@ public class RecastMesh {
 			n++;
 		}
 		// Add pb
-		for (var i:int= 0; i < nb - 1; ++i) {
+		for (i= 0; i < nb - 1; ++i) {
 			polys[tmp + n] = polys[pb + (eb + 1+ i) % nb];
 			n++;
 		}
@@ -533,15 +533,16 @@ public class RecastMesh {
 		var nedges:int= 0;
 		var edges:Array= new int[maxEdges * 3];
 
-		for (var i:int= 0; i < mesh.npolys; ++i) {
-			var p:int= i * nvp * 2;
-			var nv:int= countPolyVerts(mesh.polys, p, nvp);
+		for (i= 0; i < mesh.npolys; ++i) {
+			p= i * nvp * 2;
+			nv= countPolyVerts(mesh.polys, p, nvp);
 
 			// Collect edges which touches the removed vertex.
-			for (var j:int= 0, k = nv - 1; j < nv; k = j++) {
+			var k:int;
+			for (j= 0, k = nv - 1; j < nv; k = j++) {
 				if (mesh.polys[p + j] == rem || mesh.polys[p + k] == rem) {
 					// Arrange edge so that a=rem.
-					var a:int= mesh.polys[p + j], b = mesh.polys[p + k];
+					var a:int= mesh.polys[p + j], b:int = mesh.polys[p + k];
 					if (b == rem) {
 						var temp:int= a;
 						a = b;
@@ -559,7 +560,7 @@ public class RecastMesh {
 					}
 					// Add new edge.
 					if (!exists) {
-						var e:int= nedges * 3;
+						e= nedges * 3;
 						edges[e + 0] = a;
 						edges[e + 1] = b;
 						edges[e + 2] = 1;
@@ -573,7 +574,7 @@ public class RecastMesh {
 		// This catches the case that two non-adjacent polygons
 		// share the removed vertex. In that case, do not remove the vertex.
 		var numOpenEdges:int= 0;
-		for (var i:int= 0; i < nedges; ++i) {
+		for (i= 0; i < nedges; ++i) {
 			if (edges[i * 3+ 2] < 2)
 				numOpenEdges++;
 		}
@@ -591,7 +592,7 @@ public class RecastMesh {
 		for (var i:int= 0; i < mesh.npolys; ++i) {
 			var p:int= i * nvp * 2;
 			var nv:int= countPolyVerts(mesh.polys, p, nvp);
-			for (var j:int= 0; j < nv; ++j) {
+			for (j= 0; j < nv; ++j) {
 				if (mesh.polys[p + j] == rem)
 					numRemovedVerts++;
 			}
@@ -609,16 +610,16 @@ public class RecastMesh {
 		var nharea:int= 0;
 		var harea:Array= new int[numRemovedVerts * nvp];
 
-		for (var i:int= 0; i < mesh.npolys; ++i) {
-			var p:int= i * nvp * 2;
-			var nv:int= countPolyVerts(mesh.polys, p, nvp);
+		for (i= 0; i < mesh.npolys; ++i) {
+			p= i * nvp * 2;
+			nv= countPolyVerts(mesh.polys, p, nvp);
 			var hasRem:Boolean= false;
-			for (var j:int= 0; j < nv; ++j)
+			for (j= 0; j < nv; ++j)
 				if (mesh.polys[p + j] == rem)
 					hasRem = true;
 			if (hasRem) {
 				// Collect edges which does not touch the removed vertex.
-				for (var j:int= 0, k = nv - 1; j < nv; k = j++) {
+				for (j= 0, k = nv - 1; j < nv; k = j++) {
 					if (mesh.polys[p + j] != rem && mesh.polys[p + k] != rem) {
 						var e:int= nedges * 4;
 						edges[e + 0] = mesh.polys[p + k];
@@ -642,7 +643,7 @@ public class RecastMesh {
 		}
 
 		// Remove vertex.
-		for (var i:int= rem; i < mesh.nverts - 1; ++i) {
+		for (i= rem; i < mesh.nverts - 1; ++i) {
 			mesh.verts[i * 3+ 0] = mesh.verts[(i + 1) * 3+ 0];
 			mesh.verts[i * 3+ 1] = mesh.verts[(i + 1) * 3+ 1];
 			mesh.verts[i * 3+ 2] = mesh.verts[(i + 1) * 3+ 2];
@@ -650,14 +651,14 @@ public class RecastMesh {
 		mesh.nverts--;
 
 		// Adjust indices to match the removed vertex layout.
-		for (var i:int= 0; i < mesh.npolys; ++i) {
-			var p:int= i * nvp * 2;
-			var nv:int= countPolyVerts(mesh.polys, p, nvp);
-			for (var j:int= 0; j < nv; ++j)
+		for (i= 0; i < mesh.npolys; ++i) {
+			p= i * nvp * 2;
+			nv= countPolyVerts(mesh.polys, p, nvp);
+			for (j= 0; j < nv; ++j)
 				if (mesh.polys[p + j] > rem)
 					mesh.polys[p + j]--;
 		}
-		for (var i:int= 0; i < nedges; ++i) {
+		for (i= 0; i < nedges; ++i) {
 			if (edges[i * 4+ 0] > rem)
 				edges[i * 4+ 0]--;
 			if (edges[i * 4+ 1] > rem)
@@ -676,7 +677,7 @@ public class RecastMesh {
 		while (nedges != 0) {
 			var match:Boolean= false;
 
-			for (var i:int= 0; i < nedges; ++i) {
+			for (i= 0; i < nedges; ++i) {
 				var ea:int= edges[i * 4+ 0];
 				var eb:int= edges[i * 4+ 1];
 				var r:int= edges[i * 4+ 2];
@@ -718,7 +719,7 @@ public class RecastMesh {
 		var thole:Array= new int[nhole];
 
 		// Generate temp vertex array for triangulation.
-		for (var i:int= 0; i < nhole; ++i) {
+		for (i= 0; i < nhole; ++i) {
 			var pi:int= hole[i];
 			tverts[i * 4+ 0] = mesh.verts[pi * 3+ 0];
 			tverts[i * 4+ 1] = mesh.verts[pi * 3+ 1];
@@ -763,16 +764,16 @@ public class RecastMesh {
 			for (;;) {
 				// Find best polygons to merge.
 				var bestMergeVal:int= 0;
-				var bestPa:int= 0, bestPb = 0, bestEa = 0, bestEb = 0;
+				var bestPa:int= 0, bestPb:int = 0, bestEa:int = 0, bestEb:int = 0;
 
-				for (var j:int= 0; j < npolys - 1; ++j) {
+				for (j= 0; j < npolys - 1; ++j) {
 					var pj:int= j * nvp;
 					for (var k:int= j + 1; k < npolys; ++k) {
 						var pk:int= k * nvp;
 						var veaeb:Array= getPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
 						var v:int= veaeb[0];
-						var ea:int= veaeb[1];
-						var eb:int= veaeb[2];
+						ea= veaeb[1];
+						eb= veaeb[2];
 						if (v > bestMergeVal) {
 							bestMergeVal = v;
 							bestPa = j;
@@ -803,12 +804,12 @@ public class RecastMesh {
 		}
 
 		// Store polygons.
-		for (var i:int= 0; i < npolys; ++i) {
+		for (i= 0; i < npolys; ++i) {
 			if (mesh.npolys >= maxTris)
 				break;
-			var p:int= mesh.npolys * nvp * 2;
+			p= mesh.npolys * nvp * 2;
 			Arrays.fill(mesh.polys, p, p + nvp * 2, RecastConstants.RC_MESH_NULL_IDX);
-			for (var j:int= 0; j < nvp; ++j)
+			for (j= 0; j < nvp; ++j)
 				mesh.polys[p + j] = polys[i * nvp + j];
 			mesh.regs[mesh.npolys] = pregs[i];
 			mesh.areas[mesh.npolys] = pareas[i];
@@ -865,7 +866,7 @@ public class RecastMesh {
 		var nextVert:Array= new int[maxVertices];
 
 		var firstVert:Array= new int[VERTEX_BUCKET_COUNT];
-		for (var i:int= 0; i < VERTEX_BUCKET_COUNT; ++i)
+		for (i= 0; i < VERTEX_BUCKET_COUNT; ++i)
 			firstVert[i] = -1;
 
 		var indices:Array= new int[maxVertsPerCont];
@@ -874,7 +875,7 @@ public class RecastMesh {
 
 		var tmpPoly:int= maxVertsPerCont * nvp;
 
-		for (var i:int= 0; i < cset.conts.size(); ++i) {
+		for (i= 0; i < cset.conts.size(); ++i) {
 			var cont:Contour= cset.conts.get(i);
 
 			// Skip null contours.
@@ -892,7 +893,7 @@ public class RecastMesh {
 			}
 
 			// Add and merge vertices.
-			for (var j:int= 0; j < cont.nverts; ++j) {
+			for (j= 0; j < cont.nverts; ++j) {
 				var v:int= j * 4;
 				var inv:Array= addVertex(cont.verts[v + 0], cont.verts[v + 1], cont.verts[v + 2], mesh.verts, firstVert,
 						nextVert, mesh.nverts);
@@ -907,7 +908,7 @@ public class RecastMesh {
 			// Build initial polygons.
 			var npolys:int= 0;
 			Arrays.fill2(polys, RecastConstants.RC_MESH_NULL_IDX);
-			for (var j:int= 0; j < ntris; ++j) {
+			for (j= 0; j < ntris; ++j) {
 				var t:int= j * 3;
 				if (tris[t + 0] != tris[t + 1] && tris[t + 0] != tris[t + 2] && tris[t + 1] != tris[t + 2]) {
 					polys[npolys * nvp + 0] = indices[tris[t + 0]];
@@ -924,14 +925,14 @@ public class RecastMesh {
 				for (;;) {
 					// Find best polygons to merge.
 					var bestMergeVal:int= 0;
-					var bestPa:int= 0, bestPb = 0, bestEa = 0, bestEb = 0;
+					var bestPa:int= 0, bestPb:int = 0, bestEa:int = 0, bestEb:int = 0;
 
-					for (var j:int= 0; j < npolys - 1; ++j) {
+					for (j= 0; j < npolys - 1; ++j) {
 						var pj:int= j * nvp;
 						for (var k:int= j + 1; k < npolys; ++k) {
 							var pk:int= k * nvp;
 							var veaeb:Array= getPolyMergeValue(polys, pj, pk, mesh.verts, nvp);
-							var v:int= veaeb[0];
+							v= veaeb[0];
 							var ea:int= veaeb[1];
 							var eb:int= veaeb[2];
 							if (v > bestMergeVal) {
@@ -962,10 +963,10 @@ public class RecastMesh {
 			}
 
 			// Store polygons.
-			for (var j:int= 0; j < npolys; ++j) {
+			for (j= 0; j < npolys; ++j) {
 				var p:int= mesh.npolys * nvp * 2;
 				var q:int= j * nvp;
-				for (var k:int= 0; k < nvp; ++k)
+				for (k= 0; k < nvp; ++k)
 					mesh.polys[p + k] = polys[q + k];
 				mesh.regs[mesh.npolys] = cont.reg;
 				mesh.areas[mesh.npolys] = cont.area;
@@ -978,7 +979,7 @@ public class RecastMesh {
 		}
 
 		// Remove edge vertices.
-		for (var i:int= 0; i < mesh.nverts; ++i) {
+		for (i= 0; i < mesh.nverts; ++i) {
 			if (vflags[i] != 0) {
 				if (!canRemoveVertex(ctx, mesh, i))
 					continue;
@@ -986,7 +987,7 @@ public class RecastMesh {
 				// Remove vertex
 				// Note: mesh.nverts is already decremented inside removeVertex()!
 				// Fixup vertex flags
-				for (var j:int= i; j < mesh.nverts; ++j)
+				for (j= i; j < mesh.nverts; ++j)
 					vflags[j] = vflags[j + 1];
 				--i;
 			}
@@ -999,9 +1000,9 @@ public class RecastMesh {
 		if (mesh.borderSize > 0) {
 			var w:int= cset.width;
 			var h:int= cset.height;
-			for (var i:int= 0; i < mesh.npolys; ++i) {
-				var p:int= i * 2* nvp;
-				for (var j:int= 0; j < nvp; ++j) {
+			for (i= 0; i < mesh.npolys; ++i) {
+				p= i * 2* nvp;
+				for (j= 0; j < nvp; ++j) {
 					if (mesh.polys[p + j] == RecastConstants.RC_MESH_NULL_IDX)
 						break;
 					// Skip connected edges.
@@ -1080,12 +1081,12 @@ public class RecastMesh {
 		var nextVert:Array= new int[maxVerts];
 
 		var firstVert:Array= new int[VERTEX_BUCKET_COUNT];
-		for (var i:int= 0; i < VERTEX_BUCKET_COUNT; ++i)
+		for (i= 0; i < VERTEX_BUCKET_COUNT; ++i)
 			firstVert[i] = -1;
 
 		var vremap:Array= new int[maxVertsPerMesh];
 
-		for (var i:int= 0; i < nmeshes; ++i) {
+		for (i= 0; i < nmeshes; ++i) {
 			var pmesh:PolyMesh= meshes[i];
 
 			var ox:int= int(Math.floor((pmesh.bmin[0] - mesh.bmin[0]) / mesh.cs + 0.5));
@@ -1106,7 +1107,7 @@ public class RecastMesh {
 				mesh.nverts = inv[1];
 			}
 
-			for (var j:int= 0; j < pmesh.npolys; ++j) {
+			for (j= 0; j < pmesh.npolys; ++j) {
 				var tgt:int= mesh.npolys * 2* mesh.nvp;
 				var src:int= j * 2* mesh.nvp;
 				mesh.regs[mesh.npolys] = pmesh.regs[j];
@@ -1120,7 +1121,7 @@ public class RecastMesh {
 				}
 
 				if (isOnBorder) {
-					for (var k:int= mesh.nvp; k < mesh.nvp * 2; ++k) {
+					for (k= mesh.nvp; k < mesh.nvp * 2; ++k) {
 						if ((pmesh.polys[src + k] & 0x8000) != 0&& pmesh.polys[src + k] != 0) {
 							var dir:int= pmesh.polys[src + k] & 0;
 							switch (dir) {

@@ -19,12 +19,12 @@ freely, subject to the following restrictions:
 package org.recast4j.recast {
 public class Recast {
 
-	function calcBounds(verts:Array, nv:int, bmin:Array, bmax:Array):void {
+	public function calcBounds(verts:Array, nv:int, bmin:Array, bmax:Array):void {
 		for (var i:int= 0; i < 3; i++) {
 			bmin[i] = verts[i];
 			bmax[i] = verts[i];
 		}
-		for (var i:int= 1; i < nv; ++i) {
+		for (i= 1; i < nv; ++i) {
 			for (var j:int= 0; j < 3; j++) {
 				bmin[j] = Math.min(bmin[j], verts[i * 3+ j]);
 				bmax[j] = Math.max(bmax[j], verts[i * 3+ j]);
@@ -33,7 +33,7 @@ public class Recast {
 		// Calculate bounding box.
 	}
 
-	static function calcGridSize(bmin:Array, bmax:Array, cs:Number):Array {
+	public static function calcGridSize(bmin:Array, bmax:Array, cs:Number):Array {
 		return  [ int(((bmax[0] - bmin[0]) / cs + 0.5)), int(((bmax[2] - bmin[2]) / cs + 0.5) )];
 	}
 
@@ -59,7 +59,7 @@ public class Recast {
 		return areas;
 	}
 
-	static function calcTriNormal(verts:Array, v0:int, v1:int, v2:int, norm:Array):void {
+	public static function calcTriNormal(verts:Array, v0:int, v1:int, v2:int, norm:Array):void {
 		var e0:Array = [], e1:Array = [];
 		RecastVectors.sub(e0, verts, v1 * 3, v0 * 3);
 		RecastVectors.sub(e1, verts, v2 * 3, v0 * 3);
@@ -75,7 +75,7 @@ public class Recast {
 	/// See the #rcConfig documentation for more information on the configuration parameters.
 	/// 
 	/// @see rcHeightfield, rcClearUnwalkableTriangles, rcRasterizeTriangles
-	function clearUnwalkableTriangles(ctx:Context, walkableSlopeAngle:Number, verts:Array, nv:int, tris:Array, nt:int,
+	public function clearUnwalkableTriangles(ctx:Context, walkableSlopeAngle:Number, verts:Array, nv:int, tris:Array, nt:int,
 			areas:Array):void {
 		var walkableThr:Number= (Math.cos(walkableSlopeAngle / 180.0 * Math.PI));
 
@@ -90,7 +90,7 @@ public class Recast {
 		}
 	}
 
-	static function getHeightFieldSpanCount(ctx:Context, hf:Heightfield):int {
+	public static function getHeightFieldSpanCount(ctx:Context, hf:Heightfield):int {
 		var w:int= hf.width;
 		var h:int= hf.height;
 		var spanCount:int= 0;
@@ -143,7 +143,7 @@ public class Recast {
 		for (var i:int= 0; i < chf.cells.length; i++) {
 			chf.cells[i] = new CompactCell();
 		}
-		for (var i:int= 0; i < chf.spans.length; i++) {
+		for (i= 0; i < chf.spans.length; i++) {
 			chf.spans[i] = new CompactSpan();
 		}
 		// Fill in cells and spans.
@@ -175,10 +175,11 @@ public class Recast {
 		// Find neighbour connections.
 		var MAX_LAYERS:int= RecastConstants.RC_NOT_CONNECTED - 1;
 		var tooHighNeighbour:int= 0;
-		for (var y:int= 0; y < h; ++y) {
-			for (var x:int= 0; x < w; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+		for (y= 0; y < h; ++y) {
+			for (x= 0; x < w; ++x) {
+				c= chf.cells[x + y * w];
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s2:CompactSpan= chf.spans[i];
 
 					for (var dir:int= 0; dir < 4; ++dir) {
@@ -192,10 +193,10 @@ public class Recast {
 						// Iterate over all neighbour spans and check if any of the is
 						// accessible from current cell.
 						var nc:CompactCell= chf.cells[nx + ny * w];
-						for (var k:int= nc.index, nk = nc.index + nc.count; k < nk; ++k) {
+						for (var k:int= nc.index, nk:int = nc.index + nc.count; k < nk; ++k) {
 							var ns:CompactSpan= chf.spans[k];
-							var bot:int= Math.max(s2.y, ns.y);
-							var top:int= Math.min(s2.y + s2.h, ns.y + ns.h);
+							bot= Math.max(s2.y, ns.y);
+							top= Math.min(s2.y + s2.h, ns.y + ns.h);
 
 							// Check that the gap between the spans is walkable,
 							// and that the climb height between the gaps is not too high.

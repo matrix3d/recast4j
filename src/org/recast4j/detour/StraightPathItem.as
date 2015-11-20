@@ -20,9 +20,9 @@ package org.recast4j.detour {
 
 //TODO: (PP) Add comments
 public class StraightPathItem {
-	var pos:Array;
-	var flags:int;
-	var ref:Number;
+	public var pos:Array;
+	public var flags:int;
+	public var ref:Number;
 	public function StraightPathItem(pos:Array, flags:int, ref:Number) {
 		this.pos = DetourCommon.vCopy(pos);
 		this.flags = flags;

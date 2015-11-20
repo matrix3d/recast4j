@@ -20,7 +20,7 @@ package org.recast4j.detour {
 /** Defines a polyogn within a dtMeshTile object. */
 public class Poly {
 
-	var index:int;
+	public var index:int;
 	/** The polygon is a standard convex polygon that is part of the surface of the mesh. */
 	public static const DT_POLYTYPE_GROUND:int= 0;
 	/** The polygon is an off-mesh connection consisting of two vertices. */
@@ -47,22 +47,22 @@ public class Poly {
 	}
 
 	/** Sets the user defined area id. [Limit: < #DT_MAX_AREAS] */
-	function setArea(a:int):void {
+	public function setArea(a:int):void {
 		areaAndtype = (areaAndtype & 0xc0) | (a & 0x3);
 	}
 
 	/** Sets the polygon type. (See: #dtPolyTypes.) */
-	function setType(t:int):void {
+	public function setType(t:int):void {
 		areaAndtype = (areaAndtype & 0x3) | (t << 6);
 	}
 
 	/** Gets the user defined area id. */
-	function getArea():int {
+	public function getArea():int {
 		return areaAndtype & 0x3;
 	}
 
 	/** Gets the polygon type. (See: #dtPolyTypes) */
-	function getType():int {
+	public function getType():int {
 		return areaAndtype >> 6;
 	}
 

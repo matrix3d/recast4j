@@ -704,7 +704,7 @@ internal class CrowdNeighbour
 			if (ag.targetState == MoveRequestState.DT_CROWDAGENT_TARGET_REQUESTING) {
 				List<Long> path = ag.corridor.getPath();
 				if (path.isEmpty()) {
-					throw new IllegalArgumentException("Empty path");
+					throw ("Empty path");
 				}
 				// Quick search towards the goal.
 				var MAX_ITER:int= 20;
@@ -792,7 +792,7 @@ internal class CrowdNeighbour
 				} else if (status.isSuccess()) {
 					List<Long> path = ag.corridor.getPath();
 					if (path.isEmpty()) {
-						throw new IllegalArgumentException("Empty path");
+						throw ("Empty path");
 					}
 
 					// Apply results.

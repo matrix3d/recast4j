@@ -4,6 +4,7 @@ package
 	import flash.events.Event;
 	import org.recast4j.detour.BVNode;
 	import org.recast4j.detour.FindDistanceToWallTest;
+	import org.recast4j.recast.CompactSpan;
 	
 	/**
 	 * ...
@@ -22,6 +23,7 @@ package
 		{
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 			new FindDistanceToWallTest();
+			new CompactSpan;
 		}
 		
 	}

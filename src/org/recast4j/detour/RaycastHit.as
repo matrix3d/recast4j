@@ -22,7 +22,7 @@ package org.recast4j.detour {
  * Provides information about raycast hit. Filled by NavMeshQuery::raycast
  */
 public class RaycastHit {
-	/** The hit parameter. (Float.MAX_VALUE if no wall hit.) */
+	/** The hit parameter. (Number.MAX_VALUE if no wall hit.) */
 	public var t:Number;
 	/** hitNormal The normal of the nearest wall hit. [(x, y, z)] */
 	public var hitNormal:Array= []//new float[3];

@@ -23,7 +23,7 @@ import org.recast4j.System;
 
 public class NavMeshBuilder {
 
-	static const MESH_NULL_IDX:int= 0;
+	public static const MESH_NULL_IDX:int= 0;
 
  
 
@@ -168,10 +168,10 @@ public class NavMeshBuilder {
 		return curNode;
 	}
 
-	static const XP:int= 1<< 0;
-	static const ZP:int= 1<< 1;
-	static const XM:int= 1<< 2;
-	static const ZM:int= 1<< 3;
+	public static const XP:int= 1<< 0;
+	public static const ZP:int= 1<< 1;
+	public static const XM:int= 1<< 2;
+	public static const ZM:int= 1<< 3;
 
 	private static function classifyOffMeshPoint(pt:VectorPtr, bmin:Array, bmax:Array):int {
 
@@ -238,12 +238,12 @@ public class NavMeshBuilder {
 
 			if (params.detailVerts != null && params.detailVertsCount != 0) {
 				for (var i:int= 0; i < params.detailVertsCount; ++i) {
-					var h:Number= params.detailVerts[i * 3+ 1];
+					h= params.detailVerts[i * 3+ 1];
 					hmin = Math.min(hmin, h);
 					hmax = Math.max(hmax, h);
 				}
 			} else {
-				for (var i:int= 0; i < params.vertCount; ++i) {
+				for (i= 0; i < params.vertCount; ++i) {
 					var iv:int= i * 3;
 					var h:Number= params.bmin[1] + params.verts[iv + 1] * params.ch;
 					hmin = Math.min(hmin, h);
@@ -259,7 +259,7 @@ public class NavMeshBuilder {
 			bmin[1] = hmin;
 			bmax[1] = hmax;
 
-			for (var i:int= 0; i < params.offMeshConCount; ++i) {
+			for (i= 0; i < params.offMeshConCount; ++i) {
 				var p0:VectorPtr= new VectorPtr(params.offMeshConVerts, (i * 2+ 0) * 3);
 				var p1:VectorPtr= new VectorPtr(params.offMeshConVerts, (i * 2+ 1) * 3);
 
@@ -290,7 +290,7 @@ public class NavMeshBuilder {
 		// Find portal edges which are at tile borders.
 		var edgeCount:int= 0;
 		var portalCount:int= 0;
-		for (var i:int= 0; i < params.polyCount; ++i) {
+		for (i= 0; i < params.polyCount; ++i) {
 			var pi:int= i * 2* nvp;
 			for (var j:int= 0; j < nvp; ++j) {
 				if (params.polys[pi + j] == MESH_NULL_IDX)
@@ -313,11 +313,11 @@ public class NavMeshBuilder {
 		if (params.detailMeshes != null) {
 			// Has detail mesh, count unique detail vertex count and use input detail tri count.
 			detailTriCount = params.detailTriCount;
-			for (var i:int= 0; i < params.polyCount; ++i) {
+			for (i= 0; i < params.polyCount; ++i) {
 				pi= i * nvp * 2;
 				var ndv:int= params.detailMeshes[i * 4+ 1];
 				var nv:int= 0;
-				for (var j:int= 0; j < nvp; ++j) {
+				for (j= 0; j < nvp; ++j) {
 					if (params.polys[pi + j] == MESH_NULL_IDX)
 						break;
 					nv++;
@@ -329,10 +329,10 @@ public class NavMeshBuilder {
 			// No input detail mesh, build detail mesh from nav polys.
 			uniqueDetailVertCount = 0; // No extra detail verts.
 			detailTriCount = 0;
-			for (var i:int= 0; i < params.polyCount; ++i) {
+			for (i= 0; i < params.polyCount; ++i) {
 				pi= i * nvp * 2;
-				var nv:int= 0;
-				for (var j:int= 0; j < nvp; ++j) {
+				nv= 0;
+				for (j= 0; j < nvp; ++j) {
 					if (params.polys[pi + j] == MESH_NULL_IDX)
 						break;
 					nv++;
@@ -379,8 +379,8 @@ public class NavMeshBuilder {
 
 		// Store vertices
 		// Mesh vertices
-		for (var i:int= 0; i < params.vertCount; ++i) {
-			var iv:int= i * 3;
+		for (i= 0; i < params.vertCount; ++i) {
+			iv= i * 3;
 			var v:int= i * 3;
 			navVerts[v] = params.bmin[0] + params.verts[iv] * params.cs;
 			navVerts[v + 1] = params.bmin[1] + params.verts[iv + 1] * params.ch;
@@ -388,11 +388,11 @@ public class NavMeshBuilder {
 		}
 		// Off-mesh link vertices.
 		var n:int= 0;
-		for (var i:int= 0; i < params.offMeshConCount; ++i) {
+		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
 			if (offMeshConClass[i * 2+ 0] == 0) {
 				var linkv:int= i * 2* 3;
-				var v:int= (offMeshVertsBase + n * 2) * 3;
+				v= (offMeshVertsBase + n * 2) * 3;
 				System.arraycopy(params.offMeshConVerts, linkv, navVerts, v, 6);
 				n++;
 			}
@@ -401,20 +401,20 @@ public class NavMeshBuilder {
 		// Store polygons
 		// Mesh polys
 		var src:int= 0;
-		for (var i:int= 0; i < params.polyCount; ++i) {
+		for (i= 0; i < params.polyCount; ++i) {
 			var p:Poly= new Poly(i);
 			navPolys[i] = p;
 			p.vertCount = 0;
 			p.flags = params.polyFlags[i];
 			p.setArea(params.polyAreas[i]);
 			p.setType(Poly.DT_POLYTYPE_GROUND);
-			for (var j:int= 0; j < nvp; ++j) {
+			for (j= 0; j < nvp; ++j) {
 				if (params.polys[src + j] == MESH_NULL_IDX)
 					break;
 				p.verts[j] = params.polys[src + j];
 				if ((params.polys[src + nvp + j] & 0x8000) != 0) {
 					// Border or portal edge.
-					var dir:int= params.polys[src + nvp + j] & 0;
+					dir= params.polys[src + nvp + j] & 0;
 					if (dir == 0) // Border
 						p.neis[j] = 0;
 					else if (dir == 0) // Portal x-
@@ -436,7 +436,7 @@ public class NavMeshBuilder {
 		}
 		// Off-mesh connection vertices.
 		n = 0;
-		for (var i:int= 0; i < params.offMeshConCount; ++i) {
+		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
 			if (offMeshConClass[i * 2+ 0] == 0) {
 				p= new Poly(offMeshPolyBase + n);
@@ -456,12 +456,12 @@ public class NavMeshBuilder {
 		// We compress the mesh data by skipping them and using the navmesh coordinates.
 		if (params.detailMeshes != null) {
 			var vbase:int= 0;
-			for (var i:int= 0; i < params.polyCount; ++i) {
+			for (i= 0; i < params.polyCount; ++i) {
 				var dtl:PolyDetail= new PolyDetail();
 				navDMeshes[i] = dtl;
 				var vb:int= params.detailMeshes[i * 4+ 0];
-				var ndv:int= params.detailMeshes[i * 4+ 1];
-				var nv:int= navPolys[i].vertCount;
+				ndv= params.detailMeshes[i * 4+ 1];
+				nv= navPolys[i].vertCount;
 				dtl.vertBase = vbase;
 				dtl.vertCount = (ndv - nv);
 				dtl.triBase = params.detailMeshes[i * 4+ 2];
@@ -477,15 +477,15 @@ public class NavMeshBuilder {
 		} else {
 			// Create dummy detail mesh by triangulating polys.
 			var tbase:int= 0;
-			for (var i:int= 0; i < params.polyCount; ++i) {
-				var dtl:PolyDetail= navDMeshes[i];
-				var nv:int= navPolys[i].vertCount;
+			for (i= 0; i < params.polyCount; ++i) {
+				dtl= navDMeshes[i];
+				nv= navPolys[i].vertCount;
 				dtl.vertBase = 0;
 				dtl.vertCount = 0;
 				dtl.triBase = tbase;
 				dtl.triCount = (nv - 2);
 				// Triangulate polygon (local indices).
-				for (var j:int= 2; j < nv; ++j) {
+				for (j= 2; j < nv; ++j) {
 					var t:int= tbase * 4;
 					navDTris[t + 0] = 0;
 					navDTris[t + 1] = (j - 1);
@@ -511,7 +511,7 @@ public class NavMeshBuilder {
 
 		// Store Off-Mesh connections.
 		n = 0;
-		for (var i:int= 0; i < params.offMeshConCount; ++i) {
+		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
 			if (offMeshConClass[i * 2+ 0] == 0) {
 				var con:OffMeshConnection= new OffMeshConnection();
@@ -547,7 +547,7 @@ public class NavMeshBuilder {
 class BVItem {
 	public var bmin:Array = [];
 	public var bmax:Array = [];
-		var i:int;
+		public var i:int;
 	}
 
 	class CompareItemX {

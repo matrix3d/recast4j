@@ -22,13 +22,13 @@ package org.recast4j.recast {
 
 public class RecastMeshDetail {
 
-	static var MAX_VERTS:int= 127;
-	static var MAX_TRIS:int= 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
-	static var MAX_VERTS_PER_EDGE:int= 32;
+	public static const MAX_VERTS:int= 127;
+	public static const MAX_TRIS:int= 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
+	public static const MAX_VERTS_PER_EDGE:int= 32;
 
-	static var RC_UNSET_HEIGHT:int= 0;
-	static var EV_UNDEF:int= -1;
-	static var EV_HULL:int= -2;
+	public static const RC_UNSET_HEIGHT:int= 0;
+	public static const EV_UNDEF:int= -1;
+	public static const EV_HULL:int= -2;
 
 	
 
@@ -197,7 +197,7 @@ public class RecastMeshDetail {
 	private static function distToPoly(nvert:int, verts:Array, p:Array):Number {
 
 		var dmin:Number= Number.MAX_VALUE;
-		var i:int, j;
+		var i:int, j:int;
 		var c:Boolean= false;
 		for (i = 0, j = nvert - 1; i < nvert; j = i++) {
 			var vi:int= i * 3;
@@ -296,14 +296,14 @@ public class RecastMeshDetail {
 		return false;
 	}
 
-	static function completeFacet(ctx:Context, pts:Array, npts:int, edges:Array, maxEdges:int,
+	public static function completeFacet(ctx:Context, pts:Array, npts:int, edges:Array, maxEdges:int,
 			nfaces:int, e:int):int {
 		var EPS:Number= 1e-5;
 
 		var edge:int= e * 4;
 
 		// Cache s and t.
-		var s:int, t;
+		var s:int, t:int;
 		if (edges.get(edge + 2) == EV_UNDEF) {
 			s = edges.get(edge + 0);
 			t = edges.get(edge + 1);
@@ -382,7 +382,7 @@ public class RecastMeshDetail {
 		var nfaces:int= 0;
 		var maxEdges:int= npts * 10;
 		var edges:Array = [];
-		for (var i:int= 0, j = nhull - 1; i < nhull; j = i++)
+		for (var i:int= 0, j:int = nhull - 1; i < nhull; j = i++)
 			addEdge(ctx, edges, maxEdges, hull[j], hull[i], EV_HULL, EV_UNDEF);
 		var currentEdge:int= 0;
 		while (currentEdge < edges.size() / 4) {
@@ -396,10 +396,10 @@ public class RecastMeshDetail {
 		}
 		// Create tris
 		tris.clear();
-		for (var i:int= 0; i < nfaces * 4; ++i)
+		for (i= 0; i < nfaces * 4; ++i)
 			tris.add(-1);
 
-		for (var i:int= 0; i < edges.size() / 4; ++i) {
+		for (i= 0; i < edges.size() / 4; ++i) {
 			var e:int= i * 4;
 			if (edges.get(e + 3) >= 0) {
 				// Left face
@@ -414,7 +414,7 @@ public class RecastMeshDetail {
 			}
 			if (edges.get(e + 2) >= 0) {
 				// Right
-				var t:int= edges.get(e + 2) * 4;
+				t= edges.get(e + 2) * 4;
 				if (tris.get(t + 0) == -1) {
 					tris.set(t + 0, edges.get(e + 1));
 					tris.set(t + 1, edges.get(e + 0));
@@ -425,8 +425,8 @@ public class RecastMeshDetail {
 			}
 		}
 
-		for (var i:int= 0; i < tris.size() / 4; ++i) {
-			var t:int= i * 4;
+		for (i= 0; i < tris.size() / 4; ++i) {
+			t= i * 4;
 			if (tris.get(t + 0) == -1|| tris.get(t + 1) == -1|| tris.get(t + 2) == -1) {
 				trace("Dangling! " + tris.get(t) + " " + tris.get(t + 1) + "  " + tris.get(t + 2));
 				//ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t[0],t[1],t[2]);
@@ -463,7 +463,7 @@ public class RecastMeshDetail {
 	}
 
 	private static function triangulateHull(nverts:int, verts:Array, nhull:int, hull:Array,  tris:Array):void {
-		var start:int= 0, left = 1, right = nhull - 1;
+		var start:int= 0, left:int = 1, right:int = nhull - 1;
 
 		// Start from an ear with shortest perimeter.
 		// This tends to favor well formed triangles as starting point.
@@ -556,7 +556,8 @@ public class RecastMeshDetail {
 		// This is done in separate pass in order to ensure
 		// seamless height values across the ply boundaries.
 		if (sampleDist > 0) {
-			for (var i:int= 0, j = nin - 1; i < nin; j = i++) {
+			var j:int;
+			for (i= 0, j = nin - 1; i < nin; j = i++) {
 				var vj:int= j * 3;
 				var vi:int= i * 3;
 				var swapped:Boolean= false;
@@ -571,7 +572,7 @@ public class RecastMeshDetail {
 					}
 				} else {
 					if (in_[vj + 0] > in_[vi + 0]) {
-						var temp:int= vi;
+						 temp= vi;
 						vi = vj;
 						vj = temp;
 						swapped = true;
@@ -602,7 +603,7 @@ public class RecastMeshDetail {
 				idx[0] = 0;
 				idx[1] = nn;
 				var nidx:int= 2;
-				for (var k:int= 0; k < nidx - 1;) {
+				for (k= 0; k < nidx - 1;) {
 					var a:int= idx[k];
 					var b:int= idx[k + 1];
 					var va:int= a * 3;
@@ -620,7 +621,7 @@ public class RecastMeshDetail {
 					// If the max deviation is larger than accepted error,
 					// add new point, else continue to next segment.
 					if (maxi != -1&& maxd > sampleMaxError * sampleMaxError) {
-						for (var m:int= nidx; m > k; --m)
+						for ( m= nidx; m > k; --m)
 							idx[m] = idx[m - 1];
 						idx[k + 1] = maxi;
 						nidx++;
@@ -632,13 +633,13 @@ public class RecastMeshDetail {
 				hull[nhull++] = j;
 				// Add new vertices.
 				if (swapped) {
-					for (var k:int= nidx - 2; k > 0; --k) {
+					for ( k= nidx - 2; k > 0; --k) {
 						RecastVectors.copy2(verts, nverts * 3, edge, idx[k] * 3);
 						hull[nhull++] = nverts;
 						nverts++;
 					}
 				} else {
-					for (var k:int= 1; k < nidx - 1; ++k) {
+					for ( k= 1; k < nidx - 1; ++k) {
 						RecastVectors.copy2(verts, nverts * 3, edge, idx[k] * 3);
 						hull[nhull++] = nverts;
 						nverts++;
@@ -670,7 +671,7 @@ public class RecastMeshDetail {
 			var bmax:Array= []//new float[3];
 			RecastVectors.copy(bmin, in_, 0);
 			RecastVectors.copy(bmax, in_, 0);
-			for (var i:int= 1; i < nin; ++i) {
+			for (i= 1; i < nin; ++i) {
 				RecastVectors.min(bmin, in_, i * 3);
 				RecastVectors.max(bmax, in_, i * 3);
 			}
@@ -707,17 +708,17 @@ public class RecastMeshDetail {
 				var bestpt:Array= []//new float[3];
 				var bestd:Number= 0;
 				var besti:int= -1;
-				for (var i:int= 0; i < nsamples; ++i) {
+				for ( i= 0; i < nsamples; ++i) {
 					var s:int= i * 4;
 					if (samples.get(s + 3) != 0)
 						continue; // skip added.
-					var pt:Array= []//new float[3];
+					 pt= []//new float[3];
 					// The sample location is jittered to get rid of some bad triangulations
 					// which are cause by symmetrical data from the grid structure.
 					pt[0] = samples.get(s + 0) * sampleDist + getJitterX(i) * cs * 0.1;
 					pt[1] = samples.get(s + 1) * chf.ch;
 					pt[2] = samples.get(s + 2) * sampleDist + getJitterY(i) * cs * 0.1;
-					var d:Number= distToTriMesh(pt, verts, nverts, tris, tris.size() / 4);
+					 d= distToTriMesh(pt, verts, nverts, tris, tris.size() / 4);
 					if (d < 0)
 						continue; // did not hit the mesh.
 					if (d > bestd) {
@@ -752,7 +753,7 @@ public class RecastMeshDetail {
 		return nverts;
 	}
 
-	static function getHeightDataSeedsFromVertices(chf:CompactHeightfield, meshpoly:Array, poly:int, npoly:int, verts:Array,
+	public static function getHeightDataSeedsFromVertices(chf:CompactHeightfield, meshpoly:Array, poly:int, npoly:int, verts:Array,
 			bs:int, hp:HeightPatch,  stack:Array):void {
 		// Floodfill the heightfield to get 2D height data,
 		// starting at vertex locations as seeds.
@@ -767,7 +768,7 @@ public class RecastMeshDetail {
 
 		// Use poly vertices as seed points for the flood fill.
 		for (var j:int= 0; j < npoly; ++j) {
-			var cx:int= 0, cz = 0, ci = -1;
+			var cx:int= 0, cz:int = 0, ci:int = -1;
 			var dmin:int= RC_UNSET_HEIGHT;
 			for (var k:int= 0; k < 9; ++k) {
 				var ax:int= verts[meshpoly[poly + j] * 3+ 0] + offset[k * 2+ 0];
@@ -777,7 +778,8 @@ public class RecastMeshDetail {
 					continue;
 
 				var c:CompactCell= chf.cells[(ax + bs) + (az + bs) * chf.width];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					var d:int= Math.abs(ay - s.y);
 					if (d < dmin) {
@@ -796,8 +798,8 @@ public class RecastMeshDetail {
 		}
 
 		// Find center of the polygon using flood fill.
-		var pcx:int= 0, pcz = 0;
-		for (var j:int= 0; j < npoly; ++j) {
+		var pcx:int= 0, pcz:int = 0;
+		for (j= 0; j < npoly; ++j) {
 			pcx += verts[meshpoly[poly + j] * 3+ 0];
 			pcz += verts[meshpoly[poly + j] * 3+ 2];
 		}
@@ -805,16 +807,16 @@ public class RecastMeshDetail {
 		pcz /= npoly;
 
 		for (var i:int= 0; i < stack.size(); i += 3) {
-			var cx:int= stack.get(i + 0);
+			cx= stack.get(i + 0);
 			var cy:int= stack.get(i + 1);
 			var idx:int= cx - hp.xmin + (cy - hp.ymin) * hp.width;
 			hp.data[idx] = 1;
 		}
 
 		while (stack.size() > 0) {
-			var ci:int= stack.remove(stack.size() - 1);
-			var cy:int= stack.remove(stack.size() - 1);
-			var cx:int= stack.remove(stack.size() - 1);
+			 ci= stack.remove(stack.size() - 1);
+			 cy= stack.remove(stack.size() - 1);
+			 cx= stack.remove(stack.size() - 1);
 
 			// Check if close to center of the polygon.
 			if (Math.abs(cx - pcx) <= 1&& Math.abs(cy - pcz) <= 1) {
@@ -831,8 +833,8 @@ public class RecastMeshDetail {
 				if (RecastCommon.GetCon(cs, dir) == RecastConstants.RC_NOT_CONNECTED)
 					continue;
 
-				var ax:int= cx + RecastCommon.GetDirOffsetX(dir);
-				var ay:int= cy + RecastCommon.GetDirOffsetY(dir);
+				ax= cx + RecastCommon.GetDirOffsetX(dir);
+				ay= cy + RecastCommon.GetDirOffsetY(dir);
 
 				if (ax < hp.xmin || ax >= (hp.xmin + hp.width) || ay < hp.ymin || ay >= (hp.ymin + hp.height))
 					continue;
@@ -842,7 +844,7 @@ public class RecastMeshDetail {
 
 				var ai:int= chf.cells[(ax + bs) + (ay + bs) * chf.width].index + RecastCommon.GetCon(cs, dir);
 
-				var idx:int= ax - hp.xmin + (ay - hp.ymin) * hp.width;
+				idx= ax - hp.xmin + (ay - hp.ymin) * hp.width;
 				hp.data[idx] = 1;
 
 				stack.add(ax);
@@ -854,12 +856,12 @@ public class RecastMeshDetail {
 		Arrays.fill(hp.data, 0, hp.width * hp.height, RC_UNSET_HEIGHT);
 
 		// Mark start locations.
-		for (var i:int= 0; i < stack.size(); i += 3) {
-			var cx:int= stack.get(i + 0);
-			var cy:int= stack.get(i + 1);
-			var ci:int= stack.get(i + 2);
-			var idx:int= cx - hp.xmin + (cy - hp.ymin) * hp.width;
-			var cs:CompactSpan= chf.spans[ci];
+		for ( i= 0; i < stack.size(); i += 3) {
+			 cx= stack.get(i + 0);
+			 cy= stack.get(i + 1);
+			ci= stack.get(i + 2);
+			 idx= cx - hp.xmin + (cy - hp.ymin) * hp.width;
+			 cs= chf.spans[ci];
 			hp.data[idx] = cs.y;
 
 			// getHeightData seeds are given in coordinates with borders
@@ -869,9 +871,9 @@ public class RecastMeshDetail {
 
 	}
 
-	static const RETRACT_SIZE:int= 256;
+	public static const RETRACT_SIZE:int= 256;
 
-	static function getHeightData(chf:CompactHeightfield, meshpolys:Array, poly:int, npoly:int, verts:Array, bs:int,
+	public static function getHeightData(chf:CompactHeightfield, meshpolys:Array, poly:int, npoly:int, verts:Array, bs:int,
 			hp:HeightPatch, region:int):void {
 		// Note: Reads to the compact heightfield are offset by border size (bs)
 		// since border size offset is already removed from the polymesh vertices.
@@ -888,7 +890,7 @@ public class RecastMeshDetail {
 			for (var hx:int= 0; hx < hp.width; hx++) {
 				var x:int= hp.xmin + hx + bs;
 				var c:CompactCell= chf.cells[x + y * chf.width];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (s.reg == region) {
 						// Store height
@@ -939,14 +941,14 @@ public class RecastMeshDetail {
 			}
 
 			var cs:CompactSpan= chf.spans[ci];
-			for (var dir:int= 0; dir < 4; ++dir) {
+			for ( dir= 0; dir < 4; ++dir) {
 				if (RecastCommon.GetCon(cs, dir) == RecastConstants.RC_NOT_CONNECTED)
 					continue;
 
-				var ax:int= cx + RecastCommon.GetDirOffsetX(dir);
-				var ay:int= cy + RecastCommon.GetDirOffsetY(dir);
-				var hx:int= ax - hp.xmin - bs;
-				var hy:int= ay - hp.ymin - bs;
+				 ax= cx + RecastCommon.GetDirOffsetX(dir);
+				 ay= cy + RecastCommon.GetDirOffsetY(dir);
+				 hx= ax - hp.xmin - bs;
+				 hy= ay - hp.ymin - bs;
 
 				if (hx < 0|| hx >= hp.width || hy < 0|| hy >= hp.height)
 					continue;
@@ -954,8 +956,8 @@ public class RecastMeshDetail {
 				if (hp.data[hx + hy * hp.width] != RC_UNSET_HEIGHT)
 					continue;
 
-				var ai:int= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(cs, dir);
-				var as_:CompactSpan= chf.spans[ai];
+				 ai= chf.cells[ax + ay * chf.width].index + RecastCommon.GetCon(cs, dir);
+				 as_= chf.spans[ai];
 
 				hp.data[hx + hy * hp.width] = as_.y;
 
@@ -966,10 +968,10 @@ public class RecastMeshDetail {
 		}
 	}
 
-	static function getEdgeFlags(verts:Array, va:int, vb:int, vpoly:Array, npoly:int):int {
+	public static function getEdgeFlags(verts:Array, va:int, vb:int, vpoly:Array, npoly:int):int {
 		// Return true if edge (va,vb) is part of the polygon.
 		var thrSqr:Number= 0.001* 0.001;
-		for (var i:int= 0, j = npoly - 1; i < npoly; j = i++) {
+		for (var i:int= 0, j:int = npoly - 1; i < npoly; j = i++) {
 			if (distancePtSeg2d(verts, va, vpoly, j * 3, i * 3) < thrSqr
 					&& distancePtSeg2d(verts, vb, vpoly, j * 3, i * 3) < thrSqr)
 				return 1;
@@ -977,7 +979,7 @@ public class RecastMeshDetail {
 		return 0;
 	}
 
-	static function getTriFlags(verts:Array, va:int, vb:int, vc:int, vpoly:Array, npoly:int):int {
+	public static function getTriFlags(verts:Array, va:int, vb:int, vc:int, vpoly:Array, npoly:int):int {
 		var flags:int= 0;
 		flags |= getEdgeFlags(verts, va, vb, vpoly, npoly) << 0;
 		flags |= getEdgeFlags(verts, vb, vc, vpoly, npoly) << 2;
@@ -1008,7 +1010,7 @@ public class RecastMeshDetail {
 		var verts:Array = [];
 		var hp:HeightPatch= new HeightPatch();
 		var nPolyVerts:int= 0;
-		var maxhw:int= 0, maxhh = 0;
+		var maxhw:int= 0, maxhh:int = 0;
 
 		var bounds:Array= new int[mesh.npolys * 4];
 		var poly:Array= []//new float[nvp * 3];
@@ -1054,15 +1056,15 @@ public class RecastMeshDetail {
 		dmesh.ntris = 0;
 		dmesh.tris = new int[tcap * 4];
 
-		for (var i:int= 0; i < mesh.npolys; ++i) {
-			var p:int= i * nvp * 2;
+		for ( i= 0; i < mesh.npolys; ++i) {
+			 p= i * nvp * 2;
 
 			// Store polygon vertices for processing.
 			var npoly:int= 0;
-			for (var j:int= 0; j < nvp; ++j) {
+			for ( j= 0; j < nvp; ++j) {
 				if (mesh.polys[p + j] == RecastConstants.RC_MESH_NULL_IDX)
 					break;
-				var v:int= mesh.polys[p + j] * 3;
+				 v= mesh.polys[p + j] * 3;
 				poly[j * 3+ 0] = mesh.verts[v + 0] * cs;
 				poly[j * 3+ 1] = mesh.verts[v + 1] * ch;
 				poly[j * 3+ 2] = mesh.verts[v + 2] * cs;
@@ -1080,13 +1082,13 @@ public class RecastMeshDetail {
 			var nverts:int= buildPolyDetail(ctx, poly, npoly, sampleDist, sampleMaxError, chf, hp, verts, tris);
 
 			// Move detail verts to world space.
-			for (var j:int= 0; j < nverts; ++j) {
+			for ( j= 0; j < nverts; ++j) {
 				verts[j * 3+ 0] += orig[0];
 				verts[j * 3+ 1] += orig[1] + chf.ch; // Is this offset necessary?
 				verts[j * 3+ 2] += orig[2];
 			}
 			// Offset poly too, will be used to flag checking.
-			for (var j:int= 0; j < npoly; ++j) {
+			for ( j= 0; j < npoly; ++j) {
 				poly[j * 3+ 0] += orig[0];
 				poly[j * 3+ 1] += orig[1];
 				poly[j * 3+ 2] += orig[2];
@@ -1110,7 +1112,7 @@ public class RecastMeshDetail {
 					System.arraycopy(dmesh.verts, 0, newv, 0, 3* dmesh.nverts);
 				dmesh.verts = newv;
 			}
-			for (var j:int= 0; j < nverts; ++j) {
+			for ( j= 0; j < nverts; ++j) {
 				dmesh.verts[dmesh.nverts * 3+ 0] = verts[j * 3+ 0];
 				dmesh.verts[dmesh.nverts * 3+ 1] = verts[j * 3+ 1];
 				dmesh.verts[dmesh.nverts * 3+ 2] = verts[j * 3+ 2];
@@ -1126,7 +1128,7 @@ public class RecastMeshDetail {
 					System.arraycopy(dmesh.tris, 0, newt, 0, 4* dmesh.ntris);
 				dmesh.tris = newt;
 			}
-			for (var j:int= 0; j < ntris; ++j) {
+			for ( j= 0; j < ntris; ++j) {
 				var t:int= j * 4;
 				dmesh.tris[dmesh.ntris * 4+ 0] = tris.get(t + 0);
 				dmesh.tris[dmesh.ntris * 4+ 1] = tris.get(t + 1);
@@ -1143,7 +1145,7 @@ public class RecastMeshDetail {
 	}
 
 	/// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
-	function mergePolyMeshDetails(ctx:Context, meshes:Array, nmeshes:int):PolyMeshDetail {
+	public function mergePolyMeshDetails(ctx:Context, meshes:Array, nmeshes:int):PolyMeshDetail {
 		var mesh:PolyMeshDetail= new PolyMeshDetail();
 
 		ctx.startTimer("MERGE_POLYMESHDETAIL");
@@ -1168,7 +1170,7 @@ public class RecastMeshDetail {
 		mesh.verts = []//new float[maxVerts * 3];
 
 		// Merge datas.
-		for (var i:int= 0; i < nmeshes; ++i) {
+		for ( i= 0; i < nmeshes; ++i) {
 			var dm:PolyMeshDetail= meshes[i];
 			if (dm == null)
 				continue;
@@ -1186,7 +1188,7 @@ public class RecastMeshDetail {
 				RecastVectors.copy2(mesh.verts, mesh.nverts * 3, dm.verts, k * 3);
 				mesh.nverts++;
 			}
-			for (var k:int= 0; k < dm.ntris; ++k) {
+			for ( k= 0; k < dm.ntris; ++k) {
 				mesh.tris[mesh.ntris * 4+ 0] = dm.tris[k * 4+ 0];
 				mesh.tris[mesh.ntris * 4+ 1] = dm.tris[k * 4+ 1];
 				mesh.tris[mesh.ntris * 4+ 2] = dm.tris[k * 4+ 2];
@@ -1202,9 +1204,9 @@ public class RecastMeshDetail {
 }
 
  class HeightPatch {
-		var xmin:int;
-		var ymin:int;
-		var width:int;
-		var height:int;
-		var data:Array;
+		public var xmin:int;
+		public var ymin:int;
+		public var width:int;
+		public var height:int;
+		public var data:Array;
 	}

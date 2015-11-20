@@ -16,7 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
-import org.junit.Before;
+import org.recast4j.recast.ObjImporter;
+import org.recast4j.recast.PartitionType;
 
 public  class AbstractDetourTest {
 
@@ -40,9 +41,10 @@ public  class AbstractDetourTest {
 
 	public function setUp():void {
 
-		nmd = new RecastNavMeshBuilder().getMeshData();
+		nmd = new RecastNavMeshBuilder(new ObjImporter().load("dungeon.obj"), PartitionType.WATERSHED,
+				0.3, 0.2, 2.0, 0.6, 0.9, 45.0, 8, 20, 12.0, 1.3, 6, 6.0, 1.0).getMeshData();
 		navmesh = new NavMesh();
-		navmesh.init(nmd, 0);
+		navmesh.init2(nmd, 0);
 		query = new NavMeshQuery(navmesh);
 
 	}

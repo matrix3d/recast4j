@@ -83,8 +83,8 @@ internal class ObstacleAvoidanceDebugData {
 
 		function normalizeArray(arr:Array, n:int):void {
 			// Normalize penaly range.
-			var minPen:Number= Float.MAX_VALUE;
-			var maxPen:Number= -Float.MAX_VALUE;
+			var minPen:Number= Number.MAX_VALUE;
+			var maxPen:Number= -Number.MAX_VALUE;
 			for (var i:int= 0; i < n; ++i) {
 				minPen = Math.min(minPen, arr[i]);
 				maxPen = Math.max(maxPen, arr[i]);
@@ -424,7 +424,7 @@ internal class ObstacleAvoidanceParams {
 		m_params = params;
 		m_invHorizTime = 1.0/ m_params.horizTime;
 		m_vmax = vmax;
-		m_invVmax = vmax > 0? 1.0/ vmax : Float.MAX_VALUE;
+		m_invVmax = vmax > 0? 1.0/ vmax : Number.MAX_VALUE;
 
 		var nvel:Array= new float[3];
 		vSet(nvel, 0, 0, 0);
@@ -437,7 +437,7 @@ internal class ObstacleAvoidanceParams {
 		var cs:Number= vmax * 2* (1- m_params.velBias) / float((m_params.gridSize - 1));
 		var half:Number= (m_params.gridSize - 1) * cs * 0.5;
 
-		var minPenalty:Number= Float.MAX_VALUE;
+		var minPenalty:Number= Number.MAX_VALUE;
 		var ns:int= 0;
 
 		for (var y:int= 0; y < m_params.gridSize; ++y) {
@@ -489,7 +489,7 @@ internal class ObstacleAvoidanceParams {
 		m_params = params;
 		m_invHorizTime = 1.0/ m_params.horizTime;
 		m_vmax = vmax;
-		m_invVmax = vmax > 0? 1.0/ vmax : Float.MAX_VALUE;
+		m_invVmax = vmax > 0? 1.0/ vmax : Number.MAX_VALUE;
 
 		var nvel:Array= new float[3];
 		vSet(nvel, 0, 0, 0);
@@ -561,7 +561,7 @@ internal class ObstacleAvoidanceParams {
 		var ns:int= 0;
 
 		for (var k:int= 0; k < depth; ++k) {
-			var minPenalty:Number= Float.MAX_VALUE;
+			var minPenalty:Number= Number.MAX_VALUE;
 			var bvel:Array= new float[3];
 			vSet(bvel, 0, 0, 0);
 

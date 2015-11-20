@@ -19,7 +19,7 @@ freely, subject to the following restrictions:
 package org.recast4j.detour {
 public class DetourCommon {
 
-	static var EPS:Number= 1e-4;
+	public static const EPS:Number= 1e-4;
 
 	/// Performs a scaled vector addition. (@p v1 + (@p v2 * @p s))
 	/// @param[out] dest The result vector. [(x, y, z)]
@@ -80,7 +80,7 @@ public class DetourCommon {
 		return dest;
 	}
 
-	static function vAdd(v1:VectorPtr, v2:VectorPtr):Array {
+	public static function vAdd(v1:VectorPtr, v2:VectorPtr):Array {
 		var dest:Array= []
 		dest[0] = v1.get(0) + v2.get(0);
 		dest[1] = v1.get(1) + v2.get(1);
@@ -122,13 +122,13 @@ public class DetourCommon {
 		out[2] = in_[i + 2];
 	}
 
-	static function vMin(out:Array, in_:Array, i:int):void {
+	public static function vMin(out:Array, in_:Array, i:int):void {
 		out[0] = Math.min(out[0], in_[i]);
 		out[1] = Math.min(out[1], in_[i + 1]);
 		out[2] = Math.min(out[2], in_[i + 2]);
 	}
 
-	static function vMax(out:Array, in_:Array, i:int):void {
+	public static function vMax(out:Array, in_:Array, i:int):void {
 		out[0] = Math.max(out[0], in_[i]);
 		out[1] = Math.max(out[1], in_[i + 1]);
 		out[2] = Math.max(out[2], in_[i + 2]);
@@ -138,7 +138,7 @@ public class DetourCommon {
 	/// @param[in] v1 A point. [(x, y, z)]
 	/// @param[in] v2 A point. [(x, y, z)]
 	/// @return The distance between the two points.
-	static function vDist(v1:Array, v2:Array):Number {
+	public static function vDist(v1:Array, v2:Array):Number {
 		var dx:Number= v2[0] - v1[0];
 		var dy:Number= v2[1] - v1[1];
 		var dz:Number= v2[2] - v1[2];
@@ -149,7 +149,7 @@ public class DetourCommon {
 	/// @param[in] v1 A point. [(x, y, z)]
 	/// @param[in] v2 A point. [(x, y, z)]
 	/// @return The distance between the two points.
-	static function vDistSqr(v1:Array, v2:Array):Number {
+	public static function vDistSqr(v1:Array, v2:Array):Number {
 		var dx:Number= v2[0] - v1[0];
 		var dy:Number= v2[1] - v1[1];
 		var dz:Number= v2[2] - v1[2];
@@ -171,7 +171,7 @@ public class DetourCommon {
 		return (Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]));
 	}
 
-	static function vDist2(v1:Array, verts:Array, i:int):Number {
+	public static function vDist2(v1:Array, verts:Array, i:int):Number {
 		var dx:Number= verts[i] - v1[0];
 		var dy:Number= verts[i + 1] - v1[1];
 		var dz:Number= verts[i + 2] - v1[2];
@@ -226,7 +226,7 @@ public class DetourCommon {
 		v[2] *= d;
 	}
 
-	static const thr:Number= sqr(1.0/ 16384.0);
+	public static const thr:Number= sqr(1.0/ 16384.0);
 
 	/// Performs a 'sloppy' colocation check of the specified points.
 	/// @param[in] p0 A point. [(x, y, z)]
@@ -235,7 +235,7 @@ public class DetourCommon {
 	///
 	/// Basically, this function will return true if the specified points are
 	/// close enough to eachother to be considered colocated.
-	static function vEqual(p0:Array, p1:Array):Boolean {
+	public static function vEqual(p0:Array, p1:Array):Boolean {
 		var d:Number= vDistSqr(p0, p1);
 		return d < thr;
 	}
@@ -251,7 +251,7 @@ public class DetourCommon {
 		return u[0] * v[0] + u[2] * v[2];
 	}
 
-	static function vDot2D2(u:Array, v:Array, vi:int):Number {
+	public static function vDot2D2(u:Array, v:Array, vi:int):Number {
 		return u[0] * v[vi] + u[2] * v[vi + 2];
 	}
 
@@ -299,7 +299,7 @@ public class DetourCommon {
 	/// @param[in] bmax Maximum bounds of box B. [(x, y, z)]
 	/// @return True if the two AABB's overlap.
 	/// @see dtOverlapBounds
-	static function overlapQuantBounds( amin:Array, amax:Array, bmin:Array, bmax:Array):Boolean {
+	public static function overlapQuantBounds( amin:Array, amax:Array, bmin:Array, bmax:Array):Boolean {
 		var overlap:Boolean= true;
 		overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
 		overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
@@ -314,7 +314,7 @@ public class DetourCommon {
 	/// @param[in] bmax Maximum bounds of box B. [(x, y, z)]
 	/// @return True if the two AABB's overlap.
 	/// @see dtOverlapQuantBounds
-	static function overlapBounds(amin:Array, amax:Array, bmin:Array, bmax:Array):Boolean {
+	public static function overlapBounds(amin:Array, amax:Array, bmin:Array, bmax:Array):Boolean {
 		var overlap:Boolean= true;
 		overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
 		overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
@@ -340,7 +340,7 @@ public class DetourCommon {
 		return new Tupple2(dx * dx + dz * dz, t);
 	}
 
-	static function closestHeightPointTriangle( p:VectorPtr,  a:VectorPtr,  b:VectorPtr,  c:VectorPtr):Tupple2 {
+	public static function closestHeightPointTriangle( p:VectorPtr,  a:VectorPtr,  b:VectorPtr,  c:VectorPtr):Tupple2 {
 		var v0:Array= vSub(c, a);
 		var v1:Array= vSub(b, a);
 		var v2:Array= vSub(p, a);
@@ -371,9 +371,9 @@ public class DetourCommon {
 	/// @par
 	///
 	/// All points are projected onto the xz-plane, so the y-values are ignored.
-	static function pointInPolygon(pt:Array, verts:Array, nverts:int):Boolean {
+	public static function pointInPolygon(pt:Array, verts:Array, nverts:int):Boolean {
 		// TODO: Replace pnpoly with triArea2D tests?
-		var i:int, j;
+		var i:int, j:int;
 		var c:Boolean= false;
 		for (i = 0, j = nverts - 1; i < nverts; j = i++) {
 			var vi:int= i * 3;
@@ -385,9 +385,9 @@ public class DetourCommon {
 		return c;
 	}
 
-	static function distancePtPolyEdgesSqr(pt:Array, verts:Array, nverts:int, ed:Array, et:Array):Boolean {
+	public static function distancePtPolyEdgesSqr(pt:Array, verts:Array, nverts:int, ed:Array, et:Array):Boolean {
 		// TODO: Replace pnpoly with triArea2D tests?
-		var i:int, j;
+		var i:int, j:int;
 		var c:Boolean= false;
 		for (i = 0, j = nverts - 1; i < nverts; j = i++) {
 			var vi:int= i * 3;
@@ -403,7 +403,7 @@ public class DetourCommon {
 	}
 
 	static public function projectPoly(axis:Array, poly:Array, npoly:int):Array {
-		var rmin:Number, rmax;
+		var rmin:Number, rmax:Number;
 		rmin = rmax = vDot2D2(axis, poly, 0);
 		for (var i:int= 1; i < npoly; ++i) {
 			var d:Number= vDot2D2(axis, poly, i * 3);
@@ -413,18 +413,18 @@ public class DetourCommon {
 		return [ rmin, rmax ];
 	}
 
-	static function overlapRange(amin:Number, amax:Number, bmin:Number, bmax:Number, eps:Number):Boolean {
+	public static function overlapRange(amin:Number, amax:Number, bmin:Number, bmax:Number, eps:Number):Boolean {
 		return ((amin + eps) > bmax || (amax - eps) < bmin) ? false : true;
 	}
 
-	static var eps:Number= 1e-4;
+	public static const eps:Number= 1e-4;
 
 	/// @par
 	///
 	/// All vertices are projected onto the xz-plane, so the y-values are ignored.
-	static function overlapPolyPoly2D(polya:Array, npolya:int, polyb:Array, npolyb:int):Boolean {
+	public static function overlapPolyPoly2D(polya:Array, npolya:int, polyb:Array, npolyb:int):Boolean {
 
-		for (var i:int= 0, j = npolya - 1; i < npolya; j = i++) {
+		for (var i:int= 0, j:int = npolya - 1; i < npolya; j = i++) {
 			var va:int= j * 3;
 			var vb:int= i * 3;
 
@@ -437,14 +437,14 @@ public class DetourCommon {
 				return false;
 			}
 		}
-		for (var i:int= 0, j = npolyb - 1; i < npolyb; j = i++) {
-			var va:int= j * 3;
-			var vb:int= i * 3;
+		for (i= 0, j = npolyb - 1; i < npolyb; j = i++) {
+			va= j * 3;
+			vb= i * 3;
 
-			var n:Array= [ polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]) ];
+			n= [ polyb[vb + 2] - polyb[va + 2], 0, -(polyb[vb + 0] - polyb[va + 0]) ];
 
-			var aminmax:Array= projectPoly(n, polya, npolya);
-			var bminmax:Array= projectPoly(n, polyb, npolyb);
+			aminmax= projectPoly(n, polya, npolya);
+			bminmax= projectPoly(n, polyb, npolyb);
 			if (!overlapRange(aminmax[0], aminmax[1], bminmax[0], bminmax[1], eps)) {
 				// Found separating axis
 				return false;
@@ -467,7 +467,7 @@ public class DetourCommon {
 		var acc:Number= 0.0;
 		var u:Number= 0.0;
 		var tri:int= 0;
-		for (var i:int= 2; i < npts; i++) {
+		for (i= 2; i < npts; i++) {
 			var dacc:Number= areas[i];
 			if (thr >= acc && thr < (acc + dacc)) {
 				u = (thr - acc) / dacc;
@@ -491,7 +491,7 @@ public class DetourCommon {
 				a * pts[pa + 2] + b * pts[pb + 2] + c * pts[pc + 2] ];
 	}
 
-	static function nextPow2(v:int):int {
+	public static function nextPow2(v:int):int {
 		v--;
 		v |= v >> 1;
 		v |= v >> 2;
@@ -507,14 +507,14 @@ public class DetourCommon {
 
 	 
 
-	static function intersectSegmentPoly2D(p0:Array, p1:Array, verts:Array, nverts:int):IntersectResult {
+	public static function intersectSegmentPoly2D(p0:Array, p1:Array, verts:Array, nverts:int):IntersectResult {
 
 		var result:IntersectResult= new IntersectResult();
 		var EPS:Number= 0.00000001;
 		var dir:Array= vSub2(p1, p0);
 
 		var p0v:VectorPtr= new VectorPtr(p0);
-		for (var i:int= 0, j = nverts - 1; i < nverts; j = i++) {
+		for (var i:int= 0, j:int = nverts - 1; i < nverts; j = i++) {
 			var vpj:VectorPtr= new VectorPtr(verts, j * 3);
 			var edge:Array= vSub(new VectorPtr(verts, i * 3), vpj);
 			var diff:Array= vSub(p0v, vpj);
@@ -570,11 +570,11 @@ public class DetourCommon {
 		return new Tupple2(dx * dx + dz * dz, t);
 	}
 
-	static function oppositeTile(side:int):int {
+	public static function oppositeTile(side:int):int {
 		return (side + 4) & 0x7;
 	}
 
-	static function vperpXZ(a:Array, b:Array):Number {
+	public static function vperpXZ(a:Array, b:Array):Number {
 		return a[0] * b[2] - a[2] * b[0];
 	}
 
@@ -600,10 +600,3 @@ public class DetourCommon {
 
 }
 }
-class IntersectResult {
-		var intersects:Boolean;
-		var tmin:Number;
-		var tmax:Number= 1;
-		var segMin:int= -1;
-		var segMax:int= -1;
-	}

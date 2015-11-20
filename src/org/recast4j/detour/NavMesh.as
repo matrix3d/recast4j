@@ -21,56 +21,56 @@ package org.recast4j.detour {
 
 public class NavMesh {
 
-	static var DT_SALT_BITS:int= 16;
-	static var DT_TILE_BITS:int= 28;
-	static var DT_POLY_BITS:int= 20;
+	public static const DT_SALT_BITS:int= 16;
+	public static const DT_TILE_BITS:int= 28;
+	public static const DT_POLY_BITS:int= 20;
 
 	/** The maximum number of vertices per navigation polygon. */
-	public static var DT_VERTS_PER_POLYGON:int= 6;
+	public static const DT_VERTS_PER_POLYGON:int= 6;
 
 	/// A flag that indicates that an entity links to an external entity.
 	/// (E.g. A polygon edge is a portal that links to another polygon.)
-	static var DT_EXT_LINK:int= 0x8000;
+	public static const DT_EXT_LINK:int= 0x8000;
 
 	/// A value that indicates the entity does not link to anything.
-	static var DT_NULL_LINK:int= 0;
+	public static const DT_NULL_LINK:int= 0;
 
 	/// A flag that indicates that an off-mesh connection can be traversed in both directions. (Is bidirectional.)
-	static var DT_OFFMESH_CON_BIDIR:int= 1;
+	public static const DT_OFFMESH_CON_BIDIR:int= 1;
 
 	/// The maximum number of user defined area ids.
-	static var DT_MAX_AREAS:int= 64;
+	public static const DT_MAX_AREAS:int= 64;
 
 	/// Limit raycasting during any angle pahfinding
 	/// The limit is given as a multiple of the character radius
-	static var DT_RAY_CAST_LIMIT_PROPORTIONS:Number= 50.0;
+	public static const DT_RAY_CAST_LIMIT_PROPORTIONS:Number= 50.0;
 
-	var m_params:NavMeshParams; /// < Current initialization params. TODO: do not store this info twice.
+	public var m_params:NavMeshParams; /// < Current initialization params. TODO: do not store this info twice.
 	private var m_orig:Array; /// < Origin of the tile (0,0)
 	// float m_orig[3]; ///< Origin of the tile (0,0)
-	var m_tileWidth:Number, m_tileHeight; /// < Dimensions of each tile.
-	var m_maxTiles:int; /// < Max number of tiles.
-	var m_tileLutSize:int; /// < Tile hash lookup size (must be pot).
-	var m_tileLutMask:int; /// < Tile hash lookup mask.
+	public var m_tileWidth:Number, m_tileHeight:Number; /// < Dimensions of each tile.
+	public var m_maxTiles:int; /// < Max number of tiles.
+	public var m_tileLutSize:int; /// < Tile hash lookup size (must be pot).
+	public var m_tileLutMask:int; /// < Tile hash lookup mask.
 
 	// MeshTile** m_posLookup; ///< Tile hash lookup.
 	// MeshTile[] m_nextFree; ///< Freelist of tiles.
-	var m_posLookup:Array; /// < Tile hash lookup.
-	var m_nextFree:MeshTile; /// < Freelist of tiles.
-	var m_tiles:Array; /// < List of tiles.
+	public var m_posLookup:Array; /// < Tile hash lookup.
+	public var m_nextFree:MeshTile; /// < Freelist of tiles.
+	public var m_tiles:Array; /// < List of tiles.
 
 	/**
 	 *  The maximum number of tiles supported by the navigation mesh.
 	 * @return The maximum number of tiles supported by the navigation mesh.
 	 */
-	function getMaxTiles():int {
+	public function getMaxTiles():int {
 		return m_maxTiles;
 	}
 
 	/**
 	 * Returns tile in the tile array. 
 	 */
-	function getTile(i:int):MeshTile {
+	public function getTile(i:int):MeshTile {
 		return m_tiles[i];
 	}
 
@@ -94,7 +94,7 @@ public class NavMesh {
 	 * @param ip The index of the polygon within the tile.
 	 * @return encoded polygon reference
 	 */
-	static function encodePolyId(salt:int, it:int, ip:int):Number {
+	public static function encodePolyId(salt:int, it:int, ip:int):Number {
 		return ((salt) << (DT_POLY_BITS + DT_TILE_BITS)) | ((it )<< DT_POLY_BITS) | (ip);
 	}
 
@@ -122,7 +122,7 @@ public class NavMesh {
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	static function decodePolyIdSalt(ref:Number):int {
+	public static function decodePolyIdSalt(ref:Number):int {
 		var saltMask:Number= (1<< DT_SALT_BITS) - 1;
 		return int(((ref >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
 	}
@@ -131,7 +131,7 @@ public class NavMesh {
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	static function decodePolyIdTile(ref:Number):int {
+	public static function decodePolyIdTile(ref:Number):int {
 		var tileMask:Number= (1<< DT_TILE_BITS) - 1;
 		return int(((ref >> DT_POLY_BITS) & tileMask));
 	}
@@ -140,12 +140,12 @@ public class NavMesh {
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	static function decodePolyIdPoly(ref:Number):int {
+	public static function decodePolyIdPoly(ref:Number):int {
 		var polyMask:Number= (1<< DT_POLY_BITS) - 1;
 		return int((ref & polyMask));
 	}
 
-	function allocLink(tile:MeshTile):int {
+	public function allocLink(tile:MeshTile):int {
 		var link:Link= new Link();
 		link.next = DT_NULL_LINK;
 		tile.links.add(link);
@@ -185,14 +185,14 @@ public class NavMesh {
 	/// @warning Only use this function if it is known that the provided polygon
 	/// reference is valid. This function is faster than #getTileAndPolyByRef, but
 	/// it does not validate the reference.
-	function  getTileAndPolyByRefUnsafe(ref:Number):Tupple2 {
+	public function  getTileAndPolyByRefUnsafe(ref:Number):Tupple2 {
 		var saltitip:Array= decodePolyId(ref);
 		var it:int= saltitip[1];
 		var ip:int= saltitip[2];
 		return new Tupple2(m_tiles[it], m_tiles[it].data.polys[ip]);
 	}
 
-	function isValidPolyRef(ref:Number):Boolean {
+	public function isValidPolyRef(ref:Number):Boolean {
 		if (ref == 0)
 			return false;
 		var saltitip:Array= decodePolyId(ref);
@@ -248,7 +248,7 @@ public class NavMesh {
 
 	// TODO: These methods are duplicates from dtNavMeshQuery, but are needed for off-mesh connection finding.
 
-	function queryPolygonsInTile(tile:MeshTile, qmin:Array, qmax:Array):Array {
+	public function queryPolygonsInTile(tile:MeshTile, qmin:Array, qmax:Array):Array {
 		var polys:Array = [];
 		if (tile.data.bvTree != null) {
 			var nodeIndex:int= 0;
@@ -295,9 +295,9 @@ public class NavMesh {
 
 			return polys;
 		} else {
-			var bmin:Array= [];
-			var bmax:Array= [];
-			var base:Number= getPolyRefBase(tile);
+			bmin= [];
+			bmax= [];
+			base= getPolyRefBase(tile);
 			for (var i:int= 0; i < tile.data.header.polyCount; ++i) {
 				var p:Poly= tile.data.polys[i];
 				// Do not return off-mesh connection polygons.
@@ -418,7 +418,7 @@ public class NavMesh {
 		// Connect with neighbour tiles.
 		for (var i:int= 0; i < 8; ++i) {
 			neis = getNeighbourTilesAt(header.x, header.y, i);
-			for (var j:int= 0; j < neis.size(); ++j) {
+			for (j= 0; j < neis.size(); ++j) {
 				connectExtLinks(tile, neis.get(j), i);
 				connectExtLinks(neis.get(j), tile, DetourCommon.oppositeTile(i));
 				connectExtOffMeshLinks(tile, neis.get(j), i);
@@ -438,7 +438,7 @@ public class NavMesh {
 	//dtStatus removeTile(dtTileRef ref, unsigned char** data, int* dataSize);
 	
 	/// Builds internal polygons links for a tile.
-	function connectIntLinks(tile:MeshTile):void {
+	public function connectIntLinks(tile:MeshTile):void {
 		if (tile == null)
 			return;
 
@@ -471,7 +471,7 @@ public class NavMesh {
 		}
 	}
 
-	function connectExtLinks(tile:MeshTile, target:MeshTile, side:int):void {
+	public function connectExtLinks(tile:MeshTile, target:MeshTile, side:int):void {
 		if (tile == null)
 			return;
 
@@ -524,10 +524,10 @@ public class NavMesh {
 						link.bmin = int((DetourCommon.clamp(tmin, 0.0, 1.0) * 255.0));
 						link.bmax = int((DetourCommon.clamp(tmax, 0.0, 1.0) * 255.0));
 					} else if (dir == 2|| dir == 6) {
-						var tmin:Number= (neia[k * 2+ 0] - tile.data.verts[va]) / (tile.data.verts[vb] - tile.data.verts[va]);
-						var tmax:Number= (neia[k * 2+ 1] - tile.data.verts[va]) / (tile.data.verts[vb] - tile.data.verts[va]);
+						tmin= (neia[k * 2+ 0] - tile.data.verts[va]) / (tile.data.verts[vb] - tile.data.verts[va]);
+						tmax= (neia[k * 2+ 1] - tile.data.verts[va]) / (tile.data.verts[vb] - tile.data.verts[va]);
 						if (tmin > tmax) {
-							var temp:Number= tmin;
+							temp= tmin;
 							tmin = tmax;
 							tmax = temp;
 						}
@@ -539,7 +539,7 @@ public class NavMesh {
 		}
 	}
 
-	function connectExtOffMeshLinks(tile:MeshTile, target:MeshTile, side:int):void {
+	public function connectExtOffMeshLinks(tile:MeshTile, target:MeshTile, side:int):void {
 		if (tile == null)
 			return;
 
@@ -606,7 +606,7 @@ public class NavMesh {
 		}
 	}
 
-	function  findConnectingPolys(verts:Array, va:int, vb:int, tile:MeshTile, side:int,
+	public function  findConnectingPolys(verts:Array, va:int, vb:int, tile:MeshTile, side:int,
 			maxcon:int):Tupple3 {
 		if (tile == null)
 			return new Tupple3(null, null, 0);
@@ -657,7 +657,7 @@ public class NavMesh {
 		return new Tupple3(con, conarea, n);
 	}
 
-	static function getSlabCoord(verts:Array, va:int, side:int):Number {
+	public static function getSlabCoord(verts:Array, va:int, side:int):Number {
 		if (side == 0|| side == 4)
 			return verts[va];
 		else if (side == 2|| side == 6)
@@ -665,7 +665,7 @@ public class NavMesh {
 		return 0;
 	}
 
-	static function calcSlabEndPoints(verts:Array, va:int, vb:int, bmin:Array, bmax:Array, side:int):void {
+	public static function calcSlabEndPoints(verts:Array, va:int, vb:int, bmin:Array, bmax:Array, side:int):void {
 		if (side == 0|| side == 4) {
 			if (verts[va + 2] < verts[vb + 2]) {
 				bmin[0] = verts[va + 2];
@@ -693,7 +693,7 @@ public class NavMesh {
 		}
 	}
 
-	function overlapSlabs(amin:Array, amax:Array, bmin:Array, bmax:Array, px:Number, py:Number):Boolean {
+	public function overlapSlabs(amin:Array, amax:Array, bmin:Array, bmax:Array, px:Number, py:Number):Boolean {
 		// Check for horizontal overlap.
 		// The segment is shrunken a little so that slabs which touch
 		// at end points are not connected.
@@ -730,7 +730,7 @@ public class NavMesh {
 	 * Builds internal polygons links for a tile.
 	 * @param tile
 	 */
-	function baseOffMeshLinks(tile:MeshTile):void {
+	public function baseOffMeshLinks(tile:MeshTile):void {
 		if (tile == null)
 			return;
 
@@ -791,7 +791,7 @@ public class NavMesh {
 	 * @param pos
 	 * @return
 	 */
-	function closestPointOnPoly(ref:Number, pos:Array):Tupple2 {
+	public function closestPointOnPoly(ref:Number, pos:Array):Tupple2 {
 		var tileAndPoly:Tupple2 = getTileAndPolyByRefUnsafe(ref);
 		var tile:MeshTile= tileAndPoly.first as MeshTile;
 		var poly:Poly= tileAndPoly.second as Poly;
@@ -815,13 +815,13 @@ public class NavMesh {
 			System.arraycopy(tile.data.verts, poly.verts[i] * 3, verts, i * 3, 3);
 
 		var posOverPoly:Boolean= false;
-		var closest:Array= []//new float[3];
+		closest= []//new float[3];
 		DetourCommon.vCopy2(closest, pos);
 		if (!DetourCommon.distancePtPolyEdgesSqr(pos, verts, nv, edged, edget)) {
 			// Point is outside the polygon, dtClamp to nearest edge.
 			var dmin:Number= Number.MAX_VALUE;
 			var imin:int= -1;
-			for (var i:int= 0; i < nv; ++i) {
+			for (i= 0; i < nv; ++i) {
 				if (edged[i] < dmin) {
 					dmin = edged[i];
 					imin = i;
@@ -860,7 +860,7 @@ public class NavMesh {
 		return new Tupple2(posOverPoly, closest);
 	}
 
-	function findNearestPolyInTile(tile:MeshTile, center:Array, extents:Array):Tupple2 {
+	public function findNearestPolyInTile(tile:MeshTile, center:Array, extents:Array):Tupple2 {
 		var nearestPt:Array= null;
 		var bmin:Array= DetourCommon.vSub2(center, extents);
 		var bmax:Array= DetourCommon.vAdd2(center, extents);
@@ -896,7 +896,7 @@ public class NavMesh {
 		return new Tupple2(nearest, nearestPt);
 	}
 
-	function getTileAt(x:int, y:int, layer:int):MeshTile {
+	public function getTileAt(x:int, y:int, layer:int):MeshTile {
 		// Find tile based on hash.
 		var h:int= computeTileHash(x, y, m_tileLutMask);
 		var tile:MeshTile= m_posLookup[h];
@@ -909,8 +909,8 @@ public class NavMesh {
 		return null;
 	}
 
-	function getNeighbourTilesAt(x:int, y:int, side:int):Array {
-		var nx:int= x, ny = y;
+	public function getNeighbourTilesAt(x:int, y:int, side:int):Array {
+		var nx:int= x, ny:int = y;
 		switch (side) {
 		case 0:
 			nx++;
@@ -944,7 +944,7 @@ public class NavMesh {
 		return getTilesAt(nx, ny);
 	}
 
-	function getTilesAt(x:int, y:int):Array {
+	public function getTilesAt(x:int, y:int):Array {
 		var tiles:Array = new [];
 		// Find tile based on hash.
 		var h:int= computeTileHash(x, y, m_tileLutMask);
@@ -958,7 +958,7 @@ public class NavMesh {
 		return tiles;
 	}
 
-	function getTileByRef(ref:Number):MeshTile {
+	public function getTileByRef(ref:Number):MeshTile {
 		if (ref == 0)
 			return null;
 		var tileIndex:int= decodePolyIdTile(ref);
@@ -971,14 +971,14 @@ public class NavMesh {
 		return tile;
 	}
 
-	function getTileRef(tile:MeshTile):Number {
+	public function getTileRef(tile:MeshTile):Number {
 		if (tile == null)
 			return 0;
 		var it:int= tile.index;
 		return encodePolyId(tile.salt, it, 0);
 	}
 
-	static function computeTileHash(x:int, y:int, mask:int):int {
+	public static function computeTileHash(x:int, y:int, mask:int):int {
 		var h1:int= 0x8da6b343; // Large multiplicative constants;
 		var h2:int= 0xd8163841; // here arbitrarily chosen primes
 		var n:int= h1 * x + h2 * y;
@@ -1018,7 +1018,7 @@ public class NavMesh {
 			throw ("Invalid poly type");
 
 		// Figure out which way to hand out the vertices.
-		var idx0:int= 0, idx1 = 1;
+		var idx0:int= 0, idx1:int = 1;
 
 		// Find link that points to first vertex.
 		for (var i:int= poly.firstLink; i != DT_NULL_LINK; i = tile.links.get(i).next) {

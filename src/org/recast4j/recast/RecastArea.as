@@ -40,7 +40,8 @@ public class RecastArea {
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA) {
 						dist[i] = 0;
 					} else {
@@ -67,11 +68,11 @@ public class RecastArea {
 		var nd:int;
 
 		// Pass 1
-		for (var y:int= 0; y < h; ++y) {
-			for (var x:int= 0; x < w; ++x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					var s:CompactSpan= chf.spans[i];
+		for (y= 0; y < h; ++y) {
+			for (x= 0; x < w; ++x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
+					s= chf.spans[i];
 
 					if (RecastCommon.GetCon(s, 0) != RecastConstants.RC_NOT_CONNECTED) {
 						// (-1,0)
@@ -95,19 +96,19 @@ public class RecastArea {
 					}
 					if (RecastCommon.GetCon(s, 3) != RecastConstants.RC_NOT_CONNECTED) {
 						// (0,-1)
-						var ax:int= x + RecastCommon.GetDirOffsetX(3);
-						var ay:int= y + RecastCommon.GetDirOffsetY(3);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
-						var as_:CompactSpan= chf.spans[ai];
+						ax= x + RecastCommon.GetDirOffsetX(3);
+						ay= y + RecastCommon.GetDirOffsetY(3);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 3);
+						as_= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (1,-1)
 						if (RecastCommon.GetCon(as_, 2) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(2);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(2);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
+							aax= ax + RecastCommon.GetDirOffsetX(2);
+							aay= ay + RecastCommon.GetDirOffsetY(2);
+							aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 2);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -118,27 +119,27 @@ public class RecastArea {
 		}
 
 		// Pass 2
-		for (var y:int= h - 1; y >= 0; --y) {
-			for (var x:int= w - 1; x >= 0; --x) {
-				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
-					var s:CompactSpan= chf.spans[i];
+		for (y= h - 1; y >= 0; --y) {
+			for (x= w - 1; x >= 0; --x) {
+				c= chf.cells[x + y * w];
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
+					s= chf.spans[i];
 
 					if (RecastCommon.GetCon(s, 2) != RecastConstants.RC_NOT_CONNECTED) {
 						// (1,0)
-						var ax:int= x + RecastCommon.GetDirOffsetX(2);
-						var ay:int= y + RecastCommon.GetDirOffsetY(2);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
-						var as_:CompactSpan= chf.spans[ai];
+						 ax= x + RecastCommon.GetDirOffsetX(2);
+						 ay= y + RecastCommon.GetDirOffsetY(2);
+						 ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 2);
+						 as_= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (1,1)
 						if (RecastCommon.GetCon(as_, 1) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(1);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(1);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
+							 aax= ax + RecastCommon.GetDirOffsetX(1);
+							 aay= ay + RecastCommon.GetDirOffsetY(1);
+							 aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 1);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -146,19 +147,19 @@ public class RecastArea {
 					}
 					if (RecastCommon.GetCon(s, 1) != RecastConstants.RC_NOT_CONNECTED) {
 						// (0,1)
-						var ax:int= x + RecastCommon.GetDirOffsetX(1);
-						var ay:int= y + RecastCommon.GetDirOffsetY(1);
-						var ai:int= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
-						var as_:CompactSpan= chf.spans[ai];
+						ax= x + RecastCommon.GetDirOffsetX(1);
+						ay= y + RecastCommon.GetDirOffsetY(1);
+						ai= chf.cells[ax + ay * w].index + RecastCommon.GetCon(s, 1);
+						as_= chf.spans[ai];
 						nd = Math.min(dist[ai] + 2, 255);
 						if (nd < dist[i])
 							dist[i] = nd;
 
 						// (-1,1)
 						if (RecastCommon.GetCon(as_, 0) != RecastConstants.RC_NOT_CONNECTED) {
-							var aax:int= ax + RecastCommon.GetDirOffsetX(0);
-							var aay:int= ay + RecastCommon.GetDirOffsetY(0);
-							var aai:int= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
+							 aax= ax + RecastCommon.GetDirOffsetX(0);
+							 aay= ay + RecastCommon.GetDirOffsetY(0);
+							 aai= chf.cells[aax + aay * w].index + RecastCommon.GetCon(as_, 0);
 							nd = Math.min(dist[aai] + 3, 255);
 							if (nd < dist[i])
 								dist[i] = nd;
@@ -194,7 +195,7 @@ public class RecastArea {
 		for (var y:int= 0; y < h; ++y) {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA) {
 						areas[i] = chf.areas[i];
@@ -273,7 +274,7 @@ public class RecastArea {
 		for (var z:int= minz; z <= maxz; ++z) {
 			for (var x:int= minx; x <= maxx; ++x) {
 				var c:CompactCell= chf.cells[x + z * chf.width];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (s.y >= miny && s.y <= maxy) {
 						if (chf.areas[i] != RecastConstants.RC_NULL_AREA)
@@ -287,9 +288,9 @@ public class RecastArea {
 
 	}
 
-	static function pointInPoly(nvert:int, verts:Array, p:Array):Boolean {
+	public static function pointInPoly(nvert:int, verts:Array, p:Array):Boolean {
 		var c:Boolean= false;
-		var i:int, j;
+		var i:int, j:int;
 		for (i = 0, j = nvert - 1; i < nvert; j = i++) {
 			var vi:int= i * 3;
 			var vj:int= j * 3;
@@ -351,8 +352,9 @@ public class RecastArea {
 		// TODO: Optimize.
 		for (var z:int= minz; z <= maxz; ++z) {
 			for (var x:int= minx; x <= maxx; ++x) {
-				var c:CompactCell= chf.cells[x + z * chf.width];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				var c:CompactCell = chf.cells[x + z * chf.width];
+				var ni:int;
+				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA)
 						continue;
@@ -373,7 +375,7 @@ public class RecastArea {
 		ctx.stopTimer("MARK_CONVEXPOLY_AREA");
 	}
 
-	function offsetPoly(verts:Array, nverts:int, offset:Number, outVerts:Array, maxOutVerts:int):int {
+	public function offsetPoly(verts:Array, nverts:int, offset:Number, outVerts:Array, maxOutVerts:int):int {
 		var MITER_LIMIT:Number= 1.20;
 
 		var n:int= 0;
@@ -487,7 +489,7 @@ public class RecastArea {
 		for (var z:int= minz; z <= maxz; ++z) {
 			for (var x:int= minx; x <= maxx; ++x) {
 				var c:CompactCell= chf.cells[x + z * chf.width];
-				for (var i:int= c.index, ni = c.index + c.count; i < ni; ++i) {
+				for (var i:int= c.index, ni:int = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
 
 					if (chf.areas[i] == RecastConstants.RC_NULL_AREA)

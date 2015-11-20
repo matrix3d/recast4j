@@ -48,11 +48,11 @@ internal class Segment {
 	List<Long> m_polys = new ArrayList<>();
 
 	protected function LocalBoundary() {
-		m_center[0] = m_center[1] = m_center[2] = Float.MAX_VALUE;
+		m_center[0] = m_center[1] = m_center[2] = Number.MAX_VALUE;
 	}
 
 	protected function reset():void {
-		m_center[0] = m_center[1] = m_center[2] = Float.MAX_VALUE;
+		m_center[0] = m_center[1] = m_center[2] = Number.MAX_VALUE;
 		m_polys.clear();
 		m_segs.clear();
 	}

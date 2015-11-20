@@ -52,7 +52,7 @@ public class RandomPointTest extends AbstractDetourTest {
 		for (var i:int= 0; i < 1000; i++) {
 			point = query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(), 5, filter, f);
 			Assert.assertEquals(Status.SUCCSESS, point.getStatus());
-			Tupple2<MeshTile, Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef());
+			var tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef());
 			var bmin:Array= new float[2];
 			var bmax:Array= new float[2];
 			for (var j:int= 0; j < tileAndPoly.second.vertCount; j++) {

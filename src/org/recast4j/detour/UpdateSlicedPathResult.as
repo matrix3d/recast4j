@@ -19,15 +19,15 @@ freely, subject to the following restrictions:
 package org.recast4j.detour {
 //TODO: (PP) Add comments
 public class UpdateSlicedPathResult {
-	private var status:Status;
+	private var status:int;
 	private var iterations:int;
 
-	public function UpdateSlicedPathResult(status:Status, iterations:int) {
+	public function UpdateSlicedPathResult(status:int, iterations:int) {
 		this.status = status;
 		this.iterations = iterations;
 	}
 
-	public function getStatus():Status {
+	public function getStatus():int {
 		return status;
 	}
 

@@ -20,8 +20,8 @@ package org.recast4j.detour {
 
 public class NodePool {
 
-	var m_map:Object = { };//new HashMap<>();
-	var m_nodes:Array = [];// new ArrayList<Node>();
+	public var m_map:Object = { };//new HashMap<>();
+	public var m_nodes:Array = [];// new ArrayList<Node>();
 
 	public function NodePool() {
 
@@ -40,7 +40,7 @@ public class NodePool {
 		return nodes;
 	}
 
-	function findNode(id:Number):Node {
+	public function findNode(id:Number):Node {
 		var nodes:Array = m_map[id];
 		if (nodes != null && !nodes.isEmpty()) {
 			return nodes[0];
@@ -48,7 +48,7 @@ public class NodePool {
 		return null;
 	}
 
-	function findNode2(id:Number, state:int):Node {
+	public function findNode2(id:Number, state:int):Node {
 		var nodes:Array = m_map[id];
 		if (nodes != null) {
 			for each(var node:Node in  nodes) {
@@ -60,7 +60,7 @@ public class NodePool {
 		return null;
 	}
 
-	function getNode(id:Number, state:int):Node {
+	public function getNode(id:Number, state:int=0):Node {
 		var nodes:Array = m_map[id];
 		if (nodes != null) {
 			for each(var node:Node in nodes) {
@@ -96,10 +96,6 @@ public class NodePool {
 
 	public function getNodeCount():int {
 		return m_nodes.size();
-	}
-
-	public function getNode2(ref:Number):Node {
-		return getNode(ref, 0);
 	}
 
 	/*

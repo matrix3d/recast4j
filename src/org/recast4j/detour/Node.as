@@ -19,27 +19,27 @@ freely, subject to the following restrictions:
 package org.recast4j.detour {
 public class Node {
 
-	static var DT_NODE_OPEN:int= 0x01;
-	static var DT_NODE_CLOSED:int= 0x02;
+	public static var DT_NODE_OPEN:int= 0x01;
+	public static var DT_NODE_CLOSED:int= 0x02;
 	/** parent of the node is not adjacent. Found using raycast. */
-	static var DT_NODE_PARENT_DETACHED:int= 0x04;
+	public static var DT_NODE_PARENT_DETACHED:int= 0x04;
 
 	public var index:int;
 
 	/** Position of the node. */
-	var pos:Array= []//new float[3]; 
+	public var pos:Array= []//new float[3]; 
 	/** Cost from previous node to current node. */
-	var cost:Number;
+	public var cost:Number;
 	/** Cost up to the node. */
-	var total:Number;
+	public var total:Number;
 	/** Index to parent node. */
-	var pidx:int;
+	public var pidx:int;
 	/** extra state information. A polyRef can have multiple nodes with different extra info. see DT_MAX_STATES_PER_NODE */
-	var state:int;
+	public var state:int;
 	/** Node flags. A combination of dtNodeFlags. */
-	var flags:int;
+	public var flags:int;
 	/** Polygon ref the node corresponds to. */
-	var id:Number;
+	public var id:Number;
 
 	public function Node(index:int) {
 		super();
