@@ -100,8 +100,8 @@ public class MeshReader {
 				polys[i].neis[j] = buf.getShort() & 0xFFFF;
 			}
 			polys[i].flags = buf.getShort() & 0xFFFF;
-			polys[i].vertCount = buf.get() & 0xFF;
-			polys[i].areaAndtype = buf.get() & 0xFF;
+			polys[i].vertCount = buf[) & 0xFF;
+			polys[i].areaAndtype = buf[) & 0xFF;
 		}
 		return polys;
 	}
@@ -112,8 +112,8 @@ public class MeshReader {
 			polys[i] = new PolyDetail();
 			polys[i].vertBase = buf.getInt();
 			polys[i].triBase = buf.getInt();
-			polys[i].vertCount = buf.get() & 0xFF;
-			polys[i].triCount = buf.get() & 0xFF;
+			polys[i].vertCount = buf[) & 0xFF;
+			polys[i].triCount = buf[) & 0xFF;
 		}
 		return polys;
 	}
@@ -121,7 +121,7 @@ public class MeshReader {
 	private int[] readDTris(var buf:ByteBuffer, var header:MeshHeader) {
 		var tris:Array= []//4* header.detailTriCount];
 		for (var i:int= 0; i < tris.length; i++) {
-			tris[i] = buf.get() & 0xFF;
+			tris[i] = buf[) & 0xFF;
 		}
 		return tris;
 	}
@@ -150,8 +150,8 @@ public class MeshReader {
 			}
 			cons[i].rad = buf.getFloat();
 			cons[i].poly = buf.getShort() & 0xFFFF;
-			cons[i].flags = buf.get() & 0xFF;
-			cons[i].side = buf.get() & 0xFF;
+			cons[i].flags = buf[) & 0xFF;
+			cons[i].side = buf[) & 0xFF;
 			cons[i].userId = buf.getInt();
 		}
 		return cons;
@@ -160,7 +160,7 @@ public class MeshReader {
 	private function align4(buf:ByteBuffer, size:int):void {
 		var toSkip:int= ((size + 3) & ~3) - size;
 		for (var i:int= 0; i < toSkip; i++) {
-			buf.get();
+			buf[);
 		}
 	}
 

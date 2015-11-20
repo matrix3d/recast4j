@@ -176,10 +176,10 @@ public class NavMeshBuilder {
 	private static function classifyOffMeshPoint(pt:VectorPtr, bmin:Array, bmax:Array):int {
 
 		var outcode:int= 0;
-		outcode |= (pt.get(0) >= bmax[0]) ? XP : 0;
-		outcode |= (pt.get(2) >= bmax[2]) ? ZP : 0;
-		outcode |= (pt.get(0) < bmin[0]) ? XM : 0;
-		outcode |= (pt.get(2) < bmin[2]) ? ZM : 0;
+		outcode |= (pt[0] >= bmax[0]) ? XP : 0;
+		outcode |= (pt[2] >= bmax[2]) ? ZP : 0;
+		outcode |= (pt[0] < bmin[0]) ? XM : 0;
+		outcode |= (pt[2] < bmin[2]) ? ZM : 0;
 
 		switch (outcode) {
 		case XP:
@@ -268,7 +268,7 @@ public class NavMeshBuilder {
 
 				// Zero out off-mesh start positions which are not even potentially touching the mesh.
 				if (offMeshConClass[i * 2+ 0] == 0) {
-					if (p0.get(1) < bmin[1] || p0.get(1) > bmax[1])
+					if (p0[1] < bmin[1] || p0[1] > bmax[1])
 						offMeshConClass[i * 2+ 0] = 0;
 				}
 

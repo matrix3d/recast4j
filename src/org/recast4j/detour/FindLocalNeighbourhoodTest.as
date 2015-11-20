@@ -42,7 +42,7 @@ public class FindLocalNeighbourhoodTest extends AbstractDetourTest {
 			var poly:FindLocalNeighbourhoodResult= query.findLocalNeighbourhood(startRefs[i], startPos, 3.5, filter);
 			Assert.assertEquals(refs[i].length, poly.getRefs().length);
 			for (var v:int= 0; v < refs[i].length; v++) {
-				Assert.assertEquals(refs[i][v], poly.getRefs().get(v).longValue());
+				Assert.assertEquals(refs[i][v], poly.getRefs()[v).longValue());
 			}
 		}
 

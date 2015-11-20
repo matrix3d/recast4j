@@ -80,9 +80,9 @@ internal class Segment {
 		m_segs.clear();
 		// Secondly, store all polygon edges.
 		for (var j:int= 0; j < m_polys.length; ++j) {
-			var gpws:GetPolyWallSegmentsResult= navquery.getPolyWallSegments(m_polys.get(j), filter);
+			var gpws:GetPolyWallSegmentsResult= navquery.getPolyWallSegments(m_polys[j), filter);
 			for (var k:int= 0; k < gpws.getSegmentRefs().length; ++k) {
-				var s:Array= gpws.getSegmentVerts().get(k);
+				var s:Array= gpws.getSegmentVerts()[k);
 				// Skip too distant segments.
 				Tupple2<Float, Float> distseg = distancePtSegSqr2D(pos, s, 0, 3);
 				if (distseg.first > sqr(collisionQueryRange))

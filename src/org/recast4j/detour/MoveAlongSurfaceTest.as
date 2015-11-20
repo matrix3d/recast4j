@@ -53,7 +53,7 @@ public class MoveAlongSurfaceTest extends AbstractDetourTest {
 			}
 			Assert.assertEquals(visited[i].length, path.getVisited().length);
 			for (var j:int= 0; j < position[i].length; j++) {
-				Assert.assertEquals(visited[i][j], path.getVisited().get(j).longValue());
+				Assert.assertEquals(visited[i][j], path.getVisited()[j).longValue());
 			}
 		}
 	}

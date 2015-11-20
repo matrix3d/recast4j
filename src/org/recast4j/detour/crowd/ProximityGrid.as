@@ -96,7 +96,7 @@ override public function equal == (obj:Object):Boolean {
 		for (var y:int= iminy; y <= imaxy; ++y) {
 			for (var x:int= iminx; x <= imaxx; ++x) {
 				var key:ItemKey= new ItemKey(x, y);
-				List<Integer> ids = items.get(key);
+				List<Integer> ids = items[key);
 				if (ids == null) {
 					ids = new ArrayList<>();
 					items.put(key, ids);
@@ -116,7 +116,7 @@ override public function equal == (obj:Object):Boolean {
 		for (var y:int= iminy; y <= imaxy; ++y) {
 			for (var x:int= iminx; x <= imaxx; ++x) {
 				var key:ItemKey= new ItemKey(x, y);
-				List<Integer> ids = items.get(key);
+				List<Integer> ids = items[key);
 				if (ids != null) {
 					result.addAll(ids);
 				}
@@ -128,7 +128,7 @@ override public function equal == (obj:Object):Boolean {
 
 	function getItemCountAt(x:int, y:int):int {
 		var key:ItemKey= new ItemKey(x, y);
-		List<Integer> ids = items.get(key);
+		List<Integer> ids = items[key);
 		return ids != null ? ids.length : 0;
 	}
 }

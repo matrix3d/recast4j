@@ -42,9 +42,9 @@ public class DetourCommon {
 	/// @param[in] t The interpolation factor. [Limits: 0 <= value <= 1.0]
 	public static function vLerp(v1:VectorPtr, v2:VectorPtr, t:Number):Array {
 		var dest:Array= []
-		dest[0] = v1.get(0) + (v2.get(0) - v1.get(0)) * t;
-		dest[1] = v1.get(1) + (v2.get(1) - v1.get(1)) * t;
-		dest[2] = v1.get(2) + (v2.get(2) - v1.get(2)) * t;
+		dest[0] = v1[0] + (v2[0] - v1[0]) * t;
+		dest[1] = v1[1] + (v2[1] - v1[1]) * t;
+		dest[2] = v1[2] + (v2[2] - v1[2]) * t;
 		return dest;
 	}
 
@@ -66,9 +66,9 @@ public class DetourCommon {
 
 	public static function vSub(v1:VectorPtr, v2:VectorPtr):Array {
 		var dest:Array= []
-		dest[0] = v1.get(0) - v2.get(0);
-		dest[1] = v1.get(1) - v2.get(1);
-		dest[2] = v1.get(2) - v2.get(2);
+		dest[0] = v1[0] - v2[0];
+		dest[1] = v1[1] - v2[1];
+		dest[2] = v1[2] - v2[2];
 		return dest;
 	}
 
@@ -82,9 +82,9 @@ public class DetourCommon {
 
 	public static function vAdd(v1:VectorPtr, v2:VectorPtr):Array {
 		var dest:Array= []
-		dest[0] = v1.get(0) + v2.get(0);
-		dest[1] = v1.get(1) + v2.get(1);
-		dest[2] = v1.get(2) + v2.get(2);
+		dest[0] = v1[0] + v2[0];
+		dest[1] = v1[1] + v2[1];
+		dest[2] = v1[2] + v2[2];
 		return dest;
 	}
 
@@ -361,7 +361,7 @@ public class DetourCommon {
 
 		// If point lies inside the triangle, return interpolated ycoord.
 		if (u >= -EPS && v >= -EPS && (u + v) <= 1+ EPS) {
-			var h:Number= a.get(1) + v0[1] * u + v1[1] * v;
+			var h:Number= a[1] + v0[1] * u + v1[1] * v;
 			return new Tupple2(true, h);
 		}
 

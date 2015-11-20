@@ -189,7 +189,7 @@ public class RecastContour {
 		// Add initial points.
 		var hasConnections:Boolean= false;
 		for (var i:int= 0; i < points.length; i += 4) {
-			if ((points.get(i + 3) & RecastConstants.RC_CONTOUR_REG_MASK) != 0) {
+			if ((points[i + 3] & RecastConstants.RC_CONTOUR_REG_MASK) != 0) {
 				hasConnections = true;
 				break;
 			}
@@ -201,15 +201,15 @@ public class RecastContour {
 			var ni:int;
 			for (i= 0, ni = points.length / 4; i < ni; ++i) {
 				var ii:int= (i + 1) % ni;
-				var differentRegs:Boolean= (points.get(i * 4+ 3)
-						& RecastConstants.RC_CONTOUR_REG_MASK) != (points.get(ii * 4+ 3)
+				var differentRegs:Boolean= (points[i * 4+ 3]
+						& RecastConstants.RC_CONTOUR_REG_MASK) != (points[ii * 4+ 3]
 								& RecastConstants.RC_CONTOUR_REG_MASK);
-				var areaBorders:Boolean= (points.get(i * 4+ 3)
-						& RecastConstants.RC_AREA_BORDER) != (points.get(ii * 4+ 3) & RecastConstants.RC_AREA_BORDER);
+				var areaBorders:Boolean= (points[i * 4+ 3]
+						& RecastConstants.RC_AREA_BORDER) != (points[ii * 4+ 3] & RecastConstants.RC_AREA_BORDER);
 				if (differentRegs || areaBorders) {
-					simplified.push(points.get(i * 4+ 0));
-					simplified.push(points.get(i * 4+ 1));
-					simplified.push(points.get(i * 4+ 2));
+					simplified.push(points[i * 4+ 0]);
+					simplified.push(points[i * 4+ 1]);
+					simplified.push(points[i * 4+ 2]);
 					simplified.push(i);
 				}
 			}
@@ -219,18 +219,18 @@ public class RecastContour {
 			// If there is no connections at all,
 			// create some initial points for the simplification process.
 			// Find lower-left and upper-right vertices of the contour.
-			var llx:int= points.get(0);
-			var lly:int= points.get(1);
-			var llz:int= points.get(2);
+			var llx:int= points[0];
+			var lly:int= points[1];
+			var llz:int= points[2];
 			var lli:int= 0;
-			var urx:int= points.get(0);
-			var ury:int= points.get(1);
-			var urz:int= points.get(2);
+			var urx:int= points[0];
+			var ury:int= points[1];
+			var urz:int= points[2];
 			var uri:int= 0;
 			for (i= 0; i < points.length; i += 4) {
-				var x:int= points.get(i + 0);
-				var y:int= points.get(i + 1);
-				var z:int= points.get(i + 2);
+				var x:int= points[i + 0];
+				var y:int= points[i + 1];
+				var z:int= points[i + 2];
 				if (x < llx || (x == llx && z < llz)) {
 					llx = x;
 					lly = y;
@@ -260,13 +260,13 @@ public class RecastContour {
 		for (i= 0; i < simplified.length / 4;) {
 			ii= (i + 1) % (simplified.length / 4);
 
-			var ax:int= simplified.get(i * 4+ 0);
-			var az:int= simplified.get(i * 4+ 2);
-			var ai:int= simplified.get(i * 4+ 3);
+			var ax:int= simplified[i * 4+ 0];
+			var az:int= simplified[i * 4+ 2];
+			var ai:int= simplified[i * 4+ 3];
 
-			var bx:int= simplified.get(ii * 4+ 0);
-			var bz:int= simplified.get(ii * 4+ 2);
-			var bi:int= simplified.get(ii * 4+ 3);
+			var bx:int= simplified[ii * 4+ 0];
+			var bz:int= simplified[ii * 4+ 2];
+			var bi:int= simplified[ii * 4+ 3];
 
 			// Find maximum deviation from the segment.
 			var maxd:Number= 0;
@@ -292,9 +292,9 @@ public class RecastContour {
 				bz = temp;
 			}
 			// Tessellate only outer edges or edges between areas.
-			if ((points.get(ci * 4+ 3) & RecastConstants.RC_CONTOUR_REG_MASK) == 0|| (points.get(ci * 4+ 3) & RecastConstants.RC_AREA_BORDER) != 0) {
+			if ((points[ci * 4+ 3] & RecastConstants.RC_CONTOUR_REG_MASK) == 0|| (points[ci * 4+ 3] & RecastConstants.RC_AREA_BORDER) != 0) {
 				while (ci != endi) {
-					var d:Number= distancePtSeg(points.get(ci * 4+ 0), points.get(ci * 4+ 2), ax, az, bx, bz);
+					var d:Number= distancePtSeg(points[ci * 4+ 0], points[ci * 4+ 2], ax, az, bx, bz);
 					if (d > maxd) {
 						maxd = d;
 						maxi = ci;
@@ -306,9 +306,9 @@ public class RecastContour {
 			// add new point, else continue to next segment.
 			if (maxi != -1&& maxd > (maxError * maxError)) {
 				// Add the point.
-				simplified.push((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
-				simplified.push((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
-				simplified.push((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
+				simplified.push((i + 1) * 4+ 0, points[maxi * 4+ 0]);
+				simplified.push((i + 1) * 4+ 1, points[maxi * 4+ 1]);
+				simplified.push((i + 1) * 4+ 2, points[maxi * 4+ 2]);
 				simplified.push((i + 1) * 4+ 3, maxi);
 			} else {
 				++i;
@@ -320,13 +320,13 @@ public class RecastContour {
 			for (i= 0; i < simplified.length / 4;) {
 				ii= (i + 1) % (simplified.length / 4);
 
-				ax= simplified.get(i * 4+ 0);
-				az= simplified.get(i * 4+ 2);
-				ai= simplified.get(i * 4+ 3);
+				ax= simplified[i * 4+ 0];
+				az= simplified[i * 4+ 2];
+				ai= simplified[i * 4+ 3];
 
-				bx= simplified.get(ii * 4+ 0);
-				bz= simplified.get(ii * 4+ 2);
-				bi= simplified.get(ii * 4+ 3);
+				bx= simplified[ii * 4+ 0];
+				bz= simplified[ii * 4+ 2];
+				bi= simplified[ii * 4+ 3];
 
 				// Find maximum deviation from the segment.
 				maxi= -1;
@@ -335,10 +335,10 @@ public class RecastContour {
 				// Tessellate only outer edges or edges between areas.
 				var tess:Boolean= false;
 				// Wall edges.
-				if ((buildFlags & RecastConstants.RC_CONTOUR_TESS_WALL_EDGES) != 0&& (points.get(ci * 4+ 3) & RecastConstants.RC_CONTOUR_REG_MASK) == 0)
+				if ((buildFlags & RecastConstants.RC_CONTOUR_TESS_WALL_EDGES) != 0&& (points[ci * 4+ 3] & RecastConstants.RC_CONTOUR_REG_MASK) == 0)
 					tess = true;
 				// Edges between areas.
-				if ((buildFlags & RecastConstants.RC_CONTOUR_TESS_AREA_EDGES) != 0&& (points.get(ci * 4+ 3) & RecastConstants.RC_AREA_BORDER) != 0)
+				if ((buildFlags & RecastConstants.RC_CONTOUR_TESS_AREA_EDGES) != 0&& (points[ci * 4+ 3] & RecastConstants.RC_AREA_BORDER) != 0)
 					tess = true;
 
 				if (tess) {
@@ -362,9 +362,9 @@ public class RecastContour {
 				// add new point, else continue to next segment.
 				if (maxi != -1) {
 					// Add the point.
-					simplified.push((i + 1) * 4+ 0, points.get(maxi * 4+ 0));
-					simplified.push((i + 1) * 4+ 1, points.get(maxi * 4+ 1));
-					simplified.push((i + 1) * 4+ 2, points.get(maxi * 4+ 2));
+					simplified.push((i + 1) * 4+ 0, points[maxi * 4+ 0]);
+					simplified.push((i + 1) * 4+ 1, points[maxi * 4+ 1]);
+					simplified.push((i + 1) * 4+ 2, points[maxi * 4+ 2]);
 					simplified.push((i + 1) * 4+ 3, maxi);
 				} else {
 					++i;
@@ -374,13 +374,13 @@ public class RecastContour {
 		for (i= 0; i < simplified.length / 4; ++i) {
 			// The edge vertex flag is take from the current raw point,
 			// and the neighbour region is take from the next raw point.
-			ai= (simplified.get(i * 4+ 3) + 1) % pn;
-			bi= simplified.get(i * 4+ 3);
+			ai= (simplified[i * 4+ 3] + 1) % pn;
+			bi= simplified[i * 4+ 3];
 			simplified
-					.set(i * 4+ 3,
-							(points.get(ai * 4+ 3)
+					[i * 4+ 3]=
+							(points[ai * 4+ 3]
 									& (RecastConstants.RC_CONTOUR_REG_MASK | RecastConstants.RC_AREA_BORDER))
-									| (points.get(bi * 4+ 3) & RecastConstants.RC_BORDER_VERTEX));
+									| (points[bi * 4+ 3] & RecastConstants.RC_BORDER_VERTEX);
 		}
 
 	}
@@ -459,8 +459,8 @@ public class RecastContour {
 			var ni:int= RecastMesh.next(i, npts);
 
 			//			if (vequal(&simplified[i*4], &simplified[ni*4]))
-			if (simplified.get(i * 4) == simplified.get(ni * 4)
-					&& simplified.get(i * 4+ 2) == simplified.get(ni * 4+ 2)) {
+			if (simplified[i * 4] == simplified[ni * 4]
+					&& simplified[i * 4+ 2] == simplified[ni * 4+ 2]) {
 				// Degenerate segment, remove.
 				simplified.remove(i * 4);
 				simplified.remove(i * 4);
@@ -715,7 +715,7 @@ public class RecastContour {
 						cont.nverts = simplified.length / 4;
 						cont.verts = []//simplified.length];
 						for (var l:int= 0; l < simplified.length; l++) {
-							cont.verts[l] = simplified.get(l);
+							cont.verts[l] = simplified[l];
 						}
 
 						if (borderSize > 0) {
@@ -729,7 +729,7 @@ public class RecastContour {
 						cont.nrverts = verts.length / 4;
 						cont.rverts = []//verts.length];
 						for (l= 0; l < verts.length; l++) {
-							cont.rverts[l] = verts.get(l);
+							cont.rverts[l] = verts[l];
 						}
 						if (borderSize > 0) {
 							// If the heightfield was build with bordersize, remove the offset.

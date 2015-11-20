@@ -459,7 +459,7 @@ public class NavMeshQuery {
 			var d0:Number= DetourCommon.vDist2D(pos, v0);
 			var d1:Number= DetourCommon.vDist2D(pos, v1);
 			var u:Number= d0 / (d0 + d1);
-			return v0.get(1) + (v1.get(1) - v0.get(1)) * u;
+			return v0[1] + (v1[1] - v0[1]) * u;
 		} else {
 			var ip:int= poly.index;
 			var pd:PolyDetail= tile.data.detailMeshes[ip];
@@ -645,7 +645,7 @@ public class NavMeshQuery {
 			for (var x:int= minx; x <= maxx; ++x) {
 				var neis:Array = m_nav.getTilesAt(x, y);
 				for (var j:int= 0; j < neis.length; ++j) {
-					var polysInTile:Array = queryPolygonsInTile(neis.get(j), bmin, bmax, filter);
+					var polysInTile:Array = queryPolygonsInTile(neis[j], bmin, bmax, filter);
 					polys.addAll(polysInTile);
 				}
 			}
@@ -1157,7 +1157,7 @@ public class NavMeshQuery {
 					var iresult:RaycastHit= raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
 					path.addAll(iresult.path);
 					// raycast ends on poly boundary and the path might include the next poly boundary.
-					if (path.get(path.length - 1) == next.id)
+					if (path[path.length - 1] == next.id)
 						path.remove(path.length - 1); // remove to avoid duplicates
 				} else {
 					path.push(node.id);
@@ -1234,7 +1234,7 @@ public class NavMeshQuery {
 					var iresult:RaycastHit= raycast(node.id, node.pos, next.pos, m_query.filter, 0, 0);
 					path.addAll(iresult.path);
 					// raycast ends on poly boundary and the path might include the next poly boundary.
-					if (path.get(path.length - 1) == next.id)
+					if (path[path.length - 1] == next.id)
 						path.remove(path.length - 1); // remove to avoid duplicates
 				} else {
 					path.push(node.id);
@@ -1251,10 +1251,10 @@ public class NavMeshQuery {
 	}	
 	
 	protected function appendVertex(pos:Array, flags:int, ref:Number, straightPath:Array):int {
-		if (straightPath.length > 0&& DetourCommon.vEqual(straightPath.get(straightPath.length - 1).pos, pos)) {
+		if (straightPath.length > 0&& DetourCommon.vEqual(straightPath[straightPath.length - 1].pos, pos)) {
 			// The vertices are equal, update flags and poly.
-			straightPath.get(straightPath.length - 1).flags = flags;
-			straightPath.get(straightPath.length - 1).ref = ref;
+			straightPath[straightPath.length - 1].flags = flags;
+			straightPath[straightPath.length - 1].ref = ref;
 		} else {
 			// Append new vertex.
 			straightPath.push(new StraightPathItem(pos, flags, ref));
@@ -1268,7 +1268,7 @@ public class NavMeshQuery {
 
 	protected function appendPortals(startIdx:int, endIdx:int, endPos:Array, path:Array, straightPath:Array,
 			options:int):int {
-		var startPos:Array= straightPath.get(straightPath.length - 1).pos;
+		var startPos:Array= straightPath[straightPath.length - 1].pos;
 		// Append or update last vertex
 		var stat:int= -1;
 		for (var i:int= startIdx; i < endIdx; i++) {
@@ -1278,7 +1278,7 @@ public class NavMeshQuery {
 			var fromTile:MeshTile= tileAndPoly.first as MeshTile;
 			var fromPoly:Poly= tileAndPoly.second as Poly;
 
-			var to:Number= path.get(i + 1);
+			var to:Number= path[i + 1];
 			tileAndPoly = m_nav.getTileAndPolyByRef(to);
 			var toTile:MeshTile= tileAndPoly.first as MeshTile;
 			var toPoly:Poly= tileAndPoly.second as Poly;
@@ -1298,7 +1298,7 @@ public class NavMeshQuery {
 			if (interect.first) {
 				var t:Number= interect.third as Number;
 				var pt:Array= DetourCommon.vLerp3(left, right, t);
-				stat = appendVertex(pt, 0, path.get(i + 1), straightPath);
+				stat = appendVertex(pt, 0, path[i + 1], straightPath);
 				if (stat != Status.IN_PROGRESS)
 					return stat;
 			}
@@ -1341,11 +1341,11 @@ public class NavMeshQuery {
 		}
 
 		// TODO: Should this be callers responsibility?
-		var closestStartPos:Array= closestPointOnPolyBoundary(path.get(0), startPos);
-		var closestEndPos:Array= closestPointOnPolyBoundary(path.get(path.length - 1), endPos);
+		var closestStartPos:Array= closestPointOnPolyBoundary(path[0], startPos);
+		var closestEndPos:Array= closestPointOnPolyBoundary(path[path.length - 1], endPos);
 		var straightPath:Array = [];
 		// Add start point.
-		var stat:int= appendVertex(closestStartPos, DT_STRAIGHTPATH_START, path.get(0), straightPath);
+		var stat:int= appendVertex(closestStartPos, DT_STRAIGHTPATH_START, path[0], straightPath);
 		if (stat != Status.IN_PROGRESS)
 			return straightPath;
 
@@ -1360,8 +1360,8 @@ public class NavMeshQuery {
 			var leftPolyType:int= 0;
 			var rightPolyType:int= 0;
 
-			var leftPolyRef:Number= path.get(0);
-			var rightPolyRef:Number= path.get(0);
+			var leftPolyRef:Number= path[0];
+			var rightPolyRef:Number= path[0];
 
 			for (var i:int= 0; i < path.length; ++i) {
 				var left:Array;
@@ -1372,7 +1372,7 @@ public class NavMeshQuery {
 				if (i + 1< path.length) {
 					// Next portal.
 					try {
-						var portalPoints:PortalResult= getPortalPoints(path[i], path.get(i + 1));
+						var portalPoints:PortalResult= getPortalPoints(path[i], path[i + 1]);
 						left = portalPoints.left;
 						right = portalPoints.right;
 						fromType = portalPoints.fromType;
@@ -1404,7 +1404,7 @@ public class NavMeshQuery {
 				if (DetourCommon.triArea2D2(portalApex, portalRight, right) <= 0.0) {
 					if (DetourCommon.vEqual(portalApex, portalRight) || DetourCommon.triArea2D2(portalApex, portalLeft, right) > 0.0) {
 						portalRight = DetourCommon.vCopy(right);
-						rightPolyRef = (i + 1< path.length) ? path.get(i + 1) : 0;
+						rightPolyRef = (i + 1< path.length) ? path[i + 1] : 0;
 						rightPolyType = toType;
 						rightIndex = i;
 					} else {
@@ -1446,7 +1446,7 @@ public class NavMeshQuery {
 				if (DetourCommon.triArea2D2(portalApex, portalLeft, left) >= 0.0) {
 					if (DetourCommon.vEqual(portalApex, portalLeft) || DetourCommon.triArea2D2(portalApex, portalRight, left) < 0.0) {
 						portalLeft = DetourCommon.vCopy(left);
-						leftPolyRef = (i + 1< path.length) ? path.get(i + 1) : 0;
+						leftPolyRef = (i + 1< path.length) ? path[i + 1] : 0;
 						leftPolyType = toType;
 						leftIndex = i;
 					} else {
@@ -1588,8 +1588,8 @@ public class NavMeshQuery {
 
 				if ((curPoly.neis[j] & NavMesh.DT_EXT_LINK) != 0) {
 					// Tile border.
-					for (var k:int= curPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = curTile.links.get(k).next) {
-						var link:Link= curTile.links.get(k);
+					for (var k:int= curPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = curTile.links[k].next) {
+						var link:Link= curTile.links[k];
 						if (link.edge == j) {
 							if (link.ref != 0) {
 								tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(link.ref);
@@ -1987,7 +1987,7 @@ public class NavMeshQuery {
 				var eDir:Array= DetourCommon.vSub(e2, e1);
 				var diff:Array= DetourCommon.vSub(curPosV, e1);
 				var s:Number= DetourCommon.sqr(eDir[0]) > DetourCommon.sqr(eDir[2]) ? diff[0] / eDir[0] : diff[2] / eDir[2];
-				curPos[1] = e1.get(1) + eDir[1] * s;
+				curPos[1] = e1[1] + eDir[1] * s;
 
 				hit.pathCost += filter.getCost(lastPos, curPos, prevRef, prevTile, prevPoly, curRef, tile, poly,
 						nextRef, nextTile, nextPoly);
@@ -2469,12 +2469,12 @@ public class NavMeshQuery {
 
 				var overlap:Boolean= false;
 				for (var j:int= 0; j < resultRef.length; ++j) {
-					var pastRef:Number= resultRef.get(j);
+					var pastRef:Number= resultRef[j];
 
 					// Connected polys do not overlap.
 					var connected:Boolean= false;
-					for (k= curPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = curTile.links.get(k).next) {
-						if (curTile.links.get(k).ref == pastRef) {
+					for (k= curPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = curTile.links[k].next) {
+						if (curTile.links[k].ref == pastRef) {
 							connected = true;
 							break;
 						}
@@ -2515,7 +2515,7 @@ public class NavMeshQuery {
 		// Find insertion point.
 		var idx:int= 0;
 		while (idx < ints.length) {
-			if (tmax <= ints.get(idx).tmin)
+			if (tmax <= ints[idx].tmin)
 				break;
 			idx++;
 		}
@@ -2557,8 +2557,8 @@ public class NavMeshQuery {
 			ints.clear();
 			if ((poly.neis[j] & NavMesh.DT_EXT_LINK) != 0) {
 				// Tile border.
-				for (k= poly.firstLink; k != NavMesh.DT_NULL_LINK; k = tile.links.get(k).next) {
-					var link:Link= tile.links.get(k);
+				for (k= poly.firstLink; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next) {
+					var link:Link= tile.links[k];
 					if (link.edge == j) {
 						if (link.ref != 0) {
 							tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(link.ref);
@@ -2599,19 +2599,19 @@ public class NavMeshQuery {
 			var vi:int= poly.verts[i] * 3;
 			for (var k:int= 1; k < ints.length; ++k) {
 				// Portal segment.
-				if (ints.get(k).ref != 0) {
-					var tmin:Number= ints.get(k).tmin / 255.0;
-					var tmax:Number= ints.get(k).tmax / 255.0;
+				if (ints[k].ref != 0) {
+					var tmin:Number= ints[k].tmin / 255.0;
+					var tmax:Number= ints[k].tmax / 255.0;
 					seg= []//new float[6];
 					System.arraycopy(DetourCommon.vLerp2(tile.data.verts, vj, vi, tmin), 0, seg, 0, 3);
 					System.arraycopy(DetourCommon.vLerp2(tile.data.verts, vj, vi, tmax), 0, seg, 3, 3);
 					segmentVerts.push(seg);
-					segmentRefs.push(ints.get(k).ref);
+					segmentRefs.push(ints[k].ref);
 				}
 
 				// Wall segment.
-				var imin:int= ints.get(k - 1).tmax;
-				var imax:int= ints.get(k).tmin;
+				var imin:int= ints[k - 1].tmax;
+				var imax:int= ints[k].tmin;
 				if (imin != imax) {
 					tmin= imin / 255.0;
 					tmax= imax / 255.0;
@@ -2698,8 +2698,8 @@ public class NavMeshQuery {
 				if ((bestPoly.neis[j] & NavMesh.DT_EXT_LINK) != 0) {
 					// Tile border.
 					var solid:Boolean= true;
-					for (var k:int= bestPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = bestTile.links.get(k).next) {
-						var link:Link= bestTile.links.get(k);
+					for (var k:int= bestPoly.firstLink; k != NavMesh.DT_NULL_LINK; k = bestTile.links[k].next) {
+						var link:Link= bestTile.links[k];
 						if (link.edge == j) {
 							if (link.ref != 0) {
 								tileAndPoly = m_nav.getTileAndPolyByRefUnsafe(link.ref);

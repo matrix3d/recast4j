@@ -91,7 +91,7 @@ public class NodePool {
 	}
 
 	public function getNodeAtIdx(idx:int):Node {
-		return idx != 0? m_nodes.get(idx - 1) : null;
+		return idx != 0? m_nodes[idx - 1] : null;
 	}
 
 	public function getNodeCount():int {

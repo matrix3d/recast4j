@@ -371,7 +371,7 @@ internal class CrowdNeighbour
 		Set<Integer> ids = grid.queryItems(pos[0] - range, pos[2] - range, pos[0] + range, pos[2] + range);
 
 		for (int id : ids) {
-			var ag:CrowdAgent= agents.get(id);
+			var ag:CrowdAgent= agents[id);
 
 			if (ag == skip)
 				continue;
@@ -708,7 +708,7 @@ internal class CrowdNeighbour
 				}
 				// Quick search towards the goal.
 				var MAX_ITER:int= 20;
-				m_navquery.initSlicedFindPath(path.get(0), ag.targetRef, ag.npos, ag.targetPos,
+				m_navquery.initSlicedFindPath(path[0), ag.targetRef, ag.npos, ag.targetPos,
 						m_filters[ag.params.queryFilterType], 0);
 				m_navquery.updateSlicedFindPath(MAX_ITER);
 				var pathFound:FindPathResult;
@@ -725,10 +725,10 @@ internal class CrowdNeighbour
 				List<Long> reqPath = pathFound.getRefs();
 				if (!pathFound.getStatus().isFailed() && !pathFound.getRefs().isEmpty()) {
 					// In progress or succeed.
-					if (reqPath.get(reqPath.length - 1) != ag.targetRef) {
+					if (reqPath[reqPath.length - 1) != ag.targetRef) {
 						// Partial path, constrain target position inside the last polygon.
 						var closest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(
-								pathFound.getRefs().get(pathFound.getRefs().length - 1), ag.targetPos);
+								pathFound.getRefs()[pathFound.getRefs().length - 1), ag.targetPos);
 						reqPos = closest.getClosest();
 					} else {
 						vCopy(reqPos, ag.targetPos);
@@ -737,14 +737,14 @@ internal class CrowdNeighbour
 					// Could not find path, start the request from current location.
 					vCopy(reqPos, ag.npos);
 					reqPath = new ArrayList<>();
-					reqPath.push(path.get(0));
+					reqPath.push(path[0));
 				}
 
 				ag.corridor.setCorridor(reqPos, reqPath);
 				ag.boundary.reset();
 				ag.partial = false;
 
-				if (reqPath.get(reqPath.length - 1) == ag.targetRef) {
+				if (reqPath[reqPath.length - 1) == ag.targetRef) {
 					ag.targetState = MoveRequestState.DT_CROWDAGENT_TARGET_VALID;
 					ag.targetReplanTime = 0.0;
 				} else {
@@ -818,7 +818,7 @@ internal class CrowdNeighbour
 
 					// The last ref in the old path should be the same as
 					// the location where the request was issued..
-					if (valid && path.get(path.length - 1).longValue() != res.get(0).longValue())
+					if (valid && path[path.length - 1).longValue() != res[0).longValue())
 						valid = false;
 
 					if (valid) {
@@ -827,7 +827,7 @@ internal class CrowdNeighbour
 							res.addAll(0, path.subList(1, path.length));
 							// Remove trackbacks
 							for (var j:int= 1; j < res.length - 1; ++j) {
-								if (res.get(j - 1) == res.get(j + 1)) {
+								if (res[j - 1) == res[j + 1)) {
 									res.remove(j);
 									res.remove(j + 1);
 								}
@@ -836,9 +836,9 @@ internal class CrowdNeighbour
 						}
 
 						// Check for partial path.
-						if (res.get(res.length - 1) != ag.targetRef) {
+						if (res[res.length - 1) != ag.targetRef) {
 							// Partial path, constrain target position inside the last polygon.
-							var nearest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(res.get(res.length - 1),
+							var nearest:ClosesPointOnPolyResult= m_navquery.closestPointOnPoly(res[res.length - 1),
 									targetPos);
 							vCopy(targetPos, nearest.getClosest());
 						}

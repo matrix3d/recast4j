@@ -99,12 +99,12 @@ public class RecastMeshDetail {
 			c[0] = (v1Sq * (v2[2] - v3[2]) + v2Sq * (v3[2] - v1[2]) + v3Sq * (v1[2] - v2[2])) / (2* cp);
 			c[1] = 0;
 			c[2] = (v1Sq * (v3[0] - v2[0]) + v2Sq * (v1[0] - v3[0]) + v3Sq * (v2[0] - v1[0])) / (2* cp);
-			r.set(vdist22(c, v1));
+			r[0]=vdist22(c, v1);
 			RecastVectors.add(c, c, verts, p1);
 			return true;
 		}
 		RecastVectors.copy(c, verts, p1);
-		r.set(0);
+		r[0]=0;
 		return false;
 	}
 
@@ -182,9 +182,9 @@ public class RecastMeshDetail {
 	private static function distToTriMesh(p:Array, verts:Array, nverts:int,  tris:Array, ntris:int):Number {
 		var dmin:Number= Number.MAX_VALUE;
 		for (var i:int= 0; i < ntris; ++i) {
-			var va:int= tris.get(i * 4+ 0) * 3;
-			var vb:int= tris.get(i * 4+ 1) * 3;
-			var vc:int= tris.get(i * 4+ 2) * 3;
+			var va:int= tris[i * 4+ 0] * 3;
+			var vb:int= tris[i * 4+ 1] * 3;
+			var vc:int= tris[i * 4+ 2] * 3;
 			var d:Number= distPtTri(p, verts, va, vb, vc);
 			if (d < dmin)
 				dmin = d;
@@ -243,7 +243,7 @@ public class RecastMeshDetail {
 	private static function findEdge( edges:Array, s:int, t:int):int {
 		for (var i:int= 0; i < edges.length / 4; i++) {
 			var e:int= i * 4;
-			if ((edges.get(e + 0) == s && edges.get(e + 1) == t) || (edges.get(e + 0) == t && edges.get(e + 1) == s))
+			if ((edges[e + 0] == s && edges[e + 1] == t) || (edges[e + 0] == t && edges[e + 1] == s))
 				return i;
 		}
 		return EV_UNDEF;
@@ -265,10 +265,10 @@ public class RecastMeshDetail {
 	}
 
 	private static function updateLeftFace(edges:Array, e:int, s:int, t:int, f:int):void {
-		if (edges.get(e + 0) == s && edges.get(e + 1) == t && edges.get(e + 2) == EV_UNDEF)
-			edges.set(e + 2, f);
-		else if (edges.get(e + 1) == s && edges.get(e + 0) == t && edges.get(e + 3) == EV_UNDEF)
-			edges.set(e + 3, f);
+		if (edges[e + 0] == s && edges[e + 1] == t && edges[e + 2] == EV_UNDEF)
+			edges[e + 2]= f;
+		else if (edges[e + 1] == s && edges[e + 0] == t && edges[e + 3] == EV_UNDEF)
+			edges[e + 3]= f;
 	}
 
 	private static function overlapSegSeg2d(verts:Array, a:int, b:int, c:int, d:int):Boolean {
@@ -285,8 +285,8 @@ public class RecastMeshDetail {
 
 	private static function overlapEdges(pts:Array, edges:Array,  s1:int, t1:int):Boolean {
 		for (var i:int= 0; i < edges.length / 4; ++i) {
-			var s0:int= edges.get(i * 4+ 0);
-			var t0:int= edges.get(i * 4+ 1);
+			var s0:int= edges[i * 4+ 0];
+			var t0:int= edges[i * 4+ 1];
 			// Same or connected edges do not overlap.
 			if (s0 == s1 || s0 == t1 || t0 == s1 || t0 == t1)
 				continue;
@@ -304,12 +304,12 @@ public class RecastMeshDetail {
 
 		// Cache s and t.
 		var s:int, t:int;
-		if (edges.get(edge + 2) == EV_UNDEF) {
-			s = edges.get(edge + 0);
-			t = edges.get(edge + 1);
-		} else if (edges.get(edge + 3) == EV_UNDEF) {
-			s = edges.get(edge + 1);
-			t = edges.get(edge + 0);
+		if (edges[edge + 2] == EV_UNDEF) {
+			s = edges[edge + 0];
+			t = edges[edge + 1];
+		} else if (edges[edge + 3] == EV_UNDEF) {
+			s = edges[edge + 1];
+			t = edges[edge + 0];
 		} else {
 			// Edge already completed.
 			return nfaces;
@@ -323,7 +323,7 @@ public class RecastMeshDetail {
 			if (u == s || u == t)
 				continue;
 			if (vcross2(pts, s * 3, t * 3, u * 3) > EPS) {
-				if (r.get() < 0) {
+				if (r[0] < 0) {
 					// The circle is not updated yet, do it now.
 					pt = u;
 					circumCircle(pts, s * 3, t * 3, u * 3, c, r);
@@ -331,10 +331,10 @@ public class RecastMeshDetail {
 				}
 				var d:Number= vdist23(c, pts, u * 3);
 				var tol:Number= 0.001;
-				if (d > r.get() * (1+ tol)) {
+				if (d > r[0] * (1+ tol)) {
 					// Outside current circumcircle, skip.
 					continue;
-				} else if (d < r.get() * (1- tol)) {
+				} else if (d < r[0] * (1- tol)) {
 					// Inside safe circumcircle, update circle.
 					pt = u;
 					circumCircle(pts, s * 3, t * 3, u * 3, c, r);
@@ -386,10 +386,10 @@ public class RecastMeshDetail {
 			addEdge(ctx, edges, maxEdges, hull[j], hull[i], EV_HULL, EV_UNDEF);
 		var currentEdge:int= 0;
 		while (currentEdge < edges.length / 4) {
-			if (edges.get(currentEdge * 4+ 2) == EV_UNDEF) {
+			if (edges[currentEdge * 4+ 2] == EV_UNDEF) {
 				nfaces = completeFacet(ctx, pts, npts, edges, maxEdges, nfaces, currentEdge);
 			}
-			if (edges.get(currentEdge * 4+ 3) == EV_UNDEF) {
+			if (edges[currentEdge * 4+ 3] == EV_UNDEF) {
 				nfaces = completeFacet(ctx, pts, npts, edges, maxEdges, nfaces, currentEdge);
 			}
 			currentEdge++;
@@ -401,39 +401,39 @@ public class RecastMeshDetail {
 
 		for (i= 0; i < edges.length / 4; ++i) {
 			var e:int= i * 4;
-			if (edges.get(e + 3) >= 0) {
+			if (edges[e + 3] >= 0) {
 				// Left face
-				var t:int= edges.get(e + 3) * 4;
-				if (tris.get(t + 0) == -1) {
-					tris.set(t + 0, edges.get(e + 0));
-					tris.set(t + 1, edges.get(e + 1));
-				} else if (tris.get(t + 0) == edges.get(e + 1))
-					tris.set(t + 2, edges.get(e + 0));
-				else if (tris.get(t + 1) == edges.get(e + 0))
-					tris.set(t + 2, edges.get(e + 1));
+				var t:int= edges[e + 3] * 4;
+				if (tris[t + 0] == -1) {
+					tris[t + 0]= edges[e + 0];
+					tris[t + 1]= edges[e + 1];
+				} else if (tris[t + 0] == edges[e + 1])
+					tris[t + 2]= edges[e + 0];
+				else if (tris[t + 1] == edges[e + 0])
+					tris[t + 2]= edges[e + 1];
 			}
-			if (edges.get(e + 2) >= 0) {
+			if (edges[e + 2] >= 0) {
 				// Right
-				t= edges.get(e + 2) * 4;
-				if (tris.get(t + 0) == -1) {
-					tris.set(t + 0, edges.get(e + 1));
-					tris.set(t + 1, edges.get(e + 0));
-				} else if (tris.get(t + 0) == edges.get(e + 0))
-					tris.set(t + 2, edges.get(e + 1));
-				else if (tris.get(t + 1) == edges.get(e + 1))
-					tris.set(t + 2, edges.get(e + 0));
+				t= edges[e + 2] * 4;
+				if (tris[t + 0] == -1) {
+					tris[t + 0]= edges[e + 1];
+					tris[t + 1]= edges[e + 0];
+				} else if (tris[t + 0] == edges[e + 0])
+					tris[t + 2]= edges[e + 1];
+				else if (tris[t + 1] == edges[e + 1])
+					tris[t + 2]= edges[e + 0];
 			}
 		}
 
 		for (i= 0; i < tris.length / 4; ++i) {
 			t= i * 4;
-			if (tris.get(t + 0) == -1|| tris.get(t + 1) == -1|| tris.get(t + 2) == -1) {
-				trace("Dangling! " + tris.get(t) + " " + tris.get(t + 1) + "  " + tris.get(t + 2));
+			if (tris[t + 0] == -1|| tris[t + 1] == -1|| tris[t + 2] == -1) {
+				trace("Dangling! " + tris[t] + " " + tris[t + 1] + "  " + tris[t + 2]);
 				//ctx.log(RC_LOG_WARNING, "delaunayHull: Removing dangling face %d [%d,%d,%d].", i, t[0],t[1],t[2]);
-				tris.set(t + 0, tris.get(tris.length - 4));
-				tris.set(t + 1, tris.get(tris.length - 3));
-				tris.set(t + 2, tris.get(tris.length - 2));
-				tris.set(t + 3, tris.get(tris.length - 1));
+				tris[t + 0]= tris[tris.length - 4];
+				tris[t + 1]= tris[tris.length - 3];
+				tris[t + 2]= tris[tris.length - 2];
+				tris[t + 3]= tris[tris.length - 1];
 				tris.remove(tris.length - 1);
 				tris.remove(tris.length - 1);
 				tris.remove(tris.length - 1);
@@ -710,14 +710,14 @@ public class RecastMeshDetail {
 				var besti:int= -1;
 				for ( i= 0; i < nsamples; ++i) {
 					var s:int= i * 4;
-					if (samples.get(s + 3) != 0)
+					if (samples[s + 3] != 0)
 						continue; // skip added.
 					 pt= []//new float[3];
 					// The sample location is jittered to get rid of some bad triangulations
 					// which are cause by symmetrical data from the grid structure.
-					pt[0] = samples.get(s + 0) * sampleDist + getJitterX(i) * cs * 0.1;
-					pt[1] = samples.get(s + 1) * chf.ch;
-					pt[2] = samples.get(s + 2) * sampleDist + getJitterY(i) * cs * 0.1;
+					pt[0] = samples[s + 0] * sampleDist + getJitterX(i) * cs * 0.1;
+					pt[1] = samples[s + 1] * chf.ch;
+					pt[2] = samples[s + 2] * sampleDist + getJitterY(i) * cs * 0.1;
 					 d= distToTriMesh(pt, verts, nverts, tris, tris.length / 4);
 					if (d < 0)
 						continue; // did not hit the mesh.
@@ -731,7 +731,7 @@ public class RecastMeshDetail {
 				if (bestd <= sampleMaxError || besti == -1)
 					break;
 				// Mark sample as added.
-				samples.set(besti * 4+ 3, 1);
+				samples[besti * 4+ 3]= 1;
 				// Add the new sample point.
 				RecastVectors.copy2(verts, nverts * 3, bestpt, 0);
 				nverts++;
@@ -807,8 +807,8 @@ public class RecastMeshDetail {
 		pcz /= npoly;
 
 		for (var i:int= 0; i < stack.length; i += 3) {
-			cx= stack.get(i + 0);
-			var cy:int= stack.get(i + 1);
+			cx= stack[i + 0];
+			var cy:int= stack[i + 1];
 			var idx:int= cx - hp.xmin + (cy - hp.ymin) * hp.width;
 			hp.data[idx] = 1;
 		}
@@ -857,16 +857,16 @@ public class RecastMeshDetail {
 
 		// Mark start locations.
 		for ( i= 0; i < stack.length; i += 3) {
-			 cx= stack.get(i + 0);
-			 cy= stack.get(i + 1);
-			ci= stack.get(i + 2);
+			 cx= stack[i + 0];
+			 cy= stack[i + 1];
+			ci= stack[i + 2];
 			 idx= cx - hp.xmin + (cy - hp.ymin) * hp.width;
 			 cs= chf.spans[ci];
 			hp.data[idx] = cs.y;
 
 			// getHeightData seeds are given in coordinates with borders
-			stack.set(i + 0, stack.get(i + 0) + bs);
-			stack.set(i + 1, stack.get(i + 1) + bs);
+			stack[i + 0]= stack[i + 0] + bs;
+			stack[i + 1]= stack[i + 1] + bs;
 		}
 
 	}
@@ -931,9 +931,9 @@ public class RecastMeshDetail {
 		var head:int= 0;
 
 		while (head * 3< stack.length) {
-			var cx:int= stack.get(head * 3+ 0);
-			var cy:int= stack.get(head * 3+ 1);
-			var ci:int= stack.get(head * 3+ 2);
+			var cx:int= stack[head * 3+ 0];
+			var cy:int= stack[head * 3+ 1];
+			var ci:int= stack[head * 3+ 2];
 			head++;
 			if (head >= RETRACT_SIZE) {
 				head = 0;
@@ -1130,11 +1130,11 @@ public class RecastMeshDetail {
 			}
 			for ( j= 0; j < ntris; ++j) {
 				var t:int= j * 4;
-				dmesh.tris[dmesh.ntris * 4+ 0] = tris.get(t + 0);
-				dmesh.tris[dmesh.ntris * 4+ 1] = tris.get(t + 1);
-				dmesh.tris[dmesh.ntris * 4+ 2] = tris.get(t + 2);
-				dmesh.tris[dmesh.ntris * 4+ 3] = getTriFlags(verts, tris.get(t + 0) * 3, tris.get(t + 1) * 3,
-						tris.get(t + 2) * 3, poly, npoly);
+				dmesh.tris[dmesh.ntris * 4+ 0] = tris[t + 0];
+				dmesh.tris[dmesh.ntris * 4+ 1] = tris[t + 1];
+				dmesh.tris[dmesh.ntris * 4+ 2] = tris[t + 2];
+				dmesh.tris[dmesh.ntris * 4+ 3] = getTriFlags(verts, tris[t + 0] * 3, tris[t + 1] * 3,
+						tris[t + 2] * 3, poly, npoly);
 				dmesh.ntris++;
 			}
 		}

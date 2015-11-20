@@ -97,7 +97,7 @@ public class PathCorridor {
 		for (var i:int= path.length - 1; i >= 0; --i) {
 			var found:Boolean= false;
 			for (var j:int= visited.length - 1; j >= 0; --j) {
-				if (path[i] == visited.get(j)) {
+				if (path[i] == visited[j)) {
 					furthestPath = i;
 					furthestVisited = j;
 					found = true;
@@ -130,7 +130,7 @@ public class PathCorridor {
 		for (var i:int= 0; i < path.length; ++i) {
 			var found:Boolean= false;
 			for (var j:int= visited.length - 1; j >= 0; --j) {
-				if (path[i] == visited.get(j)) {
+				if (path[i] == visited[j)) {
 					furthestPath = i;
 					furthestVisited = j;
 					found = true;
@@ -159,7 +159,7 @@ public class PathCorridor {
 		for (var i:int= path.length - 1; i >= 0; --i) {
 			var found:Boolean= false;
 			for (var j:int= visited.length - 1; j >= 0; --j) {
-				if (path[i] == visited.get(j)) {
+				if (path[i] == visited[j)) {
 					furthestPath = i;
 					furthestVisited = j;
 					found = true;
@@ -285,7 +285,7 @@ public class PathCorridor {
 		var delta:Array= vSub(next, m_pos);
 		var goal:Array= vMad(m_pos, delta, pathOptimizationRange / dist);
 
-		var rc:RaycastHit= navquery.raycast(m_path.get(0), m_pos, goal, filter, 0, 0);
+		var rc:RaycastHit= navquery.raycast(m_path[0), m_pos, goal, filter, 0, 0);
 		if (rc.path.length > 1&& rc.t > 0.99) {
 			m_path = mergeCorridorStartShortcut(m_path, rc.path);
 		}
@@ -314,7 +314,7 @@ public class PathCorridor {
 
 		var MAX_ITER:int= 32;
 
-		navquery.initSlicedFindPath(m_path.get(0), m_path.get(m_path.length - 1), m_pos, m_target, filter, 0);
+		navquery.initSlicedFindPath(m_path[0), m_path[m_path.length - 1), m_pos, m_target, filter, 0);
 		navquery.updateSlicedFindPath(MAX_ITER);
 		var fpr:FindPathResult= navquery.finalizeSlicedFindPathPartial(m_path);
 
@@ -328,11 +328,11 @@ public class PathCorridor {
 
 	public function moveOverOffmeshConnection(offMeshConRef:Number, navquery:NavMeshQuery):Boolean {
 		// Advance the path up to and over the off-mesh connection.
-		var prevRef:Number= 0, polyRef = m_path.get(0);
+		var prevRef:Number= 0, polyRef = m_path[0);
 		var npos:int= 0;
 		while (npos < m_path.length && polyRef != offMeshConRef) {
 			prevRef = polyRef;
-			polyRef = m_path.get(npos);
+			polyRef = m_path[npos);
 			npos++;
 		}
 		if (npos == m_path.length) {
@@ -380,11 +380,11 @@ public class PathCorridor {
 	 */
 	public function movePosition(npos:Array, navquery:NavMeshQuery, filter:QueryFilter):void {
 		// Move along navmesh and update new position.
-		var masResult:MoveAlongSurfaceResult= navquery.moveAlongSurface(m_path.get(0), m_pos, npos, filter);
+		var masResult:MoveAlongSurfaceResult= navquery.moveAlongSurface(m_path[0), m_pos, npos, filter);
 		m_path = mergeCorridorStartMoved(m_path, masResult.getVisited());
 		// Adjust the position to stay on top of the navmesh.
 		vCopy(m_pos, masResult.getResultPos());
-		m_pos[1] = navquery.getPolyHeight(m_path.get(0), new VectorPtr(masResult.getResultPos()));
+		m_pos[1] = navquery.getPolyHeight(m_path[0), new VectorPtr(masResult.getResultPos()));
 	}
 
 	/**
@@ -410,7 +410,7 @@ public class PathCorridor {
 	 */
 	public function moveTargetPosition(npos:Array, navquery:NavMeshQuery, filter:QueryFilter):void {
 		// Move along navmesh and update new position.
-		var masResult:MoveAlongSurfaceResult= navquery.moveAlongSurface(m_path.get(m_path.length - 1), m_target, npos,
+		var masResult:MoveAlongSurfaceResult= navquery.moveAlongSurface(m_path[m_path.length - 1), m_target, npos,
 				filter);
 		m_path = mergeCorridorEndMoved(m_path, masResult.getVisited());
 		// TODO: should we do that?
@@ -444,7 +444,7 @@ public class PathCorridor {
 	public function fixPathStart(safeRef:Number, safePos:Array):void {
 		vCopy(m_pos, safePos);
 		if (m_path.length < 3&& m_path.length > 0) {
-			var p:Long= m_path.get(m_path.length - 1);
+			var p:Long= m_path[m_path.length - 1);
 			m_path.clear();
 			m_path.push(safeRef);
 			m_path.push(0L);
@@ -460,7 +460,7 @@ public class PathCorridor {
 	public function trimInvalidPath(safeRef:Number, safePos:Array, navquery:NavMeshQuery, filter:QueryFilter):void {
 		// Keep valid path as far as possible.
 		var n:int= 0;
-		while (n < m_path.length && navquery.isValidPolyRef(m_path.get(n), filter)) {
+		while (n < m_path.length && navquery.isValidPolyRef(m_path[n), filter)) {
 			n++;
 		}
 
@@ -474,7 +474,7 @@ public class PathCorridor {
 			// The path is partially usable.
 		}
 		// Clamp target pos to last poly
-		vCopy(m_target, navquery.closestPointOnPolyBoundary(m_path.get(m_path.length - 1), m_target));
+		vCopy(m_target, navquery.closestPointOnPolyBoundary(m_path[m_path.length - 1), m_target));
 	}
 
 	/**
@@ -520,13 +520,13 @@ public class PathCorridor {
 	 * The polygon reference id of the first polygon in the corridor, the polygon containing the position.
 	 * @return The polygon reference id of the first polygon in the corridor. (Or zero if there is no path.)
 	 */
-	public function getFirstPoly():Number { return m_path.isEmpty() ? 0: m_path.get(0); }
+	public function getFirstPoly():Number { return m_path.isEmpty() ? 0: m_path[0); }
 
 	/**
 	 * The polygon reference id of the last polygon in the corridor, the polygon containing the target.
 	 * @return The polygon reference id of the last polygon in the corridor. (Or zero if there is no path.)
 	 */
-	public function getLastPoly():Number { return m_path.isEmpty() ? 0: m_path.get(m_path.length - 1); }
+	public function getLastPoly():Number { return m_path.isEmpty() ? 0: m_path[m_path.length - 1); }
 	
 	/**
 	 * The corridor's path. 

@@ -407,22 +407,22 @@ public class NavMesh {
 		// Connect with layers in current tile.
 		var neis:Array = getTilesAt(header.x, header.y);
 		for (var j:int= 0; j < neis.length; ++j) {
-			if (neis.get(j) != tile) {
-				connectExtLinks(tile, neis.get(j), -1);
-				connectExtLinks(neis.get(j), tile, -1);
+			if (neis[j] != tile) {
+				connectExtLinks(tile, neis[j], -1);
+				connectExtLinks(neis[j], tile, -1);
 			}
-			connectExtOffMeshLinks(tile, neis.get(j), -1);
-			connectExtOffMeshLinks(neis.get(j), tile, -1);
+			connectExtOffMeshLinks(tile, neis[j], -1);
+			connectExtOffMeshLinks(neis[j], tile, -1);
 		}
 
 		// Connect with neighbour tiles.
 		for (var i:int= 0; i < 8; ++i) {
 			neis = getNeighbourTilesAt(header.x, header.y, i);
 			for (j= 0; j < neis.length; ++j) {
-				connectExtLinks(tile, neis.get(j), i);
-				connectExtLinks(neis.get(j), tile, DetourCommon.oppositeTile(i));
-				connectExtOffMeshLinks(tile, neis.get(j), i);
-				connectExtOffMeshLinks(neis.get(j), tile, DetourCommon.oppositeTile(i));
+				connectExtLinks(tile, neis[j], i);
+				connectExtLinks(neis[j], tile, DetourCommon.oppositeTile(i));
+				connectExtOffMeshLinks(tile, neis[j], i);
+				connectExtOffMeshLinks(neis[j], tile, DetourCommon.oppositeTile(i));
 			}
 		}
 
@@ -459,7 +459,7 @@ public class NavMesh {
 					continue;
 
 				var idx:int= allocLink(tile);
-				var link:Link= tile.links.get(idx);
+				var link:Link= tile.links[idx];
 				link.ref = base | (poly.neis[j] - 1);
 				link.edge = j;
 				link.side = 0;
@@ -502,7 +502,7 @@ public class NavMesh {
 				var nnei:int= connectedPolys.third as int;
 				for (var k:int= 0; k < nnei; ++k) {
 					var idx:int= allocLink(tile);
-					var link:Link= tile.links.get(idx);
+					var link:Link= tile.links[idx];
 					link.ref = nei[k];
 					link.edge = j;
 					link.side = dir;
@@ -580,7 +580,7 @@ public class NavMesh {
 
 			// Link off-mesh connection to target poly.
 			var idx:int= allocLink(target);
-			var link:Link= target.links.get(idx);
+			var link:Link= target.links[idx];
 			link.ref = ref;
 			link.edge = 1;
 			link.side = oppositeSide;
@@ -594,7 +594,7 @@ public class NavMesh {
 				var tidx:int= allocLink(tile);
 				var landPolyIdx:int= decodePolyIdPoly(ref);
 				var landPoly:Poly= tile.data.polys[landPolyIdx];
-				link = tile.links.get(tidx);
+				link = tile.links[tidx];
 				link.ref = getPolyRefBase(target) | targetCon.poly;
 				link.edge = 0;
 				link.side = (side == -1? 0: side);
@@ -761,7 +761,7 @@ public class NavMesh {
 
 			// Link off-mesh connection to target poly.
 			var idx:int= allocLink(tile);
-			var link:Link= tile.links.get(idx);
+			var link:Link= tile.links[idx];
 			link.ref = ref;
 			link.edge = 0;
 			link.side = 0;
@@ -774,7 +774,7 @@ public class NavMesh {
 			var tidx:int= allocLink(tile);
 			var landPolyIdx:int= decodePolyIdPoly(ref);
 			var landPoly:Poly= tile.data.polys[landPolyIdx];
-			link = tile.links.get(tidx);
+			link = tile.links[tidx];
 			link.ref = base | con.poly;
 			link.edge = 0;
 			link.side = 0;

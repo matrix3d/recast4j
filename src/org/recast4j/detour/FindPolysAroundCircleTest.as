@@ -67,13 +67,13 @@ public class FindPolysAroundCircleTest extends AbstractDetourTest {
 			var polys:FindPolysAroundResult= query.findPolysAroundCircle(startRef, startPos, 7.5, filter);
 			Assert.assertEquals(refs[i].length, polys.getRefs().length);
 			for (var v:int= 0; v < refs[i].length; v++) {
-				Assert.assertEquals(refs[i][v], polys.getRefs().get(v).longValue());
+				Assert.assertEquals(refs[i][v], polys.getRefs()[v).longValue());
 			}
 			for (var v:int= 0; v < parentsRefs[i].length; v++) {
-				Assert.assertEquals(parentsRefs[i][v], polys.getParentRefs().get(v).longValue());
+				Assert.assertEquals(parentsRefs[i][v], polys.getParentRefs()[v).longValue());
 			}
 			for (var v:int= 0; v < costs[i].length; v++) {
-				Assert.assertEquals(costs[i][v], polys.getCosts().get(v).floatValue(), 0.01);
+				Assert.assertEquals(costs[i][v], polys.getCosts()[v).floatValue(), 0.01);
 			}
 		}
 
