@@ -462,10 +462,10 @@ public class RecastContour {
 			if (simplified[i * 4] == simplified[ni * 4]
 					&& simplified[i * 4+ 2] == simplified[ni * 4+ 2]) {
 				// Degenerate segment, remove.
-				simplified.remove(i * 4);
-				simplified.remove(i * 4);
-				simplified.remove(i * 4);
-				simplified.remove(i * 4);
+				simplified.splice(i * 4,1);
+				simplified.splice(i * 4,1);
+				simplified.splice(i * 4,1);
+				simplified.splice(i * 4,1);
 				npts--;
 			}
 		}

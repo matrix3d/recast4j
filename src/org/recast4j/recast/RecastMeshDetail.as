@@ -434,10 +434,10 @@ public class RecastMeshDetail {
 				tris[t + 1]= tris[tris.length - 3];
 				tris[t + 2]= tris[tris.length - 2];
 				tris[t + 3]= tris[tris.length - 1];
-				tris.remove(tris.length - 1);
-				tris.remove(tris.length - 1);
-				tris.remove(tris.length - 1);
-				tris.remove(tris.length - 1);
+				tris.pop();//.remove(tris.length - 1);
+				tris.pop();//.remove(tris.length - 1);
+				tris.pop();//.remove(tris.length - 1);
+				tris.pop();//.remove(tris.length - 1);
 				--i;
 			}
 		}
@@ -814,9 +814,9 @@ public class RecastMeshDetail {
 		}
 
 		while (stack.length > 0) {
-			 ci= stack.remove(stack.length - 1);
-			 cy= stack.remove(stack.length - 1);
-			 cx= stack.remove(stack.length - 1);
+			 ci = stack.pop();//.remove(stack.length - 1);
+			 cy= stack.pop();//.remove(stack.length - 1);
+			 cx= stack.pop();//.remove(stack.length - 1);
 
 			// Check if close to center of the polygon.
 			if (Math.abs(cx - pcx) <= 1&& Math.abs(cy - pcz) <= 1) {

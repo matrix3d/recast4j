@@ -16,13 +16,13 @@ package org.recast4j
 		
 		public static function arraycopy(src:Array,srcPos:int,dest:Array,destPos:int,length:int):void{
 			for (var i:int = 0; i < length;i++ ) {
-				dest.splice(destPos+i,0, src[srcPos+i]);
+				dest[destPos+i] = src[srcPos+i];
 			}
 		}
 		public static function arraycopy2(src:Tupple2,srcPos:int,dest:Array,destPos:int,length:int):void{
 			for (var i:int = 0; i < length; i++ ) {
 				var p:int = srcPos + i;
-				dest.splice(destPos+i,0, p==0?src.first:src.second);
+				dest[destPos+i]=p==0?src.first:src.second;
 			}
 		}
 		

@@ -226,9 +226,9 @@ public class RecastRegion {
 		var count:int= 0;
 
 		while (stack.length > 0) {
-			var ci:int= stack.remove(stack.length - 1);
-			var cy:int= stack.remove(stack.length - 1);
-			var cx:int= stack.remove(stack.length - 1);
+			var ci:int= stack.pop();//.remove(stack.length - 1);
+			var cy:int= stack.pop();//.remove(stack.length - 1);
+			var cx:int= stack.pop();//.remove(stack.length - 1);
 
 			var cs:CompactSpan= chf.spans[ci];
 
@@ -442,7 +442,7 @@ public class RecastRegion {
 		for (var i:int= 0; i < reg.connections.length && reg.connections.length > 1;) {
 			var ni:int= (i + 1) % reg.connections.length;
 			if (reg.connections[i] == reg.connections[ni]) {
-				reg.connections.remove(i);
+				reg.connections.splice(i, 1);// .remove(i);
 			} else
 				++i;
 		}
@@ -482,7 +482,7 @@ public class RecastRegion {
 	}
 
 	private static function addUniqueFloorRegion(reg:Region, n:int):void {
-		if (!reg.floors.contains(n)) {
+		if (reg.floors.indexOf(n)==-1) {
 			reg.floors.push(n);
 		}
 	}
@@ -541,7 +541,7 @@ public class RecastRegion {
 	private static function isRegionConnectedToBorder(reg:Region):Boolean {
 		// Region is connected to border if
 		// one of the neighbours is null id.
-		return reg.connections.contains(0);
+		return reg.connections.indexOf(0)!=-1;
 	}
 
 	private static function isSolidEdge(chf:CompactHeightfield, srcReg:Array, x:int, y:int, i:int, dir:int):Boolean {
@@ -620,7 +620,7 @@ public class RecastRegion {
 			for (var j:int= 0; j < cont.length;) {
 				var nj:int= (j + 1) % cont.length;
 				if (cont[j] == cont[nj]) {
-					cont.remove(j);
+					cont.splice(j, 1);//.remove(j);
 				} else
 					++j;
 			}
@@ -712,7 +712,7 @@ public class RecastRegion {
 
 			while (stack.length > 0) {
 				// Pop
-				var ri:int= stack.remove(stack.length - 1);
+				var ri:int = stack.pop();// .remove(stack.length - 1);
 
 				var creg:Region= regions[ri];
 
@@ -846,7 +846,7 @@ public class RecastRegion {
 	}
 
 	private static function addUniqueConnection(reg:Region, n:int):void {
-		if (!reg.connections.contains(n)) {
+		if (reg.connections.indexOf(n)==-1) {
 			reg.connections.push(n);
 		}
 	}
@@ -938,7 +938,7 @@ public class RecastRegion {
 
 			while (stack.length > 0) {
 				// Pop front
-				reg= regions[stack.remove(0)];
+				reg= regions[stack.shift()/*.remove(0)*/];
 
 				var ncons:int= reg.connections.length;
 				for (j= 0; j < ncons; ++j) {

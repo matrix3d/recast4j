@@ -1158,7 +1158,7 @@ public class NavMeshQuery {
 					path.addAll(iresult.path);
 					// raycast ends on poly boundary and the path might include the next poly boundary.
 					if (path[path.length - 1] == next.id)
-						path.remove(path.length - 1); // remove to avoid duplicates
+						path.pop();//.remove(path.length - 1); // remove to avoid duplicates
 				} else {
 					path.push(node.id);
 				}
@@ -1235,7 +1235,7 @@ public class NavMeshQuery {
 					path.addAll(iresult.path);
 					// raycast ends on poly boundary and the path might include the next poly boundary.
 					if (path[path.length - 1] == next.id)
-						path.remove(path.length - 1); // remove to avoid duplicates
+						path.pop();//.remove(path.length - 1); // remove to avoid duplicates
 				} else {
 					path.push(node.id);
 				}
