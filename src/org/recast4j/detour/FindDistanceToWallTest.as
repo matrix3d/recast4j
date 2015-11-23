@@ -32,15 +32,20 @@ public class FindDistanceToWallTest extends AbstractDetourTest {
 		for (var i:int= 0; i < startRefs.length; i++) {
 			var startPos:Array= startPoss[i];
 			var hit:FindDistanceToWallResult= query.findDistanceToWall(startRefs[i], startPos, 3.5, filter);
-			/*Assert.assertEquals(distancesToWall[i], hit.getDistance(), 0.001);
+			assertEquals(distancesToWall[i], hit.getDistance(), 0.001);
 			for (var v:int= 0; v < 3; v++) {
-				Assert.assertEquals(hitPosition[i][v], hit.getPosition()[v], 0.001);
+				assertEquals(hitPosition[i][v], hit.getPosition()[v], 0.001);
 			}
-			for (var v:int= 0; v < 3; v++) {
-				Assert.assertEquals(hitNormal[i][v], hit.getNormal()[v], 0.001);
-			}*/
+			for (v= 0; v < 3; v++) {
+				assertEquals(hitNormal[i][v], hit.getNormal()[v], 0.001);
+			}
 		}
 
+	}
+	
+	private function assertEquals(a:Number, b:Number, d:Number):void {
+		trace(a, b, d);
+		trace(Math.abs(a - b) < d);
 	}
 }
 }

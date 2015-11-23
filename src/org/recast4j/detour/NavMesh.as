@@ -21,9 +21,9 @@ package org.recast4j.detour {
 
 public class NavMesh {
 
-	public static const DT_SALT_BITS:int= 16;
-	public static const DT_TILE_BITS:int= 28;
-	public static const DT_POLY_BITS:int= 20;
+	public static const DT_SALT_BITS:int= 16/2;
+	public static const DT_TILE_BITS:int= 28/2;
+	public static const DT_POLY_BITS:int= 20/2;
 
 	/** The maximum number of vertices per navigation polygon. */
 	public static const DT_VERTS_PER_POLYGON:int= 6;

@@ -80,7 +80,7 @@ public class NodePool {
 		var nodes:Array = m_map[id];
 		if (nodes == null) {
 			nodes = [];
-			m_map.put(id, nodes);
+			m_map[id]= nodes;
 		}
 		nodes.push(node);
 		return node;
