@@ -48,17 +48,17 @@ public class Poly {
 
 	/** Sets the user defined area id. [Limit: < #DT_MAX_AREAS] */
 	public function setArea(a:int):void {
-		areaAndtype = (areaAndtype & 0xc0) | (a & 0x3);
+		areaAndtype = (areaAndtype & 0xc0) | (a & 0x3f);
 	}
 
 	/** Sets the polygon type. (See: #dtPolyTypes.) */
 	public function setType(t:int):void {
-		areaAndtype = (areaAndtype & 0x3) | (t << 6);
+		areaAndtype = (areaAndtype & 0x3f) | (t << 6);
 	}
 
 	/** Gets the user defined area id. */
 	public function getArea():int {
-		return areaAndtype & 0x3;
+		return areaAndtype & 0x3f;
 	}
 
 	/** Gets the polygon type. (See: #dtPolyTypes) */

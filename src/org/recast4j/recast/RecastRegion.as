@@ -215,7 +215,7 @@ public class RecastRegion {
 		var area:int= chf.areas[i];
 
 		// Flood fill mark region.
-		stack.clear();
+		stack.splice(0, stack.length);//.clear();
 		stack.push(x);
 		stack.push(y);
 		stack.push(i);
@@ -397,9 +397,9 @@ public class RecastRegion {
 		var h:int= chf.height;
 		startLevel = startLevel >> loglevelsPerStack;
 
-		for (var j:int= 0; j < nbStacks; ++j)
-			stacks[j].clear();
-		;
+		for (var j:int= 0; j < nbStacks; ++j){
+			(stacks[j] as Array).splice(0,(stacks[j] as Array).length );// .clear();
+		}
 
 		// put all cells in the level range into the appropriate stacks
 		for (var y:int= 0; y < h; ++y) {
@@ -520,7 +520,7 @@ public class RecastRegion {
 
 		// Merge neighbours.
 		var ni:int;
-		rega.connections.clear();
+		rega.connections.splice(0, rega.connections.length);//.clear();
 		for (i= 0, ni = acon.length; i < ni - 1; ++i)
 			rega.connections.push(acon[(insa + 1+ i) % ni]);
 
@@ -533,7 +533,7 @@ public class RecastRegion {
 			addUniqueFloorRegion(rega, regb.floors[j]);
 		rega.spanCount += regb.spanCount;
 		regb.spanCount = 0;
-		regb.connections.clear();
+		regb.connections.splice(0, regb.connections.length);//.clear();
 
 		return true;
 	}
@@ -704,8 +704,8 @@ public class RecastRegion {
 			// Also keep track of the regions connects to a tile border.
 			var connectsToBorder:Boolean= false;
 			var spanCount:int= 0;
-			stack.clear();
-			trace.clear();
+			stack.splice(0, stack.length);//.clear();
+			trace.splice(0, trace.length);//.clear();
 
 			reg.visited = true;
 			stack.push(i);
@@ -869,7 +869,7 @@ public class RecastRegion {
 			for (var x:int= 0; x < w; ++x) {
 				var c:CompactCell= chf.cells[x + y * w];
 
-				lregs.clear();
+				lregs.splice(0, lregs.length);//.clear();
 				var ni:int;
 				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
 					var s:CompactSpan= chf.spans[i];
@@ -933,7 +933,7 @@ public class RecastRegion {
 			// Start search.
 			root.id = layerId;
 
-			stack.clear();
+			stack.splice(0, stack.length);//.clear();
 			stack.push(i);
 
 			while (stack.length > 0) {

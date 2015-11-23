@@ -28,8 +28,8 @@ public class NodePool {
 	}
 
 	public function clear():void {
-		m_nodes.clear();
-		m_map.clear();
+		m_nodes.splice(0, m_nodes.length);// .clear();
+		m_map = { };//.clear();
 	}
 
 	public function findNodes( id:Number,  maxNodes:int):Array {

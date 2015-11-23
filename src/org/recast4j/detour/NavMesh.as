@@ -266,9 +266,9 @@ public class NavMesh {
 			var maxy:Number= DetourCommon.clamp(qmax[1], tbmin[1], tbmax[1]) - tbmin[1];
 			var maxz:Number= DetourCommon.clamp(qmax[2], tbmin[2], tbmax[2]) - tbmin[2];
 			// Quantize
-			bmin[0] = int((qfac * minx) )& 0xe;
-			bmin[1] = int((qfac * miny) )& 0xe;
-			bmin[2] = int((qfac * minz) )& 0xe;
+			bmin[0] = int((qfac * minx) )& 0xfffe;
+			bmin[1] = int((qfac * miny) )& 0xfffe;
+			bmin[2] = int((qfac * minz) )& 0xfffe;
 			bmax[0] = int((qfac * maxx + 1) )| 1;
 			bmax[1] = int((qfac * maxy + 1) )| 1;
 			bmax[2] = int((qfac * maxz + 1) )| 1;

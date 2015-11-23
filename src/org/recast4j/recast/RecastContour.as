@@ -693,8 +693,8 @@ public class RecastContour {
 						continue;
 					var area:int= chf.areas[i];
 
-					verts.clear();
-					simplified.clear();
+					verts.splice(0, verts.length);// .clear();
+					simplified.splice(0,simplified.length);// .clear();
 
 					ctx.startTimer("BUILD_CONTOURS_TRACE");
 					walkContour(x, y, i, chf, flags, verts);

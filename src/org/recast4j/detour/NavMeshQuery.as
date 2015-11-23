@@ -558,9 +558,9 @@ public class NavMeshQuery {
 			var maxy:Number= DetourCommon.clamp(qmax[1], tbmin[1], tbmax[1]) - tbmin[1];
 			var maxz:Number= DetourCommon.clamp(qmax[2], tbmin[2], tbmax[2]) - tbmin[2];
 			// Quantize
-			bmin[0] = int((qfac * minx) )& 0xe;
-			bmin[1] = int((qfac * miny) )& 0xe;
-			bmin[2] = int((qfac * minz) )& 0xe;
+			bmin[0] = int((qfac * minx) )& 0xfffe;
+			bmin[1] = int((qfac * miny) )& 0xfffe;
+			bmin[2] = int((qfac * minz) )& 0xfffe;
 			bmax[0] = int((qfac * maxx + 1) )| 1;
 			bmax[1] = int((qfac * maxy + 1) )| 1;
 			bmax[2] = int((qfac * maxz + 1) )| 1;
@@ -2554,7 +2554,7 @@ public class NavMeshQuery {
 
 		for (var i:int= 0, j:int = poly.vertCount - 1; i < poly.vertCount; j = i++) {
 			// Skip non-solid edges.
-			ints.clear();
+			ints.splice(0, ints.length);//.clear();
 			if ((poly.neis[j] & NavMesh.DT_EXT_LINK) != 0) {
 				// Tile border.
 				for (k= poly.firstLink; k != NavMesh.DT_NULL_LINK; k = tile.links[k].next) {

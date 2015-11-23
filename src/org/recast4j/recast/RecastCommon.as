@@ -26,7 +26,7 @@ public class RecastCommon {
 	///  	or #RC_NOT_CONNECTED if there is no connection.	
 	public static function GetCon(s:CompactSpan, dir:int):int {
 		var shift:int= dir * 6;
-		return (s.con >> shift) & 0x3;
+		return (s.con >> shift) & 0x3f;
 	}
 
 	/// Gets the standard width (x-axis) offset for the specified direction.
@@ -54,7 +54,7 @@ public class RecastCommon {
 	public static function SetCon(s:CompactSpan, dir:int, i:int):void {
 		var shift:int= dir * 6;
 		var con:int= s.con;
-		s.con = (con & ~(0x3<< shift)) | ((i & 0x3) << shift);
+		s.con = (con & ~(0x3f<< shift)) | ((i & 0x3f) << shift);
 	}
 
 	public static function clamp(v:int, min:int, max:int):int {

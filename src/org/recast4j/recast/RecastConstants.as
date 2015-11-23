@@ -20,7 +20,7 @@ package org.recast4j.recast {
 public class RecastConstants {
 
 	public static const RC_NULL_AREA:int= 0;
-	public static const RC_NOT_CONNECTED:int= 0x3;
+	public static const RC_NOT_CONNECTED:int= 0x3f;
 	public static  const RC_WALKABLE_AREA:int= 63;
 	/// Defines the number of bits allocated to rcSpan::smin and rcSpan::smax.
 	public static var RC_SPAN_HEIGHT_BITS:int= 13;

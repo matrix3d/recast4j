@@ -395,7 +395,7 @@ public class RecastMeshDetail {
 			currentEdge++;
 		}
 		// Create tris
-		tris.clear();
+		tris.splice(0, tris.length);// .clear();
 		for (i= 0; i < nfaces * 4; ++i)
 			tris.push(-1);
 
@@ -544,7 +544,7 @@ public class RecastMeshDetail {
 		for (var i:int= 0; i < nin; ++i)
 			RecastVectors.copy2(verts, i * 3, in_, i * 3);
 		nverts = nin;
-		tris.clear();
+		tris.splice(0, tris.length);// .clear();
 
 		var cs:Number= chf.cs;
 		var ics:Number= 1.0/ cs;
@@ -679,7 +679,7 @@ public class RecastMeshDetail {
 			var x1:int= int(Math.ceil(bmax[0] / sampleDist));
 			var z0:int= int(Math.floor(bmin[2] / sampleDist));
 			var z1:int= int(Math.ceil(bmax[2] / sampleDist));
-			samples.clear();
+			samples.splice(0, samples.length);//.clear();
 			for (var z:int= z0; z < z1; ++z) {
 				for (var x:int= x0; x < x1; ++x) {
 					var pt:Array= []//new float[3];
@@ -745,7 +745,7 @@ public class RecastMeshDetail {
 		var ntris:int= tris.length / 4;
 		if (ntris > MAX_TRIS) {
 			var subList:Array =tris.slice(0, MAX_TRIS * 4);
-			tris.clear();
+			tris.splice(0, tris.length);//.clear();
 			tris.addAll(subList);
 			throw (
 					"rcBuildPolyMeshDetail: Shrinking triangle count from " + ntris + " to max " + MAX_TRIS);
@@ -762,7 +762,7 @@ public class RecastMeshDetail {
 		// since border size offset is already removed from the polymesh vertices.
 
 		Arrays.fill(hp.data, 0, hp.width * hp.height, 0);
-		stack.clear();
+		stack.splice(0, stack.length);// .clear();
 
 		var offset:Array = [ 0, 0, -1, -1, 0, -1, 1, -1, 1, 0, 1, 1, 0, 1, -1, 1, -1, 0];
 
@@ -820,7 +820,7 @@ public class RecastMeshDetail {
 
 			// Check if close to center of the polygon.
 			if (Math.abs(cx - pcx) <= 1&& Math.abs(cy - pcz) <= 1) {
-				stack.clear();
+				stack.splice(0, stack.length);//.clear();
 				stack.push(cx);
 				stack.push(cy);
 				stack.push(ci);
