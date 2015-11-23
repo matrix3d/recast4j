@@ -33,7 +33,7 @@ public class NavMesh {
 	public static const DT_EXT_LINK:int= 0x8000;
 
 	/// A value that indicates the entity does not link to anything.
-	public static const DT_NULL_LINK:int= 0;
+	public static const DT_NULL_LINK:int= 0xffffffff;
 
 	/// A flag that indicates that an off-mesh connection can be traversed in both directions. (Is bidirectional.)
 	public static const DT_OFFMESH_CON_BIDIR:int= 1;
@@ -462,7 +462,7 @@ public class NavMesh {
 				var link:Link= tile.links[idx];
 				link.ref = base | (poly.neis[j] - 1);
 				link.edge = j;
-				link.side = 0;
+				link.side = 0xff;
 				link.bmin = link.bmax = 0;
 				// Add to linked list.
 				link.next = poly.firstLink;
@@ -545,7 +545,7 @@ public class NavMesh {
 
 		// Connect off-mesh links.
 		// We are interested on links which land from target tile to this tile.
-		var oppositeSide:int= (side == -1) ? 0: DetourCommon.oppositeTile(side);
+		var oppositeSide:int= (side == -1) ? 0xff: DetourCommon.oppositeTile(side);
 
 		for (var i:int= 0; i < target.data.header.offMeshConCount; ++i) {
 			var targetCon:OffMeshConnection= target.data.offMeshCons[i];
@@ -596,8 +596,8 @@ public class NavMesh {
 				var landPoly:Poly= tile.data.polys[landPolyIdx];
 				link = tile.links[tidx];
 				link.ref = getPolyRefBase(target) | targetCon.poly;
-				link.edge = 0;
-				link.side = (side == -1? 0: side);
+				link.edge = 0xff;
+				link.side = (side == -1? 0xff: side);
 				link.bmin = link.bmax = 0;
 				// Add to linked list.
 				link.next = landPoly.firstLink;
@@ -764,7 +764,7 @@ public class NavMesh {
 			var link:Link= tile.links[idx];
 			link.ref = ref;
 			link.edge = 0;
-			link.side = 0;
+			link.side = 0xff;
 			link.bmin = link.bmax = 0;
 			// Add to linked list.
 			link.next = poly.firstLink;
@@ -776,8 +776,8 @@ public class NavMesh {
 			var landPoly:Poly= tile.data.polys[landPolyIdx];
 			link = tile.links[tidx];
 			link.ref = base | con.poly;
-			link.edge = 0;
-			link.side = 0;
+			link.edge = 0xff;
+			link.side = 0xff;
 			link.bmin = link.bmax = 0;
 			// Add to linked list.
 			link.next = landPoly.firstLink;

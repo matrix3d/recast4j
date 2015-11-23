@@ -202,16 +202,16 @@ public class RecastMesh {
 	// Returns T iff (v_i, v_j) is a proper internal *or* external
 	// diagonal of P, *ignoring edges incident to v_i and v_j*.
 	private static function diagonalie(i:int, j:int, n:int, verts:Array, indices:Array):Boolean {
-		var d0:int= (indices[i] & 0x0) * 4;
-		var d1:int= (indices[j] & 0x0) * 4;
+		var d0:int= (indices[i] & 0xfffffff) * 4;
+		var d1:int= (indices[j] & 0xfffffff) * 4;
 
 		// For each edge (k,k+1) of P
 		for (var k:int= 0; k < n; k++) {
 			var k1:int= next(k, n);
 			// Skip edges incident to i or j
 			if (!((k == i) || (k1 == i) || (k == j) || (k1 == j))) {
-				var p0:int= (indices[k] & 0x0) * 4;
-				var p1:int= (indices[k1] & 0x0) * 4;
+				var p0:int= (indices[k] & 0xfffffff) * 4;
+				var p1:int= (indices[k1] & 0xfffffff) * 4;
 
 				if (vequal(verts, d0, p0) || vequal(verts, d1, p0) || vequal(verts, d0, p1) || vequal(verts, d1, p1))
 					continue;
@@ -226,10 +226,10 @@ public class RecastMesh {
 	// Returns true iff the diagonal (i,j) is strictly internal to the
 	// polygon P in the neighborhood of the i endpoint.
 	private static function inCone(i:int, j:int, n:int, verts:Array, indices:Array):Boolean {
-		var pi:int= (indices[i] & 0x0) * 4;
-		var pj:int= (indices[j] & 0x0) * 4;
-		var pi1:int= (indices[next(i, n)] & 0x0) * 4;
-		var pin1:int= (indices[prev(i, n)] & 0x0) * 4;
+		var pi:int= (indices[i] & 0xfffffff) * 4;
+		var pj:int= (indices[j] & 0xfffffff) * 4;
+		var pi1:int= (indices[next(i, n)] & 0xfffffff) * 4;
+		var pin1:int= (indices[prev(i, n)] & 0xfffffff) * 4;
 		// If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
 		if (leftOn(verts, pin1, pi, pi1)) {
 			return left(verts, pi, pj, pin1) && left(verts, pj, pi, pi1);
@@ -246,16 +246,16 @@ public class RecastMesh {
 	}
 
 	private static function diagonalieLoose(i:int, j:int, n:int, verts:Array, indices:Array):Boolean {
-		var d0:int= (indices[i] & 0x0) * 4;
-		var d1:int= (indices[j] & 0x0) * 4;
+		var d0:int= (indices[i] & 0xfffffff) * 4;
+		var d1:int= (indices[j] & 0xfffffff) * 4;
 
 		// For each edge (k,k+1) of P
 		for (var k:int= 0; k < n; k++) {
 			var k1:int= next(k, n);
 			// Skip edges incident to i or j
 			if (!((k == i) || (k1 == i) || (k == j) || (k1 == j))) {
-				var p0:int= (indices[k] & 0x0) * 4;
-				var p1:int= (indices[k1] & 0x0) * 4;
+				var p0:int= (indices[k] & 0xfffffff) * 4;
+				var p1:int= (indices[k1] & 0xfffffff) * 4;
 
 				if (vequal(verts, d0, p0) || vequal(verts, d1, p0) || vequal(verts, d0, p1) || vequal(verts, d1, p1))
 					continue;
@@ -268,10 +268,10 @@ public class RecastMesh {
 	}
 
 	private static function inConeLoose(i:int, j:int, n:int, verts:Array, indices:Array):Boolean {
-		var pi:int= (indices[i] & 0x0) * 4;
-		var pj:int= (indices[j] & 0x0) * 4;
-		var pi1:int= (indices[next(i, n)] & 0x0) * 4;
-		var pin1:int= (indices[prev(i, n)] & 0x0) * 4;
+		var pi:int= (indices[i] & 0xfffffff) * 4;
+		var pj:int= (indices[j] & 0xfffffff) * 4;
+		var pi1:int= (indices[next(i, n)] & 0xfffffff) * 4;
+		var pin1:int= (indices[prev(i, n)] & 0xfffffff) * 4;
 
 		// If P[i] is a convex vertex [ i+1 left or on (i-1,i) ].
 		if (leftOn(verts, pin1, pi, pi1))
@@ -303,8 +303,8 @@ public class RecastMesh {
 			for (i= 0; i < n; i++) {
 				i1= next(i, n);
 				if ((indices[i1] & 0x80000000) != 0) {
-					var p0:int= (indices[i] & 0x0) * 4;
-					var p2:int= (indices[next(i1, n)] & 0x0) * 4;
+					var p0:int= (indices[i] & 0xfffffff) * 4;
+					var p2:int= (indices[next(i1, n)] & 0xfffffff) * 4;
 
 					var dx:int= verts[p2 + 0] - verts[p0 + 0];
 					var dy:int= verts[p2 + 2] - verts[p0 + 2];
@@ -332,8 +332,8 @@ public class RecastMesh {
 					i1= next(i, n);
 					i2= next(i1, n);
 					if (diagonalLoose(i, i2, n, verts, indices)) {
-						p0= (indices[i] & 0x0) * 4;
-						p2= (indices[next(i2, n)] & 0x0) * 4;
+						p0= (indices[i] & 0xfffffff) * 4;
+						p2= (indices[next(i2, n)] & 0xfffffff) * 4;
 						dx= verts[p2 + 0] - verts[p0 + 0];
 						dy= verts[p2 + 2] - verts[p0 + 2];
 						len= dx * dx + dy * dy;
@@ -355,9 +355,9 @@ public class RecastMesh {
 			i1= next(i, n);
 			i2= next(i1, n);
 
-			tris[ntris * 3] = indices[i] & 0x0;
-			tris[ntris * 3+ 1] = indices[i1] & 0x0;
-			tris[ntris * 3+ 2] = indices[i2] & 0x0;
+			tris[ntris * 3] = indices[i] & 0xfffffff;
+			tris[ntris * 3+ 1] = indices[i1] & 0xfffffff;
+			tris[ntris * 3+ 2] = indices[i2] & 0xfffffff;
 			ntris++;
 
 			// Removes P[i1] by copying P[i+1]...P[n-1] left one index.
@@ -372,18 +372,18 @@ public class RecastMesh {
 			if (diagonal(prev(i, n), i1, n, verts, indices))
 				indices[i] |= 0x80000000;
 			else
-				indices[i] &= 0x0;
+				indices[i] &= 0xfffffff;
 
 			if (diagonal(i, next(i1, n), n, verts, indices))
 				indices[i1] |= 0x80000000;
 			else
-				indices[i1] &= 0x0;
+				indices[i1] &= 0xfffffff;
 		}
 
 		// Append the remaining triangle.
-		tris[ntris * 3] = indices[0] & 0x0;
-		tris[ntris * 3+ 1] = indices[1] & 0x0;
-		tris[ntris * 3+ 2] = indices[2] & 0x0;
+		tris[ntris * 3] = indices[0] & 0xfffffff;
+		tris[ntris * 3+ 1] = indices[1] & 0xfffffff;
+		tris[ntris * 3+ 2] = indices[2] & 0xfffffff;
 		ntris++;
 
 		return ntris;
@@ -1029,13 +1029,13 @@ public class RecastMesh {
 		// Just allocate the mesh flags array. The user is resposible to fill it.
 		mesh.flags = []//mesh.npolys];
 
-		if (mesh.nverts > 0) {
+		if (mesh.nverts > 0xffff) {
 			throw ("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
-					+ " (max " + 0+ "). Data can be corrupted.");
+					+ " (max " + 0xffff+ "). Data can be corrupted.");
 		}
-		if (mesh.npolys > 0) {
+		if (mesh.npolys > 0xffff) {
 			throw ("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
-					+ " (max " + 0+ "). Data can be corrupted.");
+					+ " (max " + 0xffff+ "). Data can be corrupted.");
 		}
 
 		ctx.stopTimer("BUILD_POLYMESH");
@@ -1122,8 +1122,8 @@ public class RecastMesh {
 
 				if (isOnBorder) {
 					for (k= mesh.nvp; k < mesh.nvp * 2; ++k) {
-						if ((pmesh.polys[src + k] & 0x8000) != 0&& pmesh.polys[src + k] != 0) {
-							var dir:int= pmesh.polys[src + k] & 0;
+						if ((pmesh.polys[src + k] & 0x8000) != 0&& pmesh.polys[src + k] != 0xffff) {
+							var dir:int= pmesh.polys[src + k] & 0xf;
 							switch (dir) {
 							case 0: // Portal x-
 								if (isMinX)
@@ -1150,13 +1150,13 @@ public class RecastMesh {
 
 		// Calculate adjacency.
 		buildMeshAdjacency(mesh.polys, mesh.npolys, mesh.nverts, mesh.nvp);
-		if (mesh.nverts > 0) {
+		if (mesh.nverts > 0xffff) {
 			throw ("rcBuildPolyMesh: The resulting mesh has too many vertices " + mesh.nverts
-					+ " (max " + 0+ "). Data can be corrupted.");
+					+ " (max " + 0xffff+ "). Data can be corrupted.");
 		}
-		if (mesh.npolys > 0) {
+		if (mesh.npolys > 0xffff) {
 			throw ("rcBuildPolyMesh: The resulting mesh has too many polygons " + mesh.npolys
-					+ " (max " + 0+ "). Data can be corrupted.");
+					+ " (max " + 0xffff+ "). Data can be corrupted.");
 		}
 
 		ctx.stopTimer("MERGE_POLYMESH");

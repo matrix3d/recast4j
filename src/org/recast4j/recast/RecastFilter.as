@@ -77,7 +77,7 @@ public class RecastFilter {
 
 		var w:int= solid.width;
 		var h:int= solid.height;
-		var MAX_HEIGHT:int= 0;
+		var MAX_HEIGHT:int= 0xffff;
 
 		// Mark border spans.
 		for (var y:int= 0; y < h; ++y) {
@@ -162,7 +162,7 @@ public class RecastFilter {
 
 		var w:int= solid.width;
 		var h:int= solid.height;
-		var MAX_HEIGHT:int= 0;
+		var MAX_HEIGHT:int= 0xffff;
 
 		// Remove walkable flag from spans which do not have enough
 		// space above them for the agent to stand there.

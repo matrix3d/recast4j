@@ -670,7 +670,7 @@ public class RecastContour {
 						if (r == chf.spans[i].reg)
 							res |= (1<< dir);
 					}
-					flags[i] = res ^ 0; // Inverse, mark non connected edges.
+					flags[i] = res ^ 0xf; // Inverse, mark non connected edges.
 				}
 			}
 		}
@@ -684,7 +684,7 @@ public class RecastContour {
 			for (x= 0; x < w; ++x) {
 				c= chf.cells[x + y * w];
 				for (i= c.index, ni = c.index + c.count; i < ni; ++i) {
-					if (flags[i] == 0|| flags[i] == 0) {
+					if (flags[i] == 0|| flags[i] == 0xf) {
 						flags[i] = 0;
 						continue;
 					}

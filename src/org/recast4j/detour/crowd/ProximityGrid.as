@@ -76,10 +76,10 @@ override public function equal == (obj:Object):Boolean {
 
 	function clear():void {
 		items.clear();
-		m_bounds[0] = 0x;
-		m_bounds[1] = 0x;
-		m_bounds[2] = -0x;
-		m_bounds[3] = -0x;
+		m_bounds[0] = 0xffff;
+		m_bounds[1] = 0xffff;
+		m_bounds[2] = -0xffff;
+		m_bounds[3] = -0xffff;
 	}
 
 	function addItem(id:int, minx:Number, miny:Number, maxx:Number, maxy:Number):void {

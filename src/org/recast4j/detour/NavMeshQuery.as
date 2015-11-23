@@ -754,7 +754,7 @@ public class NavMeshQuery {
 
 				// deal explicitly with crossing tile boundaries
 				var crossSide:int= 0;
-				if (bestTile.links[i].side != 0)
+				if (bestTile.links[i].side != 0xff)
 					crossSide = bestTile.links[i].side >> 1;
 
 				// get the node
@@ -1738,7 +1738,7 @@ public class NavMeshQuery {
 
 		// If the link is at tile boundary, dtClamp the vertices to
 		// the link width.
-		if (link.side != 0) {
+		if (link.side != 0xff) {
 			// Unpack portal limits.
 			if (link.bmin != 0|| link.bmax != 255) {
 				var s:Number= 1.0/ 255.0;
@@ -1919,7 +1919,7 @@ public class NavMeshQuery {
 					continue;
 
 				// If the link is internal, just return the ref.
-				if (link.side == 0) {
+				if (link.side == 0xff) {
 					nextRef = link.ref;
 					break;
 				}

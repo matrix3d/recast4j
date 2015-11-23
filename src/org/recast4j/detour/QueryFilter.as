@@ -50,7 +50,7 @@ public class QueryFilter {
 	public var m_areaCost:Array= []//new float[NavMesh.DT_MAX_AREAS];
 
 	public function QueryFilter() {
-		this.m_includeFlags = 0;
+		this.m_includeFlags = 0xffff;
 		this.m_excludeFlags = 0;
 		for (var i:int= 0; i < NavMesh.DT_MAX_AREAS; ++i)
 			m_areaCost[i] = 1.0;

@@ -22,7 +22,7 @@ package org.recast4j.recast {
 
 public class RecastRegion {
 
-	public static const RC_NULL_NEI:int= 0;
+	public static const RC_NULL_NEI:int= 0xffff;
 
 	
 
@@ -33,7 +33,7 @@ public class RecastRegion {
 
 		// Init distance and points.
 		for (var i:int= 0; i < chf.spanCount; ++i)
-			src[i] = 0;
+			src[i] = 0xffff;
 
 		// Mark boundary cells.
 		for (var y:int= 0; y < h; ++y) {
@@ -342,7 +342,7 @@ public class RecastRegion {
 				}
 
 				var r:int= srcReg[i];
-				var d2:int= 0;
+				var d2:int= 0xffff;
 				var area:int= chf.areas[i];
 				var s:CompactSpan= chf.spans[i];
 				for (var dir:int= 0; dir < 4; ++dir) {
@@ -768,7 +768,7 @@ public class RecastRegion {
 				// Small region with more than 1 connection.
 				// Or region which is not connected to a border at all.
 				// Find smallest neighbour region that connects to this one.
-				var smallest:int= 0;
+				var smallest:int= 0xfffffff;
 				var mergeId:int= reg.id;
 				for (j= 0; j < reg.connections.length; ++j) {
 					if ((reg.connections[j] & RecastConstants.RC_BORDER_REG) != 0)

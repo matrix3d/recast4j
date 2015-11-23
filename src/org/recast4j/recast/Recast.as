@@ -139,7 +139,7 @@ public class Recast {
 		chf.cells = []//new CompactCell[w * h];
 		chf.spans = []//new CompactSpan[spanCount];
 		chf.areas = []//[]//spanCount];
-		var MAX_HEIGHT:int= 0;
+		var MAX_HEIGHT:int= 0xffff;
 		for (var i:int= 0; i < w*h; i++) {
 			chf.cells[i] = new CompactCell();
 		}
@@ -161,8 +161,8 @@ public class Recast {
 					if (s.area != RecastConstants.RC_NULL_AREA) {
 						var bot:int= s.smax;
 						var top:int= s.next != null ? int(s.next.smin ): MAX_HEIGHT;
-						chf.spans[idx].y = RecastCommon.clamp(bot, 0, 0);
-						chf.spans[idx].h = RecastCommon.clamp(top - bot, 0, 0);
+						chf.spans[idx].y = RecastCommon.clamp(bot, 0, 0xffff);
+						chf.spans[idx].h = RecastCommon.clamp(top - bot, 0, 0xff);
 						chf.areas[idx] = s.area;
 						idx++;
 						c.count++;

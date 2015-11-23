@@ -23,7 +23,7 @@ import org.recast4j.System;
 
 public class NavMeshBuilder {
 
-	public static const MESH_NULL_IDX:int= 0;
+	public static const MESH_NULL_IDX:int= 0xffff;
 
  
 
@@ -200,7 +200,7 @@ public class NavMeshBuilder {
 			return 7;
 		}
 
-		return 0;
+		return 0xff;
 	}
 
 	private static const DT_VERTS_PER_POLYGON:int= 6;
@@ -214,7 +214,7 @@ public class NavMeshBuilder {
 	public static function createNavMeshData(params:NavMeshCreateParams):MeshData {// , unsigned char** outData, int* outDataSize)
 		if (params.nvp > DT_VERTS_PER_POLYGON)
 			return null;
-		if (params.vertCount >= 0)
+		if (params.vertCount >= 0xffff)
 			return null;
 		if (params.vertCount == 0|| params.verts == null)
 			return null;
@@ -267,18 +267,18 @@ public class NavMeshBuilder {
 				offMeshConClass[i * 2+ 1] = classifyOffMeshPoint(p1, bmin, bmax);
 
 				// Zero out off-mesh start positions which are not even potentially touching the mesh.
-				if (offMeshConClass[i * 2+ 0] == 0) {
+				if (offMeshConClass[i * 2+ 0] == 0xff) {
 					if (p0[1] < bmin[1] || p0[1] > bmax[1])
 						offMeshConClass[i * 2+ 0] = 0;
 				}
 
 				// Count how many links should be allocated for off-mesh connections.
-				if (offMeshConClass[i * 2+ 0] == 0)
+				if (offMeshConClass[i * 2+ 0] == 0xff)
 					offMeshConLinkCount++;
-				if (offMeshConClass[i * 2+ 1] == 0)
+				if (offMeshConClass[i * 2+ 1] == 0xff)
 					offMeshConLinkCount++;
 
-				if (offMeshConClass[i * 2+ 0] == 0)
+				if (offMeshConClass[i * 2+ 0] == 0xff)
 					storedOffMeshConCount++;
 			}
 		}
@@ -298,8 +298,8 @@ public class NavMeshBuilder {
 				edgeCount++;
 
 				if ((params.polys[pi + nvp + j] & 0x8000) != 0) {
-					var dir:int= params.polys[pi + nvp + j] & 0;
-					if (dir != 0)
+					var dir:int= params.polys[pi + nvp + j] & 0xf;
+					if (dir != 0xf)
 						portalCount++;
 				}
 			}
@@ -390,7 +390,7 @@ public class NavMeshBuilder {
 		var n:int= 0;
 		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0) {
+			if (offMeshConClass[i * 2+ 0] == 0xff) {
 				var linkv:int= i * 2* 3;
 				v= (offMeshVertsBase + n * 2) * 3;
 				System.arraycopy(params.offMeshConVerts, linkv, navVerts, v, 6);
@@ -414,8 +414,8 @@ public class NavMeshBuilder {
 				p.verts[j] = params.polys[src + j];
 				if ((params.polys[src + nvp + j] & 0x8000) != 0) {
 					// Border or portal edge.
-					dir= params.polys[src + nvp + j] & 0;
-					if (dir == 0) // Border
+					dir= params.polys[src + nvp + j] & 0xf;
+					if (dir == 0xf) // Border
 						p.neis[j] = 0;
 					else if (dir == 0) // Portal x-
 						p.neis[j] = NavMesh.DT_EXT_LINK | 4;
@@ -438,7 +438,7 @@ public class NavMeshBuilder {
 		n = 0;
 		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0) {
+			if (offMeshConClass[i * 2+ 0] == 0xff) {
 				p= new Poly(offMeshPolyBase + n);
 				navPolys[offMeshPolyBase + n] = p;
 				p.vertCount = 2;
@@ -513,7 +513,7 @@ public class NavMeshBuilder {
 		n = 0;
 		for (i= 0; i < params.offMeshConCount; ++i) {
 			// Only store connections which start from this tile.
-			if (offMeshConClass[i * 2+ 0] == 0) {
+			if (offMeshConClass[i * 2+ 0] == 0xff) {
 				var con:OffMeshConnection= new OffMeshConnection();
 				offMeshCons[n] = con;
 				con.poly = (offMeshPolyBase + n);

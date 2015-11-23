@@ -50,11 +50,11 @@ public class RecastConstants {
 	/// The region id field of a vertex may have several flags applied to it.  So the
 	/// fields value can't be used directly.
 	/// @see rcContour::verts, rcContour::rverts
-	public static var RC_CONTOUR_REG_MASK:int= 0;
+	public static var RC_CONTOUR_REG_MASK:int= 0xffff;
 	/// An value which indicates an invalid index within a mesh.
 	/// @note This does not necessarily indicate an error.
 	/// @see rcPolyMesh::polys
-	public static var RC_MESH_NULL_IDX:int= 0;
+	public static var RC_MESH_NULL_IDX:int= 0xffff;
 	
 	public static var RC_CONTOUR_TESS_WALL_EDGES:int= 0x01;	///< Tessellate solid (impassable) edges during contour simplification.
 	public static var RC_CONTOUR_TESS_AREA_EDGES:int= 0x02;	///< Tessellate edges between areas during contour simplification.

@@ -26,7 +26,7 @@ public class RecastMeshDetail {
 	public static const MAX_TRIS:int= 255; // Max tris for delaunay is 2n-2-k (n=num verts, k=num hull verts).
 	public static const MAX_VERTS_PER_EDGE:int= 32;
 
-	public static const RC_UNSET_HEIGHT:int= 0;
+	public static const RC_UNSET_HEIGHT:int= 0xffff;
 	public static const EV_UNDEF:int= -1;
 	public static const EV_HULL:int= -2;
 
@@ -522,11 +522,11 @@ public class RecastMeshDetail {
 	}
 
 	private static function getJitterX(i:int):Number {
-		return (((i * 0x8da6b343) & 0) / 65535.0* 2.0) - 1.0;
+		return (((i * 0x8da6b343) & 0xffff) / 65535.0* 2.0) - 1.0;
 	}
 
 	private static function getJitterY(i:int):Number {
-		return (((i * 0xd8163841) & 0) / 65535.0* 2.0) - 1.0;
+		return (((i * 0xd8163841) & 0xffff) / 65535.0* 2.0) - 1.0;
 	}
 
 	public static function buildPolyDetail(ctx:Context, in_:Array, nin:int, sampleDist:Number, sampleMaxError:Number,
