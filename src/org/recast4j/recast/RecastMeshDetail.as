@@ -937,7 +937,7 @@ public class RecastMeshDetail {
 			head++;
 			if (head >= RETRACT_SIZE) {
 				head = 0;
-				stack = stack.subList(RETRACT_SIZE * 3, stack.length);
+				stack = stack.slice(RETRACT_SIZE * 3, stack.length);
 			}
 
 			var cs:CompactSpan= chf.spans[ci];

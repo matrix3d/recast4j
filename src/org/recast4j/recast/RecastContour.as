@@ -257,7 +257,7 @@ public class RecastContour {
 		// Add points until all raw points are within
 		// error tolerance to the simplified shape.
 		var pn:int= points.length / 4;
-		for (i= 0; i < simplified.length / 4;) {
+		for (i = 0; i < simplified.length / 4; ) {
 			ii= (i + 1) % (simplified.length / 4);
 
 			var ax:int= simplified[i * 4+ 0];
@@ -306,10 +306,10 @@ public class RecastContour {
 			// add new point, else continue to next segment.
 			if (maxi != -1&& maxd > (maxError * maxError)) {
 				// Add the point.
-				simplified.push((i + 1) * 4+ 0, points[maxi * 4+ 0]);
-				simplified.push((i + 1) * 4+ 1, points[maxi * 4+ 1]);
-				simplified.push((i + 1) * 4+ 2, points[maxi * 4+ 2]);
-				simplified.push((i + 1) * 4+ 3, maxi);
+				simplified.splice((i + 1) * 4+ 0,0, points[maxi * 4+ 0]);
+				simplified.splice((i + 1) * 4+ 1,0, points[maxi * 4+ 1]);
+				simplified.splice((i + 1) * 4+ 2,0, points[maxi * 4+ 2]);
+				simplified.splice((i + 1) * 4+ 3,0, maxi);
 			} else {
 				++i;
 			}
@@ -362,10 +362,10 @@ public class RecastContour {
 				// add new point, else continue to next segment.
 				if (maxi != -1) {
 					// Add the point.
-					simplified.push((i + 1) * 4+ 0, points[maxi * 4+ 0]);
-					simplified.push((i + 1) * 4+ 1, points[maxi * 4+ 1]);
-					simplified.push((i + 1) * 4+ 2, points[maxi * 4+ 2]);
-					simplified.push((i + 1) * 4+ 3, maxi);
+					simplified.splice((i + 1) * 4+ 0,0, points[maxi * 4+ 0]);
+					simplified.splice((i + 1) * 4+ 1,0, points[maxi * 4+ 1]);
+					simplified.splice((i + 1) * 4+ 2,0, points[maxi * 4+ 2]);
+					simplified.splice((i + 1) * 4+ 3,0, maxi);
 				} else {
 					++i;
 				}

@@ -219,8 +219,8 @@ public class NavMesh {
 		if (m_tileLutSize == 0)
 			m_tileLutSize = 1;
 		m_tileLutMask = m_tileLutSize - 1;
-		m_tiles = new MeshTile[m_maxTiles];
-		m_posLookup = new MeshTile[m_tileLutSize];
+		m_tiles = [];//new MeshTile[m_maxTiles];
+		m_posLookup = [];//new MeshTile[m_tileLutSize];
 		m_nextFree = null;
 		for (var i:int= m_maxTiles - 1; i >= 0; --i) {
 			m_tiles[i] = new MeshTile(i);
@@ -945,7 +945,7 @@ public class NavMesh {
 	}
 
 	public function getTilesAt(x:int, y:int):Array {
-		var tiles:Array = new [];
+		var tiles:Array = [];
 		// Find tile based on hash.
 		var h:int= computeTileHash(x, y, m_tileLutMask);
 		var tile:MeshTile= m_posLookup[h];

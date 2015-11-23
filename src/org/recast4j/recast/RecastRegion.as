@@ -201,7 +201,7 @@ public class RecastRegion {
 							d += cd * 2;
 						}
 					}
-					dst[i] = ((d + 5) / 9);
+					dst[i] = int((d + 5) / 9);
 				}
 			}
 		}

@@ -25,8 +25,9 @@ public class VectorPtr {
 	private var array:Array;
 	private var index:int;
 
-	public function VectorPtr(array:Array,index:int=0) {
-		this(array, 0);
+	public function VectorPtr(array:Array, index:int = 0) {
+		this.array = array;
+		this.index = index;
 	}
 
 	public function get(offset:int):Number {

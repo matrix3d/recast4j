@@ -824,7 +824,7 @@ internal class CrowdNeighbour
 					if (valid) {
 						// Put the old path infront of the old path.
 						if (path.length > 1) {
-							res.addAll(0, path.subList(1, path.length));
+							res.addAll(0, path.slice(1, path.length));
 							// Remove trackbacks
 							for (var j:int= 1; j < res.length - 1; ++j) {
 								if (res[j - 1) == res[j + 1)) {

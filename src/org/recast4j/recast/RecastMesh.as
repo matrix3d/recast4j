@@ -409,7 +409,7 @@ public class RecastMesh {
 
 		// If the merged polygon would be too big, do not merge.
 		if (na + nb - 2> nvp)
-			return new [ -1, ea, eb ];
+			return [ -1, ea, eb ];
 
 		// Check if the polygons share an edge.
 
@@ -847,14 +847,14 @@ public class RecastMesh {
 			maxTris += cset.conts[i].nverts - 2;
 			maxVertsPerCont = Math.max(maxVertsPerCont, cset.conts[i].nverts);
 		}
-		if (maxVertices >= 0xe) {
+		if (maxVertices >= 0xfffe) {
 			throw ("rcBuildPolyMesh: Too many vertices " + maxVertices);
 		}
 		var vflags:Array = [];// []//maxVertices];
 
 		mesh.verts = [];// []//maxVertices * 3];
 		mesh.polys = [];// []//maxTris * nvp * 2];
-		Arrays.fill2(mesh.polys, RecastConstants.RC_MESH_NULL_IDX);
+		Arrays.fill(mesh.polys,0,maxTris * nvp * 2, RecastConstants.RC_MESH_NULL_IDX);
 		mesh.regs = [];// []//maxTris];
 		mesh.areas = [];// []//maxTris];
 
