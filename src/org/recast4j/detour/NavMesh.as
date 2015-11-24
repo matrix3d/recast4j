@@ -21,9 +21,9 @@ package org.recast4j.detour {
 
 public class NavMesh {
 
-	public static const DT_SALT_BITS:int= 16/2;
-	public static const DT_TILE_BITS:int= 28/2;
-	public static const DT_POLY_BITS:int= 20/2;
+	public static const DT_SALT_BITS:int= 16;
+	public static const DT_TILE_BITS:int= 28;
+	public static const DT_POLY_BITS:int= 20;
 
 	/** The maximum number of vertices per navigation polygon. */
 	public static const DT_VERTS_PER_POLYGON:int= 6;
@@ -95,7 +95,8 @@ public class NavMesh {
 	 * @return encoded polygon reference
 	 */
 	public static function encodePolyId(salt:int, it:int, ip:int):Number {
-		return ((salt) << (DT_POLY_BITS + DT_TILE_BITS)) | ((it )<< DT_POLY_BITS) | (ip);
+		//return ((salt) << (DT_POLY_BITS + DT_TILE_BITS)) | ((it )<< DT_POLY_BITS) | (ip);
+		return ((salt) * Math.pow(2,(DT_POLY_BITS + DT_TILE_BITS))) + ((it )*Math.pow(2, DT_POLY_BITS)) + (ip);
 	}
 
 	/// Decodes a standard polygon reference.
@@ -112,8 +113,10 @@ public class NavMesh {
 		var saltMask:Number= (1<< DT_SALT_BITS) - 1;
 		var tileMask:Number= (1<< DT_TILE_BITS) - 1;
 		var polyMask:Number= (1<< DT_POLY_BITS) - 1;
-		salt = int(((ref >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
-		it = int(((ref >> DT_POLY_BITS) & tileMask));
+		//salt = int(((ref >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
+		//it = int(((ref >> DT_POLY_BITS) & tileMask));
+		salt = int(((ref /Math.pow(2, (DT_POLY_BITS + DT_TILE_BITS))) & saltMask));
+		it = int(((ref / Math.pow(2,DT_POLY_BITS)) & tileMask));
 		ip = int((ref & polyMask));
 		return [ salt, it, ip ];
 	}

@@ -13,19 +13,13 @@ package
 		
 		public function Test() 
 		{
-			var a:Number = 0x123456789a;
-			trace(a.toString(16));
-			trace((a >> 0 & 0xff).toString(16));
-			trace((a >> 8 & 0xff).toString(16));
-			trace((a >> 16 & 0xff).toString(16));
-			trace((a >> 24 & 0xff).toString(16));
-			trace((a >> 32 & 0xff).toString(16));
-			
-			var byte:ByteArray = new ByteArray;
-			byte.endian = Endian.LITTLE_ENDIAN;
-			byte.writeDouble(a);
-			byte.position = 0;
-			trace(byte.readInt().toString(16));
+var a:Number = 0xaabbccddee;
+trace(a.toString(16));
+trace((a >> 0 & 0xff).toString(16));
+trace((a >> 8 & 0xff).toString(16));
+trace((a >> 16 & 0xff).toString(16));
+trace((a >> 24 & 0xff).toString(16));
+trace((a /Math.pow(2, 32) & 0xff).toString(16));
 		}
 		
 	}

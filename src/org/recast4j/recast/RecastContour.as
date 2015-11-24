@@ -309,7 +309,7 @@ public class RecastContour {
 				simplified.splice((i + 1) * 4+ 0,0, points[maxi * 4+ 0]);
 				simplified.splice((i + 1) * 4+ 1,0, points[maxi * 4+ 1]);
 				simplified.splice((i + 1) * 4+ 2,0, points[maxi * 4+ 2]);
-				simplified.splice((i + 1) * 4+ 3,0, maxi);
+				simplified.splice((i + 1) * 4 + 3, 0, maxi);
 			} else {
 				++i;
 			}
@@ -709,7 +709,7 @@ public class RecastContour {
 					// Create contour.
 					if (simplified.length / 4>= 3) {
 
-						var cont:Contour= new Contour();
+						var cont:Contour = new Contour();
 						cset.conts.push(cont);
 
 						cont.nverts = simplified.length / 4;
@@ -763,7 +763,7 @@ public class RecastContour {
 				// Collect outline contour and holes contours per region.
 				// We assume that there is one outline and multiple holes.
 				var nregions:int= chf.maxRegions + 1;
-				var regions:Array= new ContourRegion[nregions];
+				var regions:Array = [];// new ContourRegion[nregions];
 				for (i= 0; i < nregions; i++) {
 					regions[i] = new ContourRegion();
 				}

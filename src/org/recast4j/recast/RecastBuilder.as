@@ -193,7 +193,6 @@ public class RecastBuilder {
 		//
 		// Step 5. Trace and simplify region contours.
 		//
-
 		// Create contours.
 		var m_cset:ContourSet= RecastContour.buildContours(m_ctx, m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen,
 				RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
@@ -201,7 +200,6 @@ public class RecastBuilder {
 		//
 		// Step 6. Build polygons mesh from contours.
 		//
-
 		m_pmesh = RecastMesh.buildPolyMesh(m_ctx, m_cset, m_cfg.maxVertsPerPoly);
 
 		//
@@ -213,7 +211,7 @@ public class RecastBuilder {
 				m_cfg.detailSampleMaxError);
 
 	}
-
+	
 	public function getMesh():PolyMesh {
 		return m_pmesh;
 	}

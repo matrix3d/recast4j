@@ -492,7 +492,7 @@ public class RecastRegion {
 		var bid:int= regb.id;
 
 		// Duplicate current neighbourhood.
-		var acon:Array = rega.connections;
+		var acon:Array = rega.connections.slice();
 		//rega.connections();
 		var bcon:Array = regb.connections;
 
