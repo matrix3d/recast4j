@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 */
 package org.recast4j.detour {
 import java.util.List;
+import test.AbstractDetourTest;
 
 import org.junit.Assert;
 import org.junit.Test;

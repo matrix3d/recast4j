@@ -36,12 +36,12 @@ public class FindDistanceToWallTest extends AbstractDetourTest {
 		for (int i = 0; i < startRefs.length; i++) {
 			float[] startPos = startPoss[i];
 			FindDistanceToWallResult hit = query.findDistanceToWall(startRefs[i], startPos, 3.5f, filter);
-			Assert.assertEquals(distancesToWall[i], hit.getDistance(), 0.001f);
+			assertEquals(distancesToWall[i], hit.getDistance(), 0.001f);
 			for (int v = 0; v < 3; v++) {
-				Assert.assertEquals(hitPosition[i][v], hit.getPosition()[v], 0.001f);
+				assertEquals(hitPosition[i][v], hit.getPosition()[v], 0.001f);
 			}
 			for (int v = 0; v < 3; v++) {
-				Assert.assertEquals(hitNormal[i][v], hit.getNormal()[v], 0.001f);
+				assertEquals(hitNormal[i][v], hit.getNormal()[v], 0.001f);
 			}
 		}
 

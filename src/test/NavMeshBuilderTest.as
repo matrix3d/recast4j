@@ -15,10 +15,11 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-package org.recast4j.detour {
+package test {
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import test.AbstractDetourTest;
 
 import org.junit.Test;
 

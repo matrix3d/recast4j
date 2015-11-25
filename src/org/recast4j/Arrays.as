@@ -25,9 +25,9 @@ package org.recast4j
 				a[i] = val;
 			}
 		}
-		public static function fill2(a:Array,val:Object):void {
+		/*public static function fill2(a:Array,val:Object):void {
 			fill(a, 0, a.length, val);
-		}
+		}*/
 		
 	}
 

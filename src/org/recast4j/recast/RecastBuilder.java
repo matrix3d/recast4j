@@ -1,6 +1,10 @@
 package org.recast4j.recast;
 
 import org.recast4j.recast.RecastConstants.PartitionType;
+import org.w3c.dom.css.Counter;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class RecastBuilder {
 
@@ -194,7 +198,6 @@ public class RecastBuilder {
 		//
 		// Step 5. Trace and simplify region contours.
 		//
-
 		// Create contours.
 		ContourSet m_cset = RecastContour.buildContours(m_ctx, m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen,
 				RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
@@ -202,7 +205,7 @@ public class RecastBuilder {
 		//
 		// Step 6. Build polygons mesh from contours.
 		//
-
+		//debug(m_cset.conts);
 		m_pmesh = RecastMesh.buildPolyMesh(m_ctx, m_cset, m_cfg.maxVertsPerPoly);
 
 		//

@@ -15,22 +15,31 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-package org.recast4j.detour {
-import org.junit.Assert;
-import org.junit.Test;
-import org.recast4j.detour.NavMeshQuery.FRand;
+package test {
+	import org.recast4j.detour.FindRandomPointResult;
+	import org.recast4j.detour.FRand;
+	import org.recast4j.detour.QueryFilter;
+	import org.recast4j.detour.Status;
+	import org.recast4j.detour.Tupple2;
+	import test.AbstractDetourTest;
 
 public class RandomPointTest extends AbstractDetourTest {
 
+	public function RandomPointTest() 
+	{
+		setUp();
+		testRandom();
+	}
+	
 	public function testRandom():void {
 		var f:FRand= new FRand();
 		var filter:QueryFilter= new QueryFilter();
 		for (var i:int= 0; i < 1000; i++) {
 			var point:FindRandomPointResult= query.findRandomPoint(filter, f);
-			Assert.assertEquals(Status.SUCCSESS, point.getStatus());
-			Tupple2<MeshTile,Poly> tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef());
-			var bmin:Array= new float[2];
-			var bmax:Array= new float[2];
+			assertEquals(Status.SUCCSESS, point.getStatus());
+			var tileAndPoly:Tupple2 = navmesh.getTileAndPolyByRef(point.getRandomRef());
+			var bmin:Array= []//new float[2];
+			var bmax:Array= []//new float[2];
 			for (var j:int= 0; j < tileAndPoly.second.vertCount; j++) {
 				var v:int= tileAndPoly.second.verts[j] * 3;
 				bmin[0] = j == 0? tileAndPoly.first.data.verts[v] : Math.min(bmin[0], tileAndPoly.first.data.verts[v]);
@@ -38,10 +47,10 @@ public class RandomPointTest extends AbstractDetourTest {
 				bmin[1] = j == 0? tileAndPoly.first.data.verts[v + 2] : Math.min(bmin[1], tileAndPoly.first.data.verts[v + 2]);
 				bmax[1] = j == 0? tileAndPoly.first.data.verts[v + 2] : Math.max(bmax[1], tileAndPoly.first.data.verts[v + 2]);
 			}
-			Assert.assertTrue(point.getRandomPt()[0] >= bmin[0]);
-			Assert.assertTrue(point.getRandomPt()[0] <= bmax[0]);
-			Assert.assertTrue(point.getRandomPt()[2] >= bmin[1]);
-			Assert.assertTrue(point.getRandomPt()[2] <= bmax[1]);
+			assertTrue(point.getRandomPt()[0] >= bmin[0]);
+			assertTrue(point.getRandomPt()[0] <= bmax[0]);
+			assertTrue(point.getRandomPt()[2] >= bmin[1]);
+			assertTrue(point.getRandomPt()[2] <= bmax[1]);
 		}
 	}
 
@@ -51,10 +60,10 @@ public class RandomPointTest extends AbstractDetourTest {
 		var point:FindRandomPointResult= query.findRandomPoint(filter, f);
 		for (var i:int= 0; i < 1000; i++) {
 			point = query.findRandomPointAroundCircle(point.getRandomRef(), point.getRandomPt(), 5, filter, f);
-			Assert.assertEquals(Status.SUCCSESS, point.getStatus());
-			var tileAndPoly = navmesh.getTileAndPolyByRef(point.getRandomRef());
-			var bmin:Array= new float[2];
-			var bmax:Array= new float[2];
+			assertEquals(Status.SUCCSESS, point.getStatus());
+			var tileAndPoly:Tupple2 = navmesh.getTileAndPolyByRef(point.getRandomRef());
+			var bmin:Array= []//new float[2];
+			var bmax:Array= []//new float[2];
 			for (var j:int= 0; j < tileAndPoly.second.vertCount; j++) {
 				var v:int= tileAndPoly.second.verts[j] * 3;
 				bmin[0] = j == 0? tileAndPoly.first.data.verts[v] : Math.min(bmin[0], tileAndPoly.first.data.verts[v]);
@@ -62,10 +71,10 @@ public class RandomPointTest extends AbstractDetourTest {
 				bmin[1] = j == 0? tileAndPoly.first.data.verts[v + 2] : Math.min(bmin[1], tileAndPoly.first.data.verts[v + 2]);
 				bmax[1] = j == 0? tileAndPoly.first.data.verts[v + 2] : Math.max(bmax[1], tileAndPoly.first.data.verts[v + 2]);
 			}
-			Assert.assertTrue(point.getRandomPt()[0] >= bmin[0]);
-			Assert.assertTrue(point.getRandomPt()[0] <= bmax[0]);
-			Assert.assertTrue(point.getRandomPt()[2] >= bmin[1]);
-			Assert.assertTrue(point.getRandomPt()[2] <= bmax[1]);
+			assertTrue(point.getRandomPt()[0] >= bmin[0]);
+			assertTrue(point.getRandomPt()[0] <= bmax[0]);
+			assertTrue(point.getRandomPt()[2] >= bmin[1]);
+			assertTrue(point.getRandomPt()[2] <= bmax[1]);
 		}
 	}
 }

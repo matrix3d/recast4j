@@ -1336,7 +1336,7 @@ public class NavMeshQuery {
 	///  @param[in]		options				Query options. (see: #dtStraightPathOptions)
 	/// @returns The status flags for the query.
 	public function findStraightPath(startPos:Array, endPos:Array, path:Array, options:int):Array {
-		if (path.isEmpty()) {
+		if (path.length==0) {
 			throw ("Empty path");
 		}
 
@@ -1555,7 +1555,7 @@ public class NavMeshQuery {
 
 		var verts:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
 
-		while (!stack.isEmpty()) {
+		while (stack.length!=0) {
 			// Pop front.
 			var curNode:Node= stack.pop();
 
@@ -2858,13 +2858,8 @@ public class NavMeshQuery {
 }
 
 
-	 class FRand {
-		//var r:Random= new Random();
-
-		public function frand():Number {
-			return Math.random();// r.nextFloat();
-		}
-	}
+	 
+	
 
 	
  class PortalResult {

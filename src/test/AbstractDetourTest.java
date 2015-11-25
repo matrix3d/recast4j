@@ -48,5 +48,13 @@ public abstract class AbstractDetourTest {
 		query = new NavMeshQuery(navmesh);
 
 	}
+	public void assertEquals(float a,float b,float d) {
+		System.out.println(a+" " +b+" "+ d);
+		System.out.println(Math.abs(a - b) < d);
+	}
+	public void assertEquals(int a,int b) {
+		System.out.println(a+" " +b);
+		System.out.println(Math.abs(a - b) < 0);
+	}
 
 }

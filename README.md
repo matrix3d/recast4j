@@ -1,5 +1,5 @@
 ## recast4j
-Java Port of Recast & Detour
+as3 Port of Recast & Detour
 
 ## License
 

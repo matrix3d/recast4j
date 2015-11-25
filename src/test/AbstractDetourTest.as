@@ -15,11 +15,16 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-package org.recast4j.detour {
-import org.recast4j.recast.ObjImporter;
+package test {
+import flash.display.Sprite;
+import org.recast4j.detour.MeshData;
+import org.recast4j.detour.NavMesh;
+import org.recast4j.detour.NavMeshQuery;
+import org.recast4j.detour.RecastNavMeshBuilder;
+import test.ObjImporter;
 import org.recast4j.recast.PartitionType;
 
-public  class AbstractDetourTest {
+public  class AbstractDetourTest extends Sprite{
 
 	protected var startRefs:Array= [ 281474976710696, 281474976710773, 281474976710680, 281474976710753,
 			281474976710733];
@@ -40,7 +45,7 @@ public  class AbstractDetourTest {
 	protected var navmesh:NavMesh;
 
 	public function setUp():void {
-		[Embed(source = "../recast/dungeon.obj", mimeType = "application/octet-stream")]var c:Class;
+		[Embed(source="dungeon.obj", mimeType="application/octet-stream")]var c:Class;
 		var dugeon:String = new c +"";
 		
 		
@@ -55,6 +60,11 @@ public  class AbstractDetourTest {
 	public function assertEquals(a:Number, b:Number, d:Number = 0):void {
 		trace();
 		trace(Math.abs(a - b) <= d,a, b, d);
+	}
+	
+	public function assertTrue(v:Boolean):void {
+		trace();
+		trace(v);
 	}
 
 }

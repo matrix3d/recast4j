@@ -1,6 +1,7 @@
-package org.recast4j.recast {
+package test {
 import java.io.File;
 import java.io.FileWriter;
+import test.ObjImporter;
 
 import org.junit.Assert;
 import org.junit.Test;

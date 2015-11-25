@@ -660,7 +660,6 @@ public class RecastContour {
 			mergeContours(region.outline, hole, index, bestVertex);
 		}
 	}
-
 	/// @par
 	///
 	/// The raw contours will match the region outlines exactly. The @p maxError and @p maxEdgeLen

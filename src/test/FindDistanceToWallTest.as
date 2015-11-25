@@ -15,7 +15,9 @@ freely, subject to the following restrictions:
  misrepresented as being the original software.
 3. This notice may not be removed or altered from any source distribution.
 */
-package org.recast4j.detour {
+package test {
+	import org.recast4j.detour.FindDistanceToWallResult;
+	import org.recast4j.detour.QueryFilter;
 
 public class FindDistanceToWallTest extends AbstractDetourTest {
 
@@ -27,6 +29,11 @@ public class FindDistanceToWallTest extends AbstractDetourTest {
 			[ 0.965395, 0.098799, 0.241351], [ -0.444012, 0.000000, 0.896021],
 			[ 0.562533, 0.306572, -0.767835] ];
 
+		public function FindDistanceToWallTest() 
+		{
+			setUp();
+			testFindDistanceToWall();
+		}
 	public function testFindDistanceToWall():void {
 		var filter:QueryFilter= new QueryFilter();
 		for (var i:int= 0; i < startRefs.length; i++) {

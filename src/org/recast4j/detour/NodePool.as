@@ -42,7 +42,7 @@ public class NodePool {
 
 	public function findNode(id:Number):Node {
 		var nodes:Array = m_map[id];
-		if (nodes != null && !nodes.isEmpty()) {
+		if (nodes != null && nodes.length!=0) {
 			return nodes[0];
 		}
 		return null;
