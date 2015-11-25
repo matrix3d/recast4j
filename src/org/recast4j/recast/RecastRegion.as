@@ -857,7 +857,7 @@ public class RecastRegion {
 		var h:int= chf.height;
 
 		var nreg:int= maxRegionId + 1;
-		var regions:Array= new Region[nreg];
+		var regions:Array = [];// new Region[nreg];
 
 		// Construct regions
 		for (var i:int= 0; i < nreg; ++i)
@@ -1097,11 +1097,12 @@ public class RecastRegion {
 		var h:int= chf.height;
 		var id:int= 1;
 
-		var srcReg:Array= []//chf.spanCount];
+		var srcReg:Array = []//chf.spanCount];
+		Arrays.fill(srcReg, 0, chf.spanCount, 0);
 
 		var nsweeps:int= Math.max(chf.width, chf.height);
-		var sweeps:Array= new SweepSpan[nsweeps];
-		for (var i:int= 0; i < sweeps.length; i++) {
+		var sweeps:Array = [];// new SweepSpan[nsweeps];
+		for (var i:int= 0; i < nsweeps; i++) {
 			sweeps[i] = new SweepSpan();
 		}
 
@@ -1371,10 +1372,11 @@ public class RecastRegion {
 		var h:int= chf.height;
 		var id:int= 1;
 
-		var srcReg:Array= []//chf.spanCount];
+		var srcReg:Array = []//chf.spanCount];
+		Arrays.fill(srcReg, 0, chf.spanCount, 0);
 		var nsweeps:int= Math.max(chf.width, chf.height);
-		var sweeps:Array= new SweepSpan[nsweeps];
-		for (var i:int= 0; i < sweeps.length; i++) {
+		var sweeps:Array= []//new SweepSpan[nsweeps];
+		for (var i:int= 0; i < nsweeps; i++) {
 			sweeps[i] = new SweepSpan();
 		}
 

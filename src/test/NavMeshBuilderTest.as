@@ -16,15 +16,18 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package test {
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.recast4j.detour.NavMesh;
+import org.recast4j.detour.Poly;
 import test.AbstractDetourTest;
-
-import org.junit.Test;
 
 public class NavMeshBuilderTest extends AbstractDetourTest {
 
+	public function NavMeshBuilderTest() 
+	{
+		setUp();
+		testBVTree();
+	}
+	
 	public function testBVTree():void {
 		assertEquals(225, nmd.verts.length / 3);
 		assertEquals(119, nmd.polys.length);
@@ -39,7 +42,7 @@ public class NavMeshBuilderTest extends AbstractDetourTest {
 		for (var i:int= 0; i < nmd.header.bvNodeCount; i++) {
 			assertNotNull(nmd.bvTree[i]);
 		}
-		for (var i:int= 0; i < 6; i++) {
+		for (i= 0; i < 6; i++) {
 			assertEquals(nmd.offMeshCons[0].pos[i], nmd.verts[223* 3+ i], 0.0);
 		}
 		assertEquals(0.1, nmd.offMeshCons[0].rad, 0.0);

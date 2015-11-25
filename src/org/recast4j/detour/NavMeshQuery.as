@@ -646,7 +646,7 @@ public class NavMeshQuery {
 				var neis:Array = m_nav.getTilesAt(x, y);
 				for (var j:int= 0; j < neis.length; ++j) {
 					var polysInTile:Array = queryPolygonsInTile(neis[j], bmin, bmax, filter);
-					polys.addAll(polysInTile);
+					polys.push.apply(null,polysInTile);
 				}
 			}
 		}

@@ -16,27 +16,32 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package test {
-import org.junit.Assert;
-import org.junit.Test;
+import org.recast4j.detour.FindNearestPolyResult;
+import org.recast4j.detour.QueryFilter;
 import test.AbstractDetourTest;
 
 public class FindNearestPolyTest extends AbstractDetourTest {
 
-	var polyRefs:Array= { 281474976710696L, 281474976710773L, 281474976710680L, 281474976710753L,
-			281474976710733L};
-	float[][] polyPos = { { 22.606520, 10.197294, -45.918674}, { 22.331268, 10.197294, -1.040187},
-			{ 18.694363, 15.803535, -73.090416}, { 0.745335, 10.197294, -5.940050},
-			{ -20.651257, 5.904126, -13.712508} };
+	private var polyRefs:Array= [ 281474976710696, 281474976710773, 281474976710680, 281474976710753,
+			281474976710733];
+	private var polyPos:Array = [ [ 22.606520, 10.197294, -45.918674], [ 22.331268, 10.197294, -1.040187],
+			[ 18.694363, 15.803535, -73.090416], [ 0.745335, 10.197294, -5.940050],
+			[ -20.651257, 5.904126, -13.712508] ];
 
+	public function FindNearestPolyTest() 
+	{
+		setUp();
+		testFindNearestPoly();
+	}
 	public function testFindNearestPoly():void {
 		var filter:QueryFilter= new QueryFilter();
-		var extents:Array= { 2, 4, 2};
+		var extents:Array= [ 2, 4, 2];
 		for (var i:int= 0; i < startRefs.length; i++) {
 			var startPos:Array= startPoss[i];
 			var poly:FindNearestPolyResult= query.findNearestPoly(startPos, extents, filter);
-			Assert.assertEquals(polyRefs[i], poly.getNearestRef());
+			assertEquals(polyRefs[i], poly.getNearestRef());
 			for (var v:int= 0; v < polyPos[i].length; v++) {
-				Assert.assertEquals(polyPos[i][v], poly.getNearestPos()[v], 0.001);
+				assertEquals(polyPos[i][v], poly.getNearestPos()[v], 0.001);
 			}
 		}
 

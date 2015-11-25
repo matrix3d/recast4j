@@ -1,13 +1,26 @@
 package test {
-import java.io.File;
-import java.io.FileWriter;
+import org.recast4j.recast.CompactHeightfield;
+import org.recast4j.recast.Context;
+import org.recast4j.recast.ContourSet;
+import org.recast4j.recast.Heightfield;
+import org.recast4j.recast.InputGeom;
+import org.recast4j.recast.PartitionType;
+import org.recast4j.recast.PolyMesh;
+import org.recast4j.recast.PolyMeshDetail;
+import org.recast4j.recast.Recast;
+import org.recast4j.recast.RecastArea;
+import org.recast4j.recast.RecastConfig;
+import org.recast4j.recast.RecastConstants;
+import org.recast4j.recast.RecastContour;
+import org.recast4j.recast.RecastFilter;
+import org.recast4j.recast.RecastMesh;
+import org.recast4j.recast.RecastMeshDetail;
+import org.recast4j.recast.RecastRasterization;
+import org.recast4j.recast.RecastRegion;
 import test.ObjImporter;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.recast4j.recast.RecastConstants.PartitionType;
 
-public class RecastSoloMeshTest {
+public class RecastSoloMeshTest extends AbstractDetourTest{
 
 	private var m_cellSize:Number;
 	private var m_cellHeight:Number;
@@ -21,10 +34,10 @@ public class RecastSoloMeshTest {
 	private var m_edgeMaxError:Number;
 	private var m_vertsPerPoly:Number;
 	private var m_detailSampleDist:Number;
-	private var m_partitionType:PartitionType;
+	private var m_partitionType:int;
 	private var m_detailSampleMaxError:Number;
 
-	function resetCommonSettings():void {
+	public function resetCommonSettings():void {
 		m_cellSize = 0.3;
 		m_cellHeight = 0.2;
 		m_agentHeight = 2.0;
@@ -41,8 +54,12 @@ public class RecastSoloMeshTest {
 		m_partitionType = PartitionType.WATERSHED;
 	}
 
+	public function RecastSoloMeshTest() 
+	{
+		testPerformance();
+	}
 	public function testPerformance():void {
-		for (var i:int= 0; i < 10; i++) {
+		for (var i:int= 0; i < 1; i++) {
 			testBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 512, 289);
 			testBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
 			testBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 447, 268);
@@ -73,13 +90,13 @@ public class RecastSoloMeshTest {
 		testBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 312, 150, 150, 768, 529);
 	}
 
-	public function testBuild(filename:String, partitionType:PartitionType, expDistance:int, expRegions:int, expContours:int, expVerts:int,
+	public function testBuild(filename:String, partitionType:int, expDistance:int, expRegions:int, expContours:int, expVerts:int,
 			expPolys:int, expDetMeshes:int, expDetVerts:int, expDetTRis:int):void {
 		resetCommonSettings();
 		m_partitionType = partitionType;
-		var importer:ObjImporter= new ObjImporter();
-		var m_geom:InputGeom= importer.load(getClass().getResourceAsStream(filename));
-		var time:Number= System.nanoTime();
+		var importer:ObjImporter = new ObjImporter();
+		[Embed(source = "dungeon.obj", mimeType = "application/octet-stream")]var c:Class;
+		var m_geom:InputGeom= importer.load(new c +"");
 		var bmin:Array= m_geom.getMeshBoundsMin();
 		var bmax:Array= m_geom.getMeshBoundsMax();
 		var verts:Array= m_geom.getVerts();
@@ -227,8 +244,8 @@ public class RecastSoloMeshTest {
 			RecastRegion.buildLayerRegions(m_ctx, m_chf, 0, m_cfg.minRegionArea);
 		}
 
-		Assert.assertEquals("maxDistance", expDistance, m_chf.maxDistance);
-		Assert.assertEquals("Regions", expRegions, m_chf.maxRegions);
+		assertEquals2("maxDistance", expDistance, m_chf.maxDistance);
+		assertEquals2("Regions", expRegions, m_chf.maxRegions);
 		//
 		// Step 5. Trace and simplify region contours.
 		//
@@ -237,15 +254,15 @@ public class RecastSoloMeshTest {
 		var m_cset:ContourSet= RecastContour.buildContours(m_ctx, m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen,
 				RecastConstants.RC_CONTOUR_TESS_WALL_EDGES);
 
-		Assert.assertEquals("Contours", expContours, m_cset.conts.length);
+		assertEquals2("Contours", expContours, m_cset.conts.length);
 		//
 		// Step 6. Build polygons mesh from contours.
 		//
 
 		// Build polygon navmesh from the contours.
 		var m_pmesh:PolyMesh= RecastMesh.buildPolyMesh(m_ctx, m_cset, m_cfg.maxVertsPerPoly);
-		Assert.assertEquals("Mesh Verts", expVerts, m_pmesh.nverts);
-		Assert.assertEquals("Mesh Polys", expPolys, m_pmesh.npolys);
+		assertEquals2("Mesh Verts", expVerts, m_pmesh.nverts);
+		assertEquals2("Mesh Polys", expPolys, m_pmesh.npolys);
 
 		//
 		// Step 7. Create detail mesh which allows to access approximate height
@@ -254,15 +271,15 @@ public class RecastSoloMeshTest {
 
 		var m_dmesh:PolyMeshDetail= RecastMeshDetail.buildPolyMeshDetail(m_ctx, m_pmesh, m_chf, m_cfg.detailSampleDist,
 				m_cfg.detailSampleMaxError);
-		Assert.assertEquals("Mesh Detail Meshes", expDetMeshes, m_dmesh.nmeshes);
-		Assert.assertEquals("Mesh Detail Verts", expDetVerts, m_dmesh.nverts);
-		Assert.assertEquals("Mesh Detail Tris", expDetTRis, m_dmesh.ntris);
-		var time2:Number= System.nanoTime();
-		System.out.println(filename + " : " + partitionType + "  " + (time2 - time) / 1000000+ " ms" );
-		saveObj(filename.substring(0, filename.lastIndexOf('.')) + "_" + partitionType + ".obj", m_dmesh);
+		assertEquals2("Mesh Detail Meshes", expDetMeshes, m_dmesh.nmeshes);
+		assertEquals2("Mesh Detail Verts", expDetVerts, m_dmesh.nverts);
+		assertEquals2("Mesh Detail Tris", expDetTRis, m_dmesh.ntris);
+		//var time2:Number= System.nanoTime();
+		//System.out.println(filename + " : " + partitionType + "  " + (time2 - time) / 1000000+ " ms" );
+		//saveObj(filename.substring(0, filename.lastIndexOf('.')) + "_" + partitionType + ".obj", m_dmesh);
 	}
 
-	private function saveObj(filename:String, m_dmesh:PolyMeshDetail):void {
+	/*private function saveObj(filename:String, m_dmesh:PolyMeshDetail):void {
 		try {
 			var file:File= new File(filename);
 			var fw:FileWriter= new FileWriter(file);
@@ -283,6 +300,6 @@ public class RecastSoloMeshTest {
 			fw.close();
 		} catch (e:Exception) {
 		}
-	}
+	}*/
 }
 }

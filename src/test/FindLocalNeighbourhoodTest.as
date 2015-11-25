@@ -16,6 +16,8 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package test {
+	import org.recast4j.detour.FindLocalNeighbourhoodResult;
+	import org.recast4j.detour.QueryFilter;
 
 public class FindLocalNeighbourhoodTest extends AbstractDetourTest {
 
@@ -33,6 +35,11 @@ public class FindLocalNeighbourhoodTest extends AbstractDetourTest {
 					281474976710683, 281474976710678],
 			[ 0, 281474976710753, 281474976710753, 281474976710748], [ 0, 281474976710733, 281474976710733] ];
 
+	public function FindLocalNeighbourhoodTest() 
+	{
+		setUp();
+		testFindNearestPoly();
+	}
 	public function testFindNearestPoly():void {
 		var filter:QueryFilter= new QueryFilter();
 		for (var i:int= 0; i < startRefs.length; i++) {

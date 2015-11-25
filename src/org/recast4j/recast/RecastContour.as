@@ -541,7 +541,7 @@ public class RecastContour {
 		for (i= 0; i < region.nholes; i++)
 			maxVerts += region.holes[i].contour.nverts;
 
-		var diags:Array= new PotentialDiagonal[maxVerts];
+		var diags:Array = [];// new PotentialDiagonal[maxVerts];
 		for (var pd:int= 0; pd < maxVerts; pd++) {
 			diags[pd] = new PotentialDiagonal();
 		}
@@ -783,7 +783,7 @@ public class RecastContour {
 				}
 				for (i= 0; i < nregions; i++) {
 					if (regions[i].nholes > 0) {
-						regions[i].holes = new ContourHole[regions[i].nholes];
+						regions[i].holes = [];// new ContourHole[regions[i].nholes];
 						for (var nh:int= 0; nh < regions[i].nholes; nh++) {
 							regions[i].holes[nh] = new ContourHole();
 						}
