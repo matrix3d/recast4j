@@ -51,6 +51,11 @@ public  class AbstractDetourTest {
 		query = new NavMeshQuery(navmesh);
 
 	}
+	
+	public function assertEquals(a:Number, b:Number, d:Number = 0):void {
+		trace();
+		trace(Math.abs(a - b) <= d,a, b, d);
+	}
 
 }
 }

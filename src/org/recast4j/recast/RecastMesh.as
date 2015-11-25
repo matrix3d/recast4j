@@ -851,6 +851,7 @@ public class RecastMesh {
 			throw ("rcBuildPolyMesh: Too many vertices " + maxVertices);
 		}
 		var vflags:Array = [];// []//maxVertices];
+		Arrays.fill(vflags, 0, maxVertices, 0);
 
 		mesh.verts = [];// []//maxVertices * 3];
 		mesh.polys = [];// []//maxTris * nvp * 2];
@@ -907,7 +908,7 @@ public class RecastMesh {
 
 			// Build initial polygons.
 			var npolys:int= 0;
-			Arrays.fill2(polys, RecastConstants.RC_MESH_NULL_IDX);
+			Arrays.fill(polys,0,(maxVertsPerCont + 1) * nvp, RecastConstants.RC_MESH_NULL_IDX);
 			for (j= 0; j < ntris; ++j) {
 				var t:int= j * 3;
 				if (tris[t + 0] != tris[t + 1] && tris[t + 0] != tris[t + 2] && tris[t + 1] != tris[t + 2]) {

@@ -2404,7 +2404,7 @@ public class NavMeshQuery {
 		var pa:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
 		var pb:Array= []//new float[NavMesh.DT_VERTS_PER_POLYGON * 3];
 
-		while (!stack.isEmpty()) {
+		while (stack.length!=0) {
 			// Pop front.
 			var curNode:Node= stack.pop();
 

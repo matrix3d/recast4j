@@ -43,9 +43,5 @@ public class FindDistanceToWallTest extends AbstractDetourTest {
 
 	}
 	
-	private function assertEquals(a:Number, b:Number, d:Number):void {
-		trace(a, b, d);
-		trace(Math.abs(a - b) < d);
-	}
 }
 }
