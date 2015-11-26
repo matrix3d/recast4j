@@ -36,6 +36,7 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 	private var m_detailSampleDist:Number;
 	private var m_partitionType:int;
 	private var m_detailSampleMaxError:Number;
+	private var m_geom:InputGeom;
 
 	public function resetCommonSettings():void {
 		m_cellSize = 0.3;
@@ -52,6 +53,11 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 		m_detailSampleDist = 6.0;
 		m_detailSampleMaxError = 1.0;
 		m_partitionType = PartitionType.WATERSHED;
+		
+		
+		var importer:ObjImporter = new ObjImporter();
+		[Embed(source = "dungeon.obj", mimeType = "application/octet-stream")]var c:Class;
+		m_geom= importer.load(new c +"");
 	}
 
 	public function RecastSoloMeshTest() 
@@ -59,9 +65,12 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 		testPerformance();
 	}
 	public function testPerformance():void {
-		for (var i:int= 0; i < 1; i++) {
+		for (var i:int = 0; i < 1; i++) {
+			trace("watershed");
 			testBuild("dungeon.obj", PartitionType.WATERSHED, 52, 16, 15, 223, 118, 118, 512, 289);
+			trace("monotone");
 			testBuild("dungeon.obj", PartitionType.MONOTONE, 0, 17, 16, 210, 100, 100, 453, 264);
+			trace("layers");
 			testBuild("dungeon.obj", PartitionType.LAYERS, 0, 5, 5, 203, 97, 97, 447, 268);
 		}
 	}
@@ -94,9 +103,6 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 			expPolys:int, expDetMeshes:int, expDetVerts:int, expDetTRis:int):void {
 		resetCommonSettings();
 		m_partitionType = partitionType;
-		var importer:ObjImporter = new ObjImporter();
-		[Embed(source = "dungeon.obj", mimeType = "application/octet-stream")]var c:Class;
-		var m_geom:InputGeom= importer.load(new c +"");
 		var bmin:Array= m_geom.getMeshBoundsMin();
 		var bmax:Array= m_geom.getMeshBoundsMax();
 		var verts:Array= m_geom.getVerts();

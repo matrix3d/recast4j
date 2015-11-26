@@ -33,7 +33,11 @@ public class Status {
 	}
 
 	public static function isSuccess(status:int):Boolean {
-		return status == Status.SUCCSESS;
+		return status == Status.SUCCSESS||status==Status.PARTIAL_RESULT;
+	}
+	
+	public static function isPartial(status:int):Boolean {
+		return status==Status.PARTIAL_RESULT;
 	}
 }
 }
