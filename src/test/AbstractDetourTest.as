@@ -45,8 +45,7 @@ public  class AbstractDetourTest extends Sprite{
 	protected var navmesh:NavMesh;
 
 	public function setUp():void {
-		[Embed(source="dungeon.obj", mimeType="application/octet-stream")]var c:Class;
-		var dugeon:String = new c +"";
+		var dugeon:String = getOBJ("dungeon.obj");
 		
 		
 		nmd = new RecastNavMeshBuilder(new ObjImporter().load(dugeon), PartitionType.WATERSHED,
@@ -55,6 +54,18 @@ public  class AbstractDetourTest extends Sprite{
 		navmesh.init2(nmd, 0);
 		query = new NavMeshQuery(navmesh);
 
+	}
+	
+	public static function getOBJ(name:String):String {
+		[Embed(source="dungeon.obj", mimeType="application/octet-stream")]var c1:Class;
+		[Embed(source="nav_test.obj", mimeType="application/octet-stream")]var c2:Class;
+		switch(name){
+			case "dungeon.obj":
+				return new c1 + "";
+			case "nav_test.obj":
+				return new c2 +"";
+		}
+		return null;
 	}
 	
 	public function assertEquals(a:Number, b:Number, d:Number = 0,name:String=null):void {

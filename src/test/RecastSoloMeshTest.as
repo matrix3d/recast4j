@@ -37,6 +37,7 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 	private var m_partitionType:int;
 	private var m_detailSampleMaxError:Number;
 	private var m_geom:InputGeom;
+	public var m_dmesh:PolyMeshDetail;
 
 	public function resetCommonSettings():void {
 		m_cellSize = 0.3;
@@ -53,16 +54,14 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 		m_detailSampleDist = 6.0;
 		m_detailSampleMaxError = 1.0;
 		m_partitionType = PartitionType.WATERSHED;
-		
-		
-		var importer:ObjImporter = new ObjImporter();
-		[Embed(source = "dungeon.obj", mimeType = "application/octet-stream")]var c:Class;
-		m_geom= importer.load(new c +"");
 	}
 
 	public function RecastSoloMeshTest() 
 	{
-		testPerformance();
+		//testDungeonWatershed();
+		//testDungeonMonotone();
+		//testWatershed();
+		//testPerformance();
 	}
 	public function testPerformance():void {
 		for (var i:int = 0; i < 1; i++) {
@@ -102,6 +101,11 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 	public function testBuild(filename:String, partitionType:int, expDistance:int, expRegions:int, expContours:int, expVerts:int,
 			expPolys:int, expDetMeshes:int, expDetVerts:int, expDetTRis:int):void {
 		resetCommonSettings();
+		
+		
+		var importer:ObjImporter = new ObjImporter();
+		m_geom= importer.load(AbstractDetourTest.getOBJ(filename));
+		
 		m_partitionType = partitionType;
 		var bmin:Array= m_geom.getMeshBoundsMin();
 		var bmax:Array= m_geom.getMeshBoundsMax();
@@ -275,7 +279,7 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 		// on each polygon.
 		//
 
-		var m_dmesh:PolyMeshDetail= RecastMeshDetail.buildPolyMeshDetail(m_ctx, m_pmesh, m_chf, m_cfg.detailSampleDist,
+		m_dmesh= RecastMeshDetail.buildPolyMeshDetail(m_ctx, m_pmesh, m_chf, m_cfg.detailSampleDist,
 				m_cfg.detailSampleMaxError);
 		assertEquals2("Mesh Detail Meshes", expDetMeshes, m_dmesh.nmeshes);
 		assertEquals2("Mesh Detail Verts", expDetVerts, m_dmesh.nverts);
