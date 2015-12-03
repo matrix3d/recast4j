@@ -23,7 +23,7 @@ package org.recast4j.detour {
  */
 public class OffMeshConnection {
 	/** The endpoints of the connection. [(ax, ay, az, bx, by, bz)] */
-	public var pos:Array= [];
+	public var pos:Array= [0,0,0,0,0,0];
 	/** The radius of the endpoints. [Limit: >= 0] */
 	public var rad:Number;
 	/** The polygon reference of the connection within the tile. */

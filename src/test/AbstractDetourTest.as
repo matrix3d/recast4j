@@ -70,8 +70,12 @@ public  class AbstractDetourTest extends Sprite{
 	
 	public function assertEquals(a:Number, b:Number, d:Number = 0,name:String=null):void {
 		var bb:Boolean = Math.abs(a - b) <= d;
-		//if(!bb){
+		if (!bb) {
+			var i:int = 0;
 			trace(bb, a, b, d,name);
+		}
+		//if(!bb){
+			
 		//}
 	}
 	public function assertEquals2(name:String,a:Number, b:Number, d:Number = 0):void {

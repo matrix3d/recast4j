@@ -16,41 +16,42 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour.io {
-import java.io.IOException;
-import java.io.OutputStream;
+import flash.utils.ByteArray;
+import flash.utils.Endian;
 
 import org.recast4j.detour.MeshData;
 import org.recast4j.detour.MeshHeader;
 
 public class MeshWriter {
 
-	public function write(stream:OutputStream, data:MeshData):void {
+	public function write(stream:ByteArray, data:MeshData):void {
+		stream.endian = Endian.LITTLE_ENDIAN;
 		var header:MeshHeader= data.header;
-		write(stream, header.magic);
-		write(stream, header.version);
-		write(stream, header.x);
-		write(stream, header.y);
-		write(stream, header.layer);
-		write(stream, header.userId);
-		write(stream, header.polyCount);
-		write(stream, header.vertCount);
-		write(stream, header.maxLinkCount);
-		write(stream, header.detailMeshCount);
-		write(stream, header.detailVertCount);
-		write(stream, header.detailTriCount);
-		write(stream, header.bvNodeCount);
-		write(stream, header.offMeshConCount);
-		write(stream, header.offMeshBase);
-		write(stream, header.walkableHeight);
-		write(stream, header.walkableRadius);
-		write(stream, header.walkableClimb);
-		write(stream, header.bmin[0]);
-		write(stream, header.bmin[1]);
-		write(stream, header.bmin[2]);
-		write(stream, header.bmax[0]);
-		write(stream, header.bmax[1]);
-		write(stream, header.bmax[2]);
-		write(stream, header.bvQuantFactor);
+		writeInt(stream, header.magic);
+		writeInt(stream, header.version);
+		writeInt(stream, header.x);
+		writeInt(stream, header.y);
+		writeInt(stream, header.layer);
+		writeInt(stream, header.userId);
+		writeInt(stream, header.polyCount);
+		writeInt(stream, header.vertCount);
+		writeInt(stream, header.maxLinkCount);
+		writeInt(stream, header.detailMeshCount);
+		writeInt(stream, header.detailVertCount);
+		writeInt(stream, header.detailTriCount);
+		writeInt(stream, header.bvNodeCount);
+		writeInt(stream, header.offMeshConCount);
+		writeInt(stream, header.offMeshBase);
+		writeInt(stream, header.walkableHeight);
+		writeInt(stream, header.walkableRadius);
+		writeInt(stream, header.walkableClimb);
+		writeFloat(stream, header.bmin[0]);
+		writeFloat(stream, header.bmin[1]);
+		writeFloat(stream, header.bmin[2]);
+		writeFloat(stream, header.bmax[0]);
+		writeFloat(stream, header.bmax[1]);
+		writeFloat(stream, header.bmax[2]);
+		writeFloat(stream, header.bvQuantFactor);
 		writeVerts(stream, data.verts, header.vertCount);
 		writePolys(stream, data);
 		writePolyDetails(stream, data);
@@ -61,87 +62,83 @@ public class MeshWriter {
 		writeOffMeshCons(stream, data);
 	}
 
-	private function write(stream:OutputStream, value:Number):void {
-		write(stream, Float.floatToIntBits(value));
+	private function writeFloat(stream:ByteArray, value:Number):void {
+		stream.writeFloat(value);
 	}
 
-	private function write(stream:OutputStream, value:Number):void {
-		stream.write((value >> 8) & 0xFF);
-		stream.write(value & 0xFF);
+	private function writeShort(stream:ByteArray, value:Number):void {
+		stream.writeShort(value);
 	}
 
-	private function write(stream:OutputStream, value:int):void {
-		stream.write((value >> 24) & 0xFF);
-		stream.write((value >> 16) & 0xFF);
-		stream.write((value >> 8) & 0xFF);
-		stream.write(value & 0xFF);
+	private function writeInt(stream:ByteArray, value:int):void {
+		stream.writeInt(value);
 	}
 
-	private function writeVerts(stream:OutputStream, verts:Array, count:int):void {
+	private function writeVerts(stream:ByteArray, verts:Array, count:int):void {
 		for (var i:int= 0; i < count * 3; i++) {
-			write(stream, verts[i]);
+			writeFloat(stream, verts[i]);
 		}
 	}
 
-	private function writePolys(stream:OutputStream, data:MeshData):void {
+	private function writePolys(stream:ByteArray, data:MeshData):void {
 		for (var i:int= 0; i < data.header.polyCount; i++) {
-			write(stream, data.polys[i].firstLink);
+			writeInt(stream, data.polys[i].firstLink);
 			for (var j:int= 0; j < data.polys[i].verts.length; j++) {
-				write(stream, short(data.polys[i].verts[j]));
+				writeShort(stream, (data.polys[i].verts[j]));
 			}
-			for (var j:int= 0; j < data.polys[i].neis.length; j++) {
-				write(stream, short(data.polys[i].neis[j]));
+			for (j= 0; j < data.polys[i].neis.length; j++) {
+				writeShort(stream, (data.polys[i].neis[j]));
 			}
-			write(stream, short(data.polys[i].flags));
-			stream.write(data.polys[i].vertCount);
-			stream.write(data.polys[i].areaAndtype);
+			writeShort(stream, (data.polys[i].flags));
+			stream.writeByte(data.polys[i].vertCount);
+			stream.writeByte(data.polys[i].areaAndtype);
 		}
 	}
 
-	private function writePolyDetails(stream:OutputStream, data:MeshData):void {
+	private function writePolyDetails(stream:ByteArray, data:MeshData):void {
 		for (var i:int= 0; i < data.header.detailMeshCount; i++) {
-			write(stream, data.detailMeshes[i].vertBase);
-			write(stream, data.detailMeshes[i].triBase);
-			stream.write(data.detailMeshes[i].vertCount);
-			stream.write(data.detailMeshes[i].triCount);
+			writeInt(stream, data.detailMeshes[i].vertBase);
+			writeInt(stream, data.detailMeshes[i].triBase);
+			stream.writeByte(data.detailMeshes[i].vertCount);
+			stream.writeByte(data.detailMeshes[i].triCount);
 		}
 	}
 
-	private function writeDTris(stream:OutputStream, data:MeshData):void {
+	private function writeDTris(stream:ByteArray, data:MeshData):void {
 		for (var i:int= 0; i < data.header.detailTriCount * 4; i++) {
-			stream.write(data.detailTris[i]);
+			stream.writeByte(data.detailTris[i]);
 		}
 	}
 
-	private function writeBVTree(stream:OutputStream, data:MeshData):void {
+	private function writeBVTree(stream:ByteArray, data:MeshData):void {
 		for (var i:int= 0; i < data.header.bvNodeCount; i++) {
 			for (var j:int= 0; j < 3; j++) {
-				write(stream, short(data.bvTree[i].bmin[j]));
+				writeShort(stream, (data.bvTree[i].bmin[j]));
 			}
-			for (var j:int= 0; j < 3; j++) {
-				write(stream, short(data.bvTree[i].bmax[j]));
+			for (j= 0; j < 3; j++) {
+				writeShort(stream, (data.bvTree[i].bmax[j]));
 			}
-			write(stream, data.bvTree[i].i);
+			writeInt(stream, data.bvTree[i].i);
 		}
 	}
 
-	private function writeOffMeshCons(stream:OutputStream, data:MeshData):void {
+	private function writeOffMeshCons(stream:ByteArray, data:MeshData):void {
 		for (var i:int= 0; i < data.header.offMeshConCount; i++) {
 			for (var j:int= 0; j < 6; j++) {
-				write(stream, data.offMeshCons[i].pos[j]);
+				writeFloat(stream, data.offMeshCons[i].pos[j]);
 			}
-			write(stream, data.offMeshCons[i].rad);
-			write(stream, short(data.offMeshCons[i].poly));
-			stream.write(data.offMeshCons[i].flags);
-			stream.write(data.offMeshCons[i].side);
-			write(stream, data.offMeshCons[i].userId);
+			writeFloat(stream, data.offMeshCons[i].rad);
+			writeShort(stream, (data.offMeshCons[i].poly));
+			stream.writeByte(data.offMeshCons[i].flags);
+			stream.writeByte(data.offMeshCons[i].side);
+			writeInt(stream, data.offMeshCons[i].userId);
 		}
 	}
 
-	private function align4(stream:OutputStream, size:int):void {
+	private function align4(stream:ByteArray, size:int):void {
 		var toSkip:int= ((size + 3) & ~3) - size;
 		for (var i:int= 0; i < toSkip; i++) {
-			stream.write(0);
+			stream.writeByte(0);
 		}
 	}
 }

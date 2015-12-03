@@ -17,6 +17,7 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 package org.recast4j.detour {
+	import org.recast4j.Arrays;
 /** Defines a polyogn within a dtMeshTile object. */
 public class Poly {
 
@@ -44,6 +45,8 @@ public class Poly {
 
 	public function Poly(index:int) {
 		this.index = index;
+		Arrays.fill(verts, 0, 6, 0);
+		Arrays.fill(neis, 0, 6, 0);
 	}
 
 	/** Sets the user defined area id. [Limit: < #DT_MAX_AREAS] */
