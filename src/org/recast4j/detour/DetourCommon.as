@@ -182,10 +182,6 @@ public class DetourCommon {
 		return Math.max(Math.min(v, max), min);
 	}
 
-	public static function clamp2(v:int, min:int, max:int):int {
-		return Math.max(Math.min(v, max), min);
-	}
-
 	/// Derives the distance between the specified points on the xz-plane.
 	/// @param[in] v1 A point. [(x, y, z)]
 	/// @param[in] v2 A point. [(x, y, z)]
@@ -361,7 +357,7 @@ public class DetourCommon {
 
 		// If point lies inside the triangle, return interpolated ycoord.
 		if (u >= -EPS && v >= -EPS && (u + v) <= 1+ EPS) {
-			var h:Number= a[1] + v0[1] * u + v1[1] * v;
+			var h:Number= a.get(1) + v0[1] * u + v1[1] * v;
 			return new Tupple2(true, h);
 		}
 

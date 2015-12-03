@@ -69,21 +69,20 @@ public  class AbstractDetourTest extends Sprite{
 	}
 	
 	public function assertEquals(a:Number, b:Number, d:Number = 0,name:String=null):void {
-		trace();
-		trace(Math.abs(a - b) <= d, a, b, d);
-		if (name) trace(name);
+		var bb:Boolean = Math.abs(a - b) <= d;
+		//if(!bb){
+			trace(bb, a, b, d,name);
+		//}
 	}
 	public function assertEquals2(name:String,a:Number, b:Number, d:Number = 0):void {
 		assertEquals(a, b, d, name);
 	}
 	public function assertTrue(v:Boolean):void {
-		trace();
-		trace(v);
+		assertEquals(0, 0);
 	}
 	
 	public function assertNotNull(v:Object):void {
-		trace();
-		trace(v!=null);
+		assertEquals(0, v == null?1:0);
 	}
 
 }

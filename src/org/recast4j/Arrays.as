@@ -13,11 +13,17 @@ package org.recast4j
 		}
 		
 		public static function sort(a:Array, fromIndex:int, toIndex:int, compare:Function):void {
-			var temp:Array = a.slice(0,toIndex);
-			temp.sort(compare);
-			temp.unshift(toIndex);
-			temp.unshift(0);
-			a.splice.apply(null, temp);
+			if (fromIndex == 0 && toIndex == a.length) {
+				a.sort(compare);
+			}else {
+				var temp:Array = a.slice(fromIndex,toIndex);
+				temp.sort(compare);
+				temp.unshift(toIndex-fromIndex);
+				temp.unshift(fromIndex);
+				a.splice.apply(null, temp);
+			}
+			
+			
 		}
 		
 		public static function fill(a:Array, fromIndex:int, toIndex:int, val:Object):void {

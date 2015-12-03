@@ -97,7 +97,7 @@ public class NavMeshQuery {
 			if (p.getType() != Poly.DT_POLYTYPE_GROUND)
 				continue;
 			// Must pass filter
-			var ref:Number= base | i;
+			var ref:Number = base + i;
 			if (!filter.passFilter(ref, tile, p))
 				continue;
 
@@ -370,7 +370,7 @@ public class NavMeshQuery {
 			// Find height at the location.
 			for (var j:int= 0; j < pd.triCount; ++j) {
 				var t:int= (pd.triBase + j) * 4;
-				var v:Array= new VectorPtr[3];
+				var v:Array = [];////new VectorPtr[3];
 				for (var k:int= 0; k < 3; ++k) {
 					if (tile.data.detailTris[t + k] < poly.vertCount)
 						v[k] = new VectorPtr(tile.data.verts, poly.verts[tile.data.detailTris[t + k]] * 3);
@@ -465,7 +465,7 @@ public class NavMeshQuery {
 			var pd:PolyDetail= tile.data.detailMeshes[ip];
 			for (var j:int= 0; j < pd.triCount; ++j) {
 				var t:int= (pd.triBase + j) * 4;
-				var v:Array= new VectorPtr[3];
+				var v:Array = [];// new VectorPtr[3];
 				for (var k:int= 0; k < 3; ++k) {
 					if (tile.data.detailTris[t + k] < poly.vertCount)
 						v[k] = new VectorPtr(tile.data.verts, poly.verts[tile.data.detailTris[t + k]] * 3);
@@ -574,7 +574,7 @@ public class NavMeshQuery {
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
-					var ref:Number= base | node.i;
+					var ref:Number = base + node.i;
 					if (filter.passFilter(ref, tile, tile.data.polys[node.i])) {
 						polys.push(ref);
 					}
@@ -597,7 +597,7 @@ public class NavMeshQuery {
 				// Do not return off-mesh connection polygons.
 				if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
 					continue;
-				ref= base | i;
+				ref = base + i;
 				if (!filter.passFilter(ref, tile, p))
 					continue;
 				// Calc polygon bounds.

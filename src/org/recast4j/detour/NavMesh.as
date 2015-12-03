@@ -127,7 +127,7 @@ public class NavMesh {
 	/// @see #encodePolyId
 	public static function decodePolyIdSalt(ref:Number):int {
 		var saltMask:Number= (1<< DT_SALT_BITS) - 1;
-		return int(((ref >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
+		return int(((ref / Math.pow(2,DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
 	}
 
 	/// Extracts the tile's index from the specified polygon reference.
@@ -285,7 +285,7 @@ public class NavMesh {
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
-					polys.push(base | node.i);
+					polys.push(base + node.i);
 				}
 
 				if (overlap || isLeafNode)
@@ -316,7 +316,7 @@ public class NavMesh {
 					DetourCommon.vMax(bmax, tile.data.verts, v);
 				}
 				if (DetourCommon.overlapBounds(qmin, qmax, bmin, bmax)) {
-					polys.push(base | i);
+					polys.push(base + i);
 				}
 			}
 			return polys;
@@ -463,7 +463,7 @@ public class NavMesh {
 
 				var idx:int= allocLink(tile);
 				var link:Link= tile.links[idx];
-				link.ref = base | (poly.neis[j] - 1);
+				link.ref = base + (poly.neis[j] - 1);
 				link.edge = j;
 				link.side = 0xff;
 				link.bmin = link.bmax = 0;
@@ -651,7 +651,7 @@ public class NavMesh {
 				if (n < maxcon) {
 					conarea[n * 2+ 0] = Math.max(amin[0], bmin[0]);
 					conarea[n * 2+ 1] = Math.min(amax[0], bmax[0]);
-					con[n] = base | i;
+					con[n] = base + i;
 					n++;
 				}
 				break;
@@ -778,7 +778,7 @@ public class NavMesh {
 			var landPolyIdx:int= decodePolyIdPoly(ref);
 			var landPoly:Poly= tile.data.polys[landPolyIdx];
 			link = tile.links[tidx];
-			link.ref = base | con.poly;
+			link.ref = base + con.poly;
 			link.edge = 0xff;
 			link.side = 0xff;
 			link.bmin = link.bmax = 0;
@@ -845,7 +845,7 @@ public class NavMesh {
 			var posV:VectorPtr= new VectorPtr(pos);
 			for (var j:int= 0; j < pd.triCount; ++j) {
 				var t:int= (pd.triBase + j) * 4;
-				var v:Array= new VectorPtr[3];
+				var v:Array = [];// new VectorPtr[3];
 				for (var k:int= 0; k < 3; ++k) {
 					if (tile.data.detailTris[t + k] < poly.vertCount)
 						v[k] = new VectorPtr(tile.data.verts, poly.verts[tile.data.detailTris[t + k]] * 3);

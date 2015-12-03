@@ -41,7 +41,7 @@ public class FindNearestPolyTest extends AbstractDetourTest {
 			var poly:FindNearestPolyResult= query.findNearestPoly(startPos, extents, filter);
 			assertEquals(polyRefs[i], poly.getNearestRef());
 			for (var v:int= 0; v < polyPos[i].length; v++) {
-				assertEquals(polyPos[i][v], poly.getNearestPos()[v], 0.001);
+				assertEquals(polyPos[i][v], (poly.getNearestPos()||{})[v], 0.001);
 			}
 		}
 

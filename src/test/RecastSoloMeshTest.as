@@ -58,9 +58,10 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 
 	public function RecastSoloMeshTest() 
 	{
-		//testDungeonWatershed();
-		//testDungeonMonotone();
-		//testWatershed();
+		testDungeonWatershed();
+		testDungeonMonotone();
+		testWatershed();
+		testMonotone();
 		//testPerformance();
 	}
 	public function testPerformance():void {

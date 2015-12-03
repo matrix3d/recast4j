@@ -64,8 +64,10 @@ public class GetPolyWallSegmentsTest extends AbstractDetourTest {
 			assertEquals(vertices[i].length, segments.getSegmentVerts().length * 6);
 			assertEquals(refs[i].length, segments.getSegmentRefs().length);
 			for (var v:int= 0; v < vertices[i].length / 6; v++) {
-				for (var n:int= 0; n < 6; n++) {
-					assertEquals(vertices[i][v * 6+ n], segments.getSegmentVerts()[v][n], 0.001);
+				for (var n:int = 0; n < 6; n++) {
+					try{
+					assertEquals(vertices[i][v * 6 + n], segments.getSegmentVerts()[v][n], 0.001);
+					}catch(err:Error){trace(err)}
 				}
 			}
 			for (v= 0; v < refs[i].length; v++) {
