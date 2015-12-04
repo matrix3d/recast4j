@@ -405,11 +405,6 @@ public class NavMesh {
 			tile.data.bvTree = null;
 
 		// Init tile.
-
-		tile.links[tile.links.length-1].next = DT_NULL_LINK;
-		for (i= 0; i < tile.links.length - 1; ++i) {
-			tile.links[i].next = i + 1;
-		}
 		
 		connectIntLinks(tile);
 		baseOffMeshLinks(tile);

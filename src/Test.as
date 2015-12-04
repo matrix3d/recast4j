@@ -58,7 +58,7 @@ package
 			query = new NavMeshQuery(navmesh);
 			
 			
-			trace(getHeight(30, 0, 0));
+			trace(getHeight(40, 0, 0));
 		}
 		
 		public function getHeight(x:Number,y:Number,z:Number):Number{
