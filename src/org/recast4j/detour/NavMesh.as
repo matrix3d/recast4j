@@ -21,9 +21,9 @@ package org.recast4j.detour {
 
 public class NavMesh {
 
-	public static const DT_SALT_BITS:int= 16;
-	public static const DT_TILE_BITS:int= 28;
-	public static const DT_POLY_BITS:int= 20;
+	public var DT_SALT_BITS:int= 16;
+	public var DT_TILE_BITS:int= 28;
+	public var DT_POLY_BITS:int= 20;
 
 	/** The maximum number of vertices per navigation polygon. */
 	public static const DT_VERTS_PER_POLYGON:int= 6;
@@ -94,9 +94,8 @@ public class NavMesh {
 	 * @param ip The index of the polygon within the tile.
 	 * @return encoded polygon reference
 	 */
-	public static function encodePolyId(salt:int, it:int, ip:int):Number {
-		//return ((salt) << (DT_POLY_BITS + DT_TILE_BITS)) | ((it )<< DT_POLY_BITS) | (ip);
-		return ((salt) * Math.pow(2,(DT_POLY_BITS + DT_TILE_BITS))) + ((it )*Math.pow(2, DT_POLY_BITS)) + (ip);
+	public function encodePolyId(salt:int, it:int, ip:int):Number {
+		return ((salt) << (DT_POLY_BITS + DT_TILE_BITS)) | ((it )<< DT_POLY_BITS) | (ip);
 	}
 
 	/// Decodes a standard polygon reference.
@@ -106,7 +105,7 @@ public class NavMesh {
 	/// @param[out] it The index of the tile.
 	/// @param[out] ip The index of the polygon within the tile.
 	/// @see #encodePolyId
-	static public function decodePolyId(ref:Number):Array {
+	public function decodePolyId(ref:Number):Array {
 		var salt:int;
 		var it:int;
 		var ip:int;
@@ -115,9 +114,9 @@ public class NavMesh {
 		var polyMask:Number= (1<< DT_POLY_BITS) - 1;
 		//salt = int(((ref >> (DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
 		//it = int(((ref >> DT_POLY_BITS) & tileMask));
-		salt = int(((ref /Math.pow(2, (DT_POLY_BITS + DT_TILE_BITS))) & saltMask));
-		it = int(((ref / Math.pow(2,DT_POLY_BITS)) & tileMask));
-		ip = int((ref & polyMask));
+		salt = int(ref >>(DT_POLY_BITS + DT_TILE_BITS)) & saltMask;
+		it = int(ref >>(DT_POLY_BITS)) & tileMask;
+		ip = ref & polyMask;
 		return [ salt, it, ip ];
 	}
 
@@ -125,27 +124,27 @@ public class NavMesh {
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	public static function decodePolyIdSalt(ref:Number):int {
+	public function decodePolyIdSalt(ref:Number):int {
 		var saltMask:Number= (1<< DT_SALT_BITS) - 1;
-		return int(((ref / Math.pow(2,DT_POLY_BITS + DT_TILE_BITS)) & saltMask));
+		return int(ref >>(DT_POLY_BITS + DT_TILE_BITS)) & saltMask;
 	}
 
 	/// Extracts the tile's index from the specified polygon reference.
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	public static function decodePolyIdTile(ref:Number):int {
+	public function decodePolyIdTile(ref:Number):int {
 		var tileMask:Number= (1<< DT_TILE_BITS) - 1;
-		return int(((ref >> DT_POLY_BITS) & tileMask));
+		return int(ref >>(DT_POLY_BITS)) & tileMask;
 	}
 
 	/// Extracts the polygon's index (within its tile) from the specified polygon reference.
 	/// @note This function is generally meant for internal use only.
 	/// @param[in] ref The polygon reference.
 	/// @see #encodePolyId
-	public static function decodePolyIdPoly(ref:Number):int {
+	public function decodePolyIdPoly(ref:Number):int {
 		var polyMask:Number= (1<< DT_POLY_BITS) - 1;
-		return int((ref & polyMask));
+		return ref & polyMask;
 	}
 
 	public function allocLink(tile:MeshTile):int {
@@ -232,6 +231,9 @@ public class NavMesh {
 			m_nextFree = m_tiles[i];
 		}
 
+		DT_TILE_BITS = DetourCommon.ilog2(DetourCommon.nextPow2(params.maxTiles));
+		DT_POLY_BITS= DetourCommon.ilog2(DetourCommon.nextPow2(params.maxPolys));
+		DT_SALT_BITS = Math.min(31, 32- DT_TILE_BITS - DT_POLY_BITS);
 	}
 
 	public function init2(data:MeshData, flags:int):void {
@@ -285,7 +287,7 @@ public class NavMesh {
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
-					polys.push(base + node.i);
+					polys.push(base | node.i);
 				}
 
 				if (overlap || isLeafNode)
@@ -316,7 +318,7 @@ public class NavMesh {
 					DetourCommon.vMax(bmax, tile.data.verts, v);
 				}
 				if (DetourCommon.overlapBounds(qmin, qmax, bmin, bmax)) {
-					polys.push(base + i);
+					polys.push(base | i);
 				}
 			}
 			return polys;
@@ -359,7 +361,7 @@ public class NavMesh {
 			}
 		} else {
 			// Try to relocate the tile to specific index with same salt.
-			var tileIndex:int= int(decodePolyIdTile(lastRef));
+			var tileIndex:int= decodePolyIdTile(lastRef);
 			if (tileIndex >= m_maxTiles)
 				throw ("Tile index too high");
 			// Try to find the specific tile id from the free list.
@@ -463,7 +465,7 @@ public class NavMesh {
 
 				var idx:int= allocLink(tile);
 				var link:Link= tile.links[idx];
-				link.ref = base + (poly.neis[j] - 1);
+				link.ref = base | (poly.neis[j] - 1);
 				link.edge = j;
 				link.side = 0xff;
 				link.bmin = link.bmax = 0;
@@ -651,7 +653,7 @@ public class NavMesh {
 				if (n < maxcon) {
 					conarea[n * 2+ 0] = Math.max(amin[0], bmin[0]);
 					conarea[n * 2+ 1] = Math.min(amax[0], bmax[0]);
-					con[n] = base + i;
+					con[n] = base | i;
 					n++;
 				}
 				break;
@@ -778,7 +780,7 @@ public class NavMesh {
 			var landPolyIdx:int= decodePolyIdPoly(ref);
 			var landPoly:Poly= tile.data.polys[landPolyIdx];
 			link = tile.links[tidx];
-			link.ref = base + con.poly;
+			link.ref = base | con.poly;
 			link.edge = 0xff;
 			link.side = 0xff;
 			link.bmin = link.bmax = 0;

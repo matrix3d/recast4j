@@ -97,7 +97,7 @@ public class NavMeshQuery {
 			if (p.getType() != Poly.DT_POLYTYPE_GROUND)
 				continue;
 			// Must pass filter
-			var ref:Number = base + i;
+			var ref:Number = base | i;
 			if (!filter.passFilter(ref, tile, p))
 				continue;
 
@@ -574,7 +574,7 @@ public class NavMeshQuery {
 				var isLeafNode:Boolean= node.i >= 0;
 
 				if (isLeafNode && overlap) {
-					var ref:Number = base + node.i;
+					var ref:Number = base | node.i;
 					if (filter.passFilter(ref, tile, tile.data.polys[node.i])) {
 						polys.push(ref);
 					}
@@ -597,7 +597,7 @@ public class NavMeshQuery {
 				// Do not return off-mesh connection polygons.
 				if (p.getType() == Poly.DT_POLYTYPE_OFFMESH_CONNECTION)
 					continue;
-				ref = base + i;
+				ref = base | i;
 				if (!filter.passFilter(ref, tile, p))
 					continue;
 				// Calc polygon bounds.

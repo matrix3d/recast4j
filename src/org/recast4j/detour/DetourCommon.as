@@ -121,6 +121,24 @@ public class DetourCommon {
 		out[1] = in_[i + 1];
 		out[2] = in_[i + 2];
 	}
+	
+	public static function ilog2(v:int):int {
+		var r:int;
+		var shift:int;
+		r = ((v > 0xffff) ? 1: 0) << 4;
+		v >>= r;
+		shift = ((v > 0xff) ? 1: 0) << 3;
+		v >>= shift;
+		r |= shift;
+		shift = ((v > 0xf) ? 1: 0) << 2;
+		v >>= shift;
+		r |= shift;
+		shift = ((v > 0x3) ? 1: 0) << 1;
+		v >>= shift;
+		r |= shift;
+		r |= (v >> 1);
+		return r;
+	}
 
 	public static function vMin(out:Array, in_:Array, i:int):void {
 		out[0] = Math.min(out[0], in_[i]);
