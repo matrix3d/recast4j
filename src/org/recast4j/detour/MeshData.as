@@ -25,6 +25,8 @@ public class MeshData {
 	public var verts:Array;
 	/** The tile polygons. [Size: MeshHeader::polyCount] */
 	public var polys:Array;
+	
+	public var links:Array;
 	/** The tile's detail sub-meshes. [Size: MeshHeader::detailMeshCount] */
 	public var detailMeshes:Array;
 	/** The detail mesh's unique vertices. [(x, y, z) * MeshHeader::detailVertCount] */

@@ -18,6 +18,7 @@ freely, subject to the following restrictions:
 package org.recast4j.detour.io {
 import flash.utils.ByteArray;
 import flash.utils.Endian;
+import org.recast4j.detour.Link;
 
 import org.recast4j.detour.BVNode;
 import org.recast4j.detour.MeshHeader;
@@ -58,9 +59,9 @@ public class MeshReader {
 		header.bvNodeCount = buf.readInt();
 		header.offMeshConCount = buf.readInt();
 		header.offMeshBase = buf.readInt();
-		header.walkableHeight = buf.readInt();
-		header.walkableRadius = buf.readInt();
-		header.walkableClimb = buf.readInt();
+		header.walkableHeight = buf.readFloat();
+		header.walkableRadius = buf.readFloat();
+		header.walkableClimb = buf.readFloat();
 		for (var j:int= 0; j < 3; j++) {
 			header.bmin[j] = buf.readFloat();
 		}
@@ -70,8 +71,9 @@ public class MeshReader {
 		header.bvQuantFactor = buf.readFloat();
 		data.verts = readVerts(buf, header.vertCount);
 		data.polys = readPolys(buf, header);
+		data.links = readLinks(buf, header);
 		data.detailMeshes = readPolyDetails(buf, header);
-		align4(buf, header.detailMeshCount * DT_POLY_DETAIL_SIZE);
+		//align4(buf, header.detailMeshCount * DT_POLY_DETAIL_SIZE);
 		data.detailVerts = readVerts(buf, header.detailVertCount);
 		data.detailTris = readDTris(buf, header);
 		data.bvTree = readBVTree(buf, header);
@@ -93,26 +95,42 @@ public class MeshReader {
 			polys[i] = new Poly(i);
 			polys[i].firstLink = buf.readInt();
 			for (var j:int= 0; j < polys[i].verts.length; j++) {
-				polys[i].verts[j] = buf.readShort() & 0xFFFF;
+				polys[i].verts[j] = buf.readUnsignedShort() ;
 			}
 			for (j= 0; j < polys[i].neis.length; j++) {
-				polys[i].neis[j] = buf.readShort() & 0xFFFF;
+				polys[i].neis[j] = buf.readUnsignedShort() ;
 			}
-			polys[i].flags = buf.readShort() & 0xFFFF;
-			polys[i].vertCount = buf.readUnsignedByte() & 0xFF;
-			polys[i].areaAndtype = buf.readUnsignedByte() & 0xFF;
+			polys[i].flags = buf.readUnsignedShort() ;
+			polys[i].vertCount = buf.readUnsignedByte() ;
+			polys[i].areaAndtype = buf.readUnsignedByte() ;
 		}
 		return polys;
 	}
-
+	
+	private function readLinks(buf:ByteArray,  header:MeshHeader):Array {
+		var links:Array = [];// new Poly[header.polyCount];
+		for (var i:int= 0; i < header.maxLinkCount; i++) {
+			var link:Link = links[i] = new Link;
+			link.ref = buf.readInt();
+			link.next = buf.readInt();
+			link.edge = buf.readUnsignedByte();
+			link.side = buf.readUnsignedByte();
+			link.bmin = buf.readUnsignedByte();
+			link.bmax = buf.readUnsignedByte();
+			
+		}
+		return links;
+	}
+	
 	private function readPolyDetails( buf:ByteArray,  header:MeshHeader):Array {
 		var polys:Array = [];// new PolyDetail[header.detailMeshCount];
 		for (var i:int= 0; i < header.detailMeshCount; i++) {
 			polys[i] = new PolyDetail();
 			polys[i].vertBase = buf.readInt();
 			polys[i].triBase = buf.readInt();
-			polys[i].vertCount = buf.readUnsignedByte() & 0xFF;
-			polys[i].triCount = buf.readUnsignedByte() & 0xFF;
+			polys[i].vertCount = buf.readUnsignedByte();
+			polys[i].triCount = buf.readUnsignedByte();
+			buf.readShort();
 		}
 		return polys;
 	}
@@ -120,7 +138,7 @@ public class MeshReader {
 	private function readDTris(buf:ByteArray, header:MeshHeader):Array {
 		var tris:Array= []//4* header.detailTriCount];
 		for (var i:int= 0; i < 4*header.detailTriCount; i++) {
-			tris[i] = buf.readUnsignedByte() & 0xFF;
+			tris[i] = buf.readUnsignedByte() ;
 		}
 		return tris;
 	}
@@ -130,10 +148,10 @@ public class MeshReader {
 		for (var i:int = 0; i < header.bvNodeCount; i++) {
 			nodes[i] = new BVNode();
 			for (var j:int= 0; j < 3; j++) {
-				nodes[i].bmin[j] = buf.readShort() & 0xFFFF;
+				nodes[i].bmin[j] = buf.readUnsignedShort();
 			}
 			for (j= 0; j < 3; j++) {
-				nodes[i].bmax[j] = buf.readShort() & 0xFFFF;
+				nodes[i].bmax[j] = buf.readUnsignedShort();
 			}
 			nodes[i].i = buf.readInt();
 		}
@@ -148,9 +166,9 @@ public class MeshReader {
 				cons[i].pos[j] = buf.readFloat();
 			}
 			cons[i].rad = buf.readFloat();
-			cons[i].poly = buf.readShort() & 0xFFFF;
-			cons[i].flags = buf.readUnsignedByte() & 0xFF;
-			cons[i].side = buf.readUnsignedByte() & 0xFF;
+			cons[i].poly = buf.readUnsignedShort();
+			cons[i].flags = buf.readUnsignedByte();
+			cons[i].side = buf.readUnsignedByte();
 			cons[i].userId = buf.readInt();
 		}
 		return cons;

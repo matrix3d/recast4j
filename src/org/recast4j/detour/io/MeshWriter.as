@@ -42,9 +42,9 @@ public class MeshWriter {
 		writeInt(stream, header.bvNodeCount);
 		writeInt(stream, header.offMeshConCount);
 		writeInt(stream, header.offMeshBase);
-		writeInt(stream, header.walkableHeight);
-		writeInt(stream, header.walkableRadius);
-		writeInt(stream, header.walkableClimb);
+		writeFloat(stream, header.walkableHeight);
+		writeFloat(stream, header.walkableRadius);
+		writeFloat(stream, header.walkableClimb);
 		writeFloat(stream, header.bmin[0]);
 		writeFloat(stream, header.bmin[1]);
 		writeFloat(stream, header.bmin[2]);
@@ -55,7 +55,7 @@ public class MeshWriter {
 		writeVerts(stream, data.verts, header.vertCount);
 		writePolys(stream, data);
 		writePolyDetails(stream, data);
-		align4(stream, data.header.detailMeshCount * MeshReader.DT_POLY_DETAIL_SIZE);
+		//align4(stream, data.header.detailMeshCount * MeshReader.DT_POLY_DETAIL_SIZE);
 		writeVerts(stream, data.detailVerts, header.detailVertCount);
 		writeDTris(stream, data);
 		writeBVTree(stream, data);
@@ -101,6 +101,7 @@ public class MeshWriter {
 			writeInt(stream, data.detailMeshes[i].triBase);
 			stream.writeByte(data.detailMeshes[i].vertCount);
 			stream.writeByte(data.detailMeshes[i].triCount);
+			stream.writeShort(0);
 		}
 	}
 

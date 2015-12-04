@@ -391,7 +391,7 @@ public class NavMesh {
 
 		tile.data = data;
 		tile.flags = flags;
-		tile.links = [];
+		tile.links = data.links;
 		
 		// Insert tile into the position lut.
 		var h:int= computeTileHash(header.x, header.y, m_tileLutMask);
@@ -406,6 +406,11 @@ public class NavMesh {
 
 		// Init tile.
 
+		tile.links[tile.links.length-1].next = DT_NULL_LINK;
+		for (i= 0; i < tile.links.length - 1; ++i) {
+			tile.links[i].next = i + 1;
+		}
+		
 		connectIntLinks(tile);
 		baseOffMeshLinks(tile);
 
