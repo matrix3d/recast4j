@@ -58,10 +58,10 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 
 	public function RecastSoloMeshTest() 
 	{
-		testDungeonWatershed();
-		testDungeonMonotone();
-		testWatershed();
-		testMonotone();
+		//testDungeonWatershed();
+		//testDungeonMonotone();
+		//testWatershed();
+		//testMonotone();
 		//testPerformance();
 	}
 	public function testPerformance():void {
@@ -99,14 +99,17 @@ public class RecastSoloMeshTest extends AbstractDetourTest{
 		testBuild("nav_test.obj", PartitionType.LAYERS, 0, 19, 32, 312, 150, 150, 768, 529);
 	}
 
+	private static var importers:Object = {};
 	public function testBuild(filename:String, partitionType:int, expDistance:int, expRegions:int, expContours:int, expVerts:int,
 			expPolys:int, expDetMeshes:int, expDetVerts:int, expDetTRis:int):void {
 		resetCommonSettings();
 		
 		
-		var importer:ObjImporter = new ObjImporter();
-		m_geom= importer.load(AbstractDetourTest.getOBJ(filename));
-		
+		var importer:ObjImporter = importers[filename];
+		if(importer==null){
+			importer=importers[filename]=new ObjImporter();
+			m_geom = importer.load(AbstractDetourTest.getOBJ(filename));
+		}
 		m_partitionType = partitionType;
 		var bmin:Array= m_geom.getMeshBoundsMin();
 		var bmax:Array= m_geom.getMeshBoundsMax();

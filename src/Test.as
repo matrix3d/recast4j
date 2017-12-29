@@ -15,11 +15,11 @@ package
 	 * ...
 	 * @author lizhi
 	 */
-	public class Test extends Sprite
+	public class TestShader extends Sprite
 	{
 		private var query:NavMeshQuery;
 		
-		public function Test() 
+		public function TestShader() 
 		{
 			[Embed(source = "test/all_tiles_navmesh.bin", mimeType = "application/octet-stream")]var c:Class;
 			

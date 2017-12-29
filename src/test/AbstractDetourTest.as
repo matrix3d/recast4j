@@ -41,8 +41,8 @@ public  class AbstractDetourTest extends Sprite{
 			[ 18.784092, 10.197294, 3.0543678] ];
 
 	protected var nmd:MeshData;
-	protected var query:NavMeshQuery;
-	protected var navmesh:NavMesh;
+	public var query:NavMeshQuery;
+	public var navmesh:NavMesh;
 
 	public function setUp():void {
 		var dugeon:String = getOBJ("dungeon.obj");
