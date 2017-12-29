@@ -29,22 +29,23 @@ public class RecastCommon {
 		return (s.con >> shift) & 0x3f;
 	}
 
+	private static const dxoffset:Array = [ -1, 0, 1, 0 ];
 	/// Gets the standard width (x-axis) offset for the specified direction.
 	///  @param[in]		dir		The direction. [Limits: 0 <= value < 4]
 	///  @return The width offset to apply to the current cell position to move
 	///  	in the direction.
 	public static function GetDirOffsetX(dir:int):int {
-		var offset:Array = [ -1, 0, 1, 0 ];
-		return offset[dir & 0x03];
+		
+		return dxoffset[dir & 0x03];
 	}
 
+	private static const dyoffset:Array=[ 0, 1, 0, -1];
 	/// Gets the standard height (z-axis) offset for the specified direction.
 	///  @param[in]		dir		The direction. [Limits: 0 <= value < 4]
 	///  @return The height offset to apply to the current cell position to move
 	///  	in the direction.
 	public static function GetDirOffsetY(dir:int):int {
-		var offset:Array = [ 0, 1, 0, -1];
-		return offset[dir & 0x03];
+		return dyoffset[dir & 0x03];
 	}
 
 	/// Sets the neighbor connection data for the specified direction.

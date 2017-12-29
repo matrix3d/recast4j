@@ -28,7 +28,7 @@ public class MeshTile {
 	/** The tile data. */
 	public var data:MeshData;
 	/** The tile links. [Size: MeshHeader::maxLinkCount] */
-	public var links:Array;
+	public var links:Array = [];
 	/** Tile flags. (See: #dtTileFlags) */
 	public var flags:int;
 	/** The next free tile, or the next tile in the spatial grid. */

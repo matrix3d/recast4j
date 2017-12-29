@@ -91,9 +91,10 @@ public class RecastRasterization {
 		}
 	}
 
+	private static const DPD:Array = [];
 	//divides a convex polygons into two convex polygons on both sides of a line
-	private static function dividePoly(buf:Array, in_:int, nin:int, out1:int, out2:int, x:Number, axis:int):Array {
-		var d:Array = [];
+	private static function dividePoly(buf:Array, in_:int, nin:int, out1:int, out2:int, x:Number, axis:int,out:Array):Array {
+		var d:Array = DPD;
 		for (var i:int= 0; i < nin; ++i)
 			d[i] = x - buf[in_ + i * 3+ axis];
 
@@ -132,9 +133,13 @@ public class RecastRasterization {
 				n++;
 			}
 		}
-		return [ m, n ];
+		out[0] = m;
+		out[1] = n;
+		return out;
 	}
 
+	private static const nvrowinOut:Array = [];
+	private static const nvnv2Out:Array = [];
 	private static function rasterizeTri(verts:Array, v0:int, v1:int, v2:int, area:int, hf:Heightfield, bmin:Array,
 			bmax:Array, cs:Number, ics:Number, ich:Number, flagMergeThr:int):void {
 		var w:int= hf.width;
@@ -176,7 +181,7 @@ public class RecastRasterization {
 		for (var y:int= y0; y <= y1; ++y) {
 			// Clip polygon to row. Store the remaining polygon as well
 			var cz:Number= bmin[2] + y * cs;
-			var nvrowin:Array= dividePoly(buf, in_, nvIn, inrow, p1, cz + cs, 2);
+			var nvrowin:Array= dividePoly(buf, in_, nvIn, inrow, p1, cz + cs, 2,nvrowinOut);
 			nvrow = nvrowin[0];
 			nvIn = nvrowin[1];
 			{
@@ -204,7 +209,7 @@ public class RecastRasterization {
 			for (var x:int= x0; x <= x1; ++x) {
 				// Clip polygon to column. store the remaining polygon as well
 				var cx:Number= bmin[0] + x * cs;
-				var nvnv2:Array= dividePoly(buf, inrow, nv2, p1, p2, cx + cs, 0);
+				var nvnv2:Array= dividePoly(buf, inrow, nv2, p1, p2, cx + cs, 0,nvnv2Out);
 				nv = nvnv2[0];
 				nv2 = nvnv2[1];
 				{
