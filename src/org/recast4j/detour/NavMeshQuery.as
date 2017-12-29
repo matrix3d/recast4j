@@ -1390,7 +1390,7 @@ public class NavMeshQuery {
 					// If starting really close the portal, advance.
 					if (i == 0) {
 						var dt:Tupple2 = DetourCommon.distancePtSegSqr2D(portalApex, left, right);
-						if (dt.second < DetourCommon.sqr(0.001))
+						if (dt.first < DetourCommon.sqr(0.001))
 							continue;
 					}
 				} else {
