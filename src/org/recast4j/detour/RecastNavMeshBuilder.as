@@ -10,6 +10,7 @@ import org.recast4j.recast.PartitionType;
 public class RecastNavMeshBuilder {
 
 	private var meshData:MeshData;
+	public var m_dmesh:PolyMeshDetail;
 	/*public function RecastNavMeshBuilder() {
 		this(new ObjImporter().load("dungeon.obj"), PartitionType.WATERSHED,
 				0.3, 0.2, 2.0, 0.6, 0.9, 45.0, 8, 20, 12.0, 1.3, 6, 6.0, 1.0);
@@ -25,7 +26,7 @@ public class RecastNavMeshBuilder {
 		for (var i:int= 0; i < m_pmesh.npolys; ++i) {
 			m_pmesh.flags[i] = 1;
 		}
-		var m_dmesh:PolyMeshDetail= rcBuilder.getMeshDetail();
+		m_dmesh= rcBuilder.getMeshDetail();
 		var params:NavMeshCreateParams= new NavMeshCreateParams();
 		params.verts = m_pmesh.verts;
 		params.vertCount = m_pmesh.nverts;

@@ -99,16 +99,16 @@ public class RecastMesh {
 
 	}
 
-	private static function computeVertexHash(x:int, y:int, z:int):int {
-		var h1:int= 0x8da6b343; // Large multiplicative constants;
-		var h2:int= 0xd8163841; // here arbitrarily chosen primes
-		var h3:int= 0xcb1ab31;
-		var n:int= h1 * x + h2 * y + h3 * z;
+	private static function computeVertexHash(x:int, y:int, z:int):Number {
+		var h1:uint= 0x8da6b343; // Large multiplicative constants;
+		var h2:uint= 0xd8163841; // here arbitrarily chosen primes
+		var h3:uint= 0xcb1ab31;
+		var n:Number= h1 * x + h2 * y + h3 * z;
 		return n & (VERTEX_BUCKET_COUNT - 1);
 	}
 
 	private static function addVertex( x:int,  y:int,  z:int,  verts:Array,  firstVert:Array,  nextVert:Array,  nv:int):Array {
-		var bucket:int= computeVertexHash(x, 0, z);
+		var bucket:Number= computeVertexHash(x, 0, z);
 		var i:int= firstVert[bucket];
 
 		while (i != -1) {

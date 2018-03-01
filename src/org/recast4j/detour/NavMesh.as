@@ -396,7 +396,7 @@ public class NavMesh {
 		}
 		
 		// Insert tile into the position lut.
-		var h:int= computeTileHash(header.x, header.y, m_tileLutMask);
+		var h:Number= computeTileHash(header.x, header.y, m_tileLutMask);
 		tile.next = m_posLookup[h];
 		m_posLookup[h] = tile;
 
@@ -905,7 +905,7 @@ public class NavMesh {
 
 	public function getTileAt(x:int, y:int, layer:int):MeshTile {
 		// Find tile based on hash.
-		var h:int= computeTileHash(x, y, m_tileLutMask);
+		var h:Number= computeTileHash(x, y, m_tileLutMask);
 		var tile:MeshTile= m_posLookup[h];
 		while (tile != null) {
 			if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y && tile.data.header.layer == layer) {
@@ -954,7 +954,7 @@ public class NavMesh {
 	public function getTilesAt(x:int, y:int):Array {
 		var tiles:Array = [];
 		// Find tile based on hash.
-		var h:int= computeTileHash(x, y, m_tileLutMask);
+		var h:Number= computeTileHash(x, y, m_tileLutMask);
 		var tile:MeshTile= m_posLookup[h];
 		while (tile != null) {
 			if (tile.data.header != null && tile.data.header.x == x && tile.data.header.y == y) {
@@ -985,11 +985,11 @@ public class NavMesh {
 		return encodePolyId(tile.salt, it, 0);
 	}
 
-	public static function computeTileHash(x:int, y:int, mask:int):int {
-		var h1:int= 0x8da6b343; // Large multiplicative constants;
-		var h2:int= 0xd8163841; // here arbitrarily chosen primes
-		var n:int= h1 * x + h2 * y;
-		return int((n & mask));
+	public static function computeTileHash(x:int, y:int, mask:int):Number {
+		var h1:uint= 0x8da6b343; // Large multiplicative constants;
+		var h2:uint= 0xd8163841; // here arbitrarily chosen primes
+		var n:Number= h1 * x + h2 * y;
+		return ((n & mask));
 	}
 
 	/// @par
