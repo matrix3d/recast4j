@@ -33,7 +33,7 @@ public class NavMesh {
 	public static const DT_EXT_LINK:int= 0x8000;
 
 	/// A value that indicates the entity does not link to anything.
-	public static const DT_NULL_LINK:int= 0xffffffff;
+	public static const DT_NULL_LINK:uint= 0xffffffff;
 
 	/// A flag that indicates that an off-mesh connection can be traversed in both directions. (Is bidirectional.)
 	public static const DT_OFFMESH_CON_BIDIR:int= 1;
